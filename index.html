@@ -200,13 +200,13 @@
                 <table class="w-full text-left text-sm">
                     <thead class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-[10px] uppercase font-black text-slate-400">
                         <tr>
-                            <th class="px-6 py-4">Data</th>
-                            <th class="px-6 py-4 text-center">Fatura</th>
-                            <th class="px-6 py-4">Descrição</th>
-                            <th class="px-6 py-4">Banco</th>
-                            <th class="px-6 py-4 text-right">Valor</th>
-                            <th class="px-6 py-4 text-center">Status</th>
-                            <th class="px-6 py-4 text-right">Ações</th>
+                            <th class="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">Data</th>
+                            <th class="hidden md:table-cell px-6 py-4 text-center">Fatura</th>
+                            <th class="px-3 md:px-6 py-3 md:py-4">Descrição</th>
+                            <th class="hidden sm:table-cell px-6 py-4">Banco</th>
+                            <th class="px-3 md:px-6 py-3 md:py-4 text-right">Valor</th>
+                            <th class="hidden md:table-cell px-6 py-4 text-center">Status</th>
+                            <th class="px-3 md:px-6 py-3 md:py-4 text-right">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="table-body" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
@@ -216,14 +216,13 @@
     </main>
 
     <script>
-        // --- ESTADO GLOBAL (Versão 12) ---
+     // --- ESTADO GLOBAL (Versão 12) ---
         let defaultBanks = [
             { name: "Cartão", closingDay: 15, currency: "BRL" },
             { name: "Salário", closingDay: null, currency: "BRL" },
             { name: "Reserva USD", closingDay: null, currency: "USD" }
         ];
         
-        // Migração simples v11 para v12 (adicionando moedas onde não tem)
         let savedBanks = JSON.parse(localStorage.getItem('f_banks_v12')) || JSON.parse(localStorage.getItem('f_banks_v11')) || defaultBanks;
         banks = savedBanks.map(b => ({...b, currency: b.currency || 'BRL'}));
         
@@ -231,22 +230,20 @@
         
         let viewDate = new Date(); 
         let editingTxId = null;
-        let expenseChartInstance = null; // Instância do Chart.js
+        let expenseChartInstance = null;
         let monthlyBudget = parseFloat(localStorage.getItem('f_budget_v12')) || 3000;
 
-        // Formatação de Moedas
         const currencyMap = { BRL: 'R$', USD: '$', EUR: '€' };
         function formatMoney(value, currency = 'BRL') {
             return value.toLocaleString(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency: currency });
         }
 
-        // Inicializa Tema
         if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
 
         function toggleDarkMode() {
             document.documentElement.classList.toggle('dark');
             localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-            if(expenseChartInstance) renderChart(transactions.filter(t => t.refMonth === `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}`)); // Atualiza cores do gráfico
+            if(expenseChartInstance) renderChart(transactions.filter(t => t.refMonth === `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}`));
         }
 
         // --- NAVEGAÇÃO E UI ---
@@ -394,12 +391,11 @@
         function togglePaid(id) { const tx = transactions.find(t => t.id === id); if(tx) { tx.paid = !tx.paid; saveAndSync(); } }
         function deleteTx(id) { if(confirm("Apagar lançamento?")) { transactions = transactions.filter(t => t.id !== id); saveAndSync(); } }
         
-        // Ideia 2: Duplicar (Assinatura Recorrente)
         function duplicateToNextMonth(id) {
             if(confirm("Lançar essa mesma despesa para o mês seguinte automaticamente?")) {
                 const tx = transactions.find(t => t.id === id);
                 let d = new Date(tx.date + "T00:00:00");
-                d.setMonth(d.getMonth() + 1); // Avança um mês
+                d.setMonth(d.getMonth() + 1); 
                 const newDateStr = d.toISOString().split('T')[0];
                 transactions.push({ ...tx, id: Date.now(), date: newDateStr, refMonth: calculateRefMonth(d, tx.bank, 0), paid: false });
                 saveAndSync();
@@ -444,12 +440,10 @@
             if(!editingTxId) updateFormCurrency();
         }
 
-        // RENDERIZAÇÃO DO GRÁFICO (Ideia 5)
+        // RENDERIZAÇÃO DO GRÁFICO
         function renderChart(monthTxs) {
             const ctx = document.getElementById('expenseChart').getContext('2d');
             const isDark = document.documentElement.classList.contains('dark');
-            
-            // Filtra só saídas (não transferências, assumindo que transf. é anulada ou não entra no gráfico de gastos reais)
             const expenses = monthTxs.filter(t => t.type === 'expense' && !t.desc.includes('Transf. para'));
             
             const catData = {};
@@ -461,7 +455,6 @@
             if(expenseChartInstance) expenseChartInstance.destroy();
             
             if(data.length === 0) {
-                // Gráfico vazio
                 expenseChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Sem Gastos'], datasets: [{ data: [1], backgroundColor: [isDark ? '#334155' : '#e2e8f0'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
                 return;
             }
@@ -484,6 +477,7 @@
             });
         }
 
+        // RENDERIZAÇÃO DO DASHBOARD RESPONSIVO (Atualização B embutida)
         function renderDashboard(filterBank = null) {
             const container = document.getElementById('bank-cards');
             const mStr = (viewDate.getMonth() + 1).toString().padStart(2, '0');
@@ -493,7 +487,6 @@
             const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
             document.getElementById('current-ref-display').innerText = `${monthNames[viewDate.getMonth()]} ${yStr}`;
             
-            // Cards dos Bancos com Moedas Corretas (Ideia 6)
             container.innerHTML = banks.map(b => {
                 const bal = transactions.filter(t => t.bank === b.name).reduce((acc, t) => acc + (t.type === 'income' ? t.value : -t.value), 0);
                 const isSel = filterBank === b.name;
@@ -505,13 +498,9 @@
                 `;
             }).join('');
 
-            // Lançamentos da Fatura
             let displayTxs = transactions.filter(t => t.refMonth === currentRef);
-            
-            // Renderiza o Gráfico e Orçamento ANTES do filtro de banco para a visão geral
             renderChart(displayTxs);
 
-            // Calcula Progresso do Orçamento (Apenas saídas em BRL para simplificar, ou soma genérica)
             const monthExpensesBRL = displayTxs.filter(t => t.type === 'expense' && (!banks.find(b=>b.name===t.bank) || banks.find(b=>b.name===t.bank).currency === 'BRL') && !t.desc.includes('Transf.')).reduce((a, t) => a + t.value, 0);
             const budgetPercent = Math.min((monthExpensesBRL / monthlyBudget) * 100, 100).toFixed(0);
             
@@ -521,7 +510,6 @@
             bBar.style.width = `${budgetPercent}%`;
             bBar.className = `h-3 rounded-full transition-all duration-500 ${budgetPercent >= 100 ? 'bg-expense' : (budgetPercent > 80 ? 'bg-yellow-500' : 'bg-income')}`;
 
-            // Filtro de Banco Específico
             if (filterBank) {
                 displayTxs = displayTxs.filter(t => t.bank === filterBank);
                 document.getElementById('dash-list-title').innerText = `Lançamentos na Fatura: ${filterBank}`;
@@ -529,7 +517,6 @@
                 document.getElementById('dash-list-title').innerText = `Fatura Geral Consolidada`;
             }
 
-            // Cálculo do Saldo Ref Agrupado por Moeda (Evita somar Reais com Dólares)
             const totalsByCurr = {};
             displayTxs.forEach(t => {
                 const bCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency;
@@ -542,29 +529,30 @@
             
             document.getElementById('dash-total-ref').innerHTML = totalRefHtml;
 
-            // Render Tabela Dashboard
+            // TABELA DO DASHBOARD (Agora Responsiva para Celular)
             document.getElementById('dash-table-body').innerHTML = displayTxs.sort((a,b) => new Date(b.date) - new Date(a.date)).map(t => {
                 const txCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency;
                 return `
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition ${t.paid ? 'opacity-50' : ''}">
-                    <td class="px-6 py-4 flex items-center gap-3">
+                    <td class="px-2 md:px-6 py-3 md:py-4 flex items-center gap-2 md:gap-3 whitespace-nowrap">
                         <input type="checkbox" ${t.paid ? 'checked' : ''} onchange="togglePaid(${t.id})" class="w-4 h-4 cursor-pointer accent-accent">
-                        <span class="text-slate-400 font-mono text-[10px]">${t.date.split('-').reverse().slice(0,2).join('/')}</span>
+                        <span class="text-slate-400 font-mono text-[9px] md:text-[10px]">${t.date.split('-').reverse().slice(0,2).join('/')}</span>
                     </td>
-                    <td class="px-6 py-4">
-                        <p class="font-bold text-slate-700 dark:text-slate-200 ${t.paid ? 'line-through' : ''}">${t.desc}</p>
-                        ${!filterBank ? `<span class="text-[8px] bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-1 rounded font-black uppercase">${t.bank}</span>` : ''}
+                    <td class="px-2 md:px-6 py-3 md:py-4 min-w-[120px]">
+                        <p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${t.paid ? 'line-through' : ''} truncate max-w-[150px] md:max-w-xs" title="${t.desc}">${t.desc}</p>
+                        ${!filterBank ? `<span class="text-[8px] bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-1 rounded font-black uppercase inline-block mt-1">${t.bank}</span>` : ''}
                     </td>
-                    <td class="px-6 py-4 text-right font-mono font-bold ${t.type === 'income' ? 'text-income' : 'text-expense'}">
+                    <td class="px-2 md:px-6 py-3 md:py-4 text-right font-mono font-bold text-xs md:text-sm ${t.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">
                         ${formatMoney(t.value, txCurr)}
                     </td>
                 </tr>
             `}).join('') || `<tr><td colspan="3" class="px-6 py-10 text-center text-slate-400 italic">Nenhum lançamento para ${mStr}/${yStr}.</td></tr>`;
         }
 
+        // RENDERIZAÇÃO DA TABELA DO EXTRATO GERAL (Atualização C embutida)
         function renderTable() {
             const filterInput = document.getElementById('filter-month-input').value; 
-            const searchQuery = document.getElementById('search-tx').value.toLowerCase(); // Busca (Ideia 3)
+            const searchQuery = document.getElementById('search-tx').value.toLowerCase();
             let filtered = transactions;
             
             if (filterInput) filtered = filtered.filter(tx => tx.refMonth === filterInput);
@@ -575,21 +563,21 @@
             document.getElementById('table-body').innerHTML = filtered.map(tx => {
                 const txCurr = (banks.find(b => b.name === tx.bank) || {currency:'BRL'}).currency;
                 return `
-                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition">
-                    <td class="px-6 py-4 text-slate-400 font-mono text-xs">${tx.date.split('-').reverse().join('/')}</td>
-                    <td class="px-6 py-4 text-center"><span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${tx.refMonth}</span></td>
-                    <td class="px-6 py-4">
-                        <p class="font-bold text-slate-700 dark:text-slate-200 ${tx.paid ? 'line-through opacity-50' : ''}">${tx.desc}</p>
-                        <span class="text-[9px] font-black text-slate-400 uppercase italic">${tx.category}</span>
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50">
+                    <td class="px-3 md:px-6 py-3 md:py-4 text-slate-400 font-mono text-[10px] md:text-xs whitespace-nowrap">${tx.date.split('-').reverse().slice(0,2).join('/')}</td>
+                    <td class="hidden md:table-cell px-6 py-4 text-center"><span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${tx.refMonth}</span></td>
+                    <td class="px-3 md:px-6 py-3 md:py-4 min-w-[120px]">
+                        <p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${tx.paid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${tx.desc}">${tx.desc}</p>
+                        <span class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase italic block mt-1">${tx.category}</span>
                     </td>
-                    <td class="px-6 py-4 uppercase font-black text-[10px] text-slate-500 italic">${tx.bank}</td>
-                    <td class="px-6 py-4 text-right font-mono font-bold ${tx.type === 'income' ? 'text-income' : 'text-expense'}">
+                    <td class="hidden sm:table-cell px-6 py-4 uppercase font-black text-[10px] text-slate-500 italic">${tx.bank}</td>
+                    <td class="px-3 md:px-6 py-3 md:py-4 text-right font-mono font-bold text-xs md:text-sm ${tx.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">
                         ${formatMoney(tx.value, txCurr)}
                     </td>
-                    <td class="px-6 py-4 text-center">
-                        <input type="checkbox" ${tx.paid ? 'checked' : ''} onchange="togglePaid(${tx.id})" class="accent-accent cursor-pointer">
+                    <td class="hidden md:table-cell px-6 py-4 text-center">
+                        <input type="checkbox" ${tx.paid ? 'checked' : ''} onchange="togglePaid(${tx.id})" class="accent-accent cursor-pointer w-4 h-4">
                     </td>
-                    <td class="px-6 py-4 text-right flex justify-end gap-3">
+                    <td class="px-3 md:px-6 py-3 md:py-4 text-right flex justify-end gap-2 md:gap-3 mt-1 md:mt-0">
                         <button onclick="duplicateToNextMonth(${tx.id})" class="text-slate-400 hover:text-accent font-black transition" title="Repetir no próximo mês">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
                         </button>
@@ -632,19 +620,18 @@
             reader.readAsText(file);
         }
 
+        // PWA: Registra o Service Worker atualizado
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado com sucesso!', reg))
+                    .catch(err => console.log('Falha ao registrar Service Worker:', err));
+            });
+        }
+
         // Inicialização
         document.getElementById('entry-date').valueAsDate = new Date();
         updateUI();
-        navigate('dashboard');
-    </script>
-    <script>
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('Service Worker registrado com sucesso!', reg))
-                .catch(err => console.log('Falha ao registrar Service Worker:', err));
-        });
-    }
-</script>
+        navigate('dashboard');</script>
 </body>
 </html>
