@@ -477,75 +477,138 @@
 
         function saveEntry(e) {
             e.preventDefault();
-            const desc = document.getElementById('entry-desc').value; const totalVal = parseFloat(document.getElementById('entry-value').value);
-            const type = document.getElementById('entry-type').value; const bankName = document.getElementById('entry-bank').value;
-            const cat = document.getElementById('entry-category').value; const dateInput = document.getElementById('entry-date').value;
+            const desc = document.getElementById('entry-desc').value;
+            const totalVal = parseFloat(document.getElementById('entry-value').value);
+            const type = document.getElementById('entry-type').value;
+            const bankName = document.getElementById('entry-bank').value;
+            const cat = document.getElementById('entry-category').value;
+            const dateInput = document.getElementById('entry-date').value;
+            const installments = parseInt(document.getElementById('entry-installments').value);
+            
             const baseDate = new Date(dateInput + "T00:00:00");
             
             if (editingTxId) {
                 const txIndex = transactions.findIndex(t => t.id === editingTxId);
-                if (txIndex > -1) transactions[txIndex] = { ...transactions[txIndex], desc, value: totalVal, type: type === 'transfer' ? 'expense' : type, bank: bankName, category: cat, date: dateInput, refMonth: calculateRefMonth(baseDate, bankName, 0) };
-                cancelEdit(); saveAndSync(); return;
+                if (txIndex > -1) {
+                    // Update single transaction or first of a series
+                    transactions[txIndex] = { 
+                        ...transactions[txIndex], 
+                        desc, 
+                        value: totalVal, 
+                        type: type === 'transfer' ? 'expense' : type, // Transfers edited as expense initially
+                        bank: bankName, 
+                        category: cat, 
+                        date: dateInput, 
+                        refMonth: calculateRefMonth(baseDate, bankName, 0) 
+                    };
+
+                    // If it was a transfer, find and update the linked income transaction as well
+                    if (transactions[txIndex].linkId) {
+                        const linkedTx = transactions.find(t => t.linkId === transactions[txIndex].linkId && t.id !== editingTxId);
+                        if (linkedTx) {
+                            const sourceCurrency = banks.find(b => b.name === bankName)?.currency || 'BRL';
+                            const targetBank = linkedTx.bank; // Assuming the linkedTx is the target
+                            const targetCurrency = banks.find(b => b.name === targetBank)?.currency || 'BRL';
+                            let convertedValue = totalVal;
+                            if (sourceCurrency !== targetCurrency) {
+                                const rate = exchangeRates[sourceCurrency]?.[targetCurrency];
+                                if (rate) convertedValue = totalVal * rate;
+                            }
+                            linkedTx.desc = `Transf. de ${bankName} (${desc})`;
+                            linkedTx.value = convertedValue;
+                            linkedTx.date = dateInput;
+                            linkedTx.refMonth = calculateRefMonth(baseDate, targetBank, 0);
+                        }
+                    }
+                }
+                cancelEdit();
+                saveAndSync();
+                return;
             }
 
             if (type === 'transfer') {
+                const targetBank = document.getElementById('entry-target-bank').value;
 
-			const targetBank = document.getElementById('entry-target-bank').value;
+                if (bankName === targetBank) {
+                    return alert("Bancos devem ser diferentes!");
+                }
 
-			if (bankName === targetBank)
-				return alert("Bancos devem ser diferentes!");
+                const sourceCurrency = banks.find(b => b.name === bankName)?.currency || 'BRL';
+                const targetCurrency = banks.find(b => b.name === targetBank)?.currency || 'BRL';
 
-			const sourceCurrency = banks.find(b => b.name === bankName)?.currency || 'BRL';
-			const targetCurrency = banks.find(b => b.name === targetBank)?.currency || 'BRL';
+                let convertedValue = totalVal;
 
-			let convertedValue = totalVal;
+                if (sourceCurrency !== targetCurrency) {
+                    const rate = exchangeRates[sourceCurrency]?.[targetCurrency];
+                    if (!rate) {
+                        return alert("Conversão de moeda não definida!");
+                    }
+                    convertedValue = totalVal * rate;
+                }
 
-			if (sourceCurrency !== targetCurrency) {
+                const linkId = Date.now(); // Unique ID to link transfer transactions
 
-				const rate = exchangeRates[sourceCurrency]?.[targetCurrency];
+                transactions.push(
+                    createTxObj(
+                        linkId,
+                        `Transf. para ${targetBank} (${desc})`,
+                        cat,
+                        totalVal,
+                        dateInput,
+                        'expense',
+                        bankName,
+                        baseDate,
+                        0,
+                        linkId // Add linkId to the expense transaction
+                    )
+                );
 
-				if (!rate)
-					return alert("Conversão de moeda não definida!");
+                transactions.push(
+                    createTxObj(
+                        linkId + 1, // Ensure unique ID for the income side
+                        `Transf. de ${bankName} (${desc})`,
+                        cat,
+                        convertedValue,
+                        dateInput,
+                        'income',
+                        targetBank,
+                        baseDate,
+                        0,
+                        linkId // Add linkId to the income transaction
+                    )
+                );
 
-				convertedValue = totalVal * rate;
-			}
-
-			const linkId = Date.now();
-
-			transactions.push(
-				createTxObj(
-					linkId,
-					`Transf. para ${targetBank} (${desc})`,
-					cat,
-					totalVal,
-					dateInput,
-					'expense',
-					bankName,
-					baseDate,
-					0
-				)
-			);
-
-			transactions.push(
-				createTxObj(
-					linkId + 1,
-					`Transf. de ${bankName} (${desc})`,
-					cat,
-					convertedValue,
-					dateInput,
-					'income',
-					targetBank,
-					baseDate,
-					0
-				)
-			);
-
-		}
-            e.target.reset(); document.getElementById('entry-date').valueAsDate = new Date(); toggleTransferUI(); updateFormCurrency(); saveAndSync();
+            } else { // Regular expense or income
+                for (let i = 0; i < installments; i++) {
+                    const txId = Date.now() + i;
+                    const txDesc = installments > 1 ? `${desc} (${i + 1}/${installments})` : desc;
+                    const txValue = totalVal / installments;
+                    
+                    transactions.push(
+                        createTxObj(
+                            txId,
+                            txDesc,
+                            cat,
+                            txValue,
+                            dateInput,
+                            type,
+                            bankName,
+                            baseDate,
+                            i // Offset for installments
+                        )
+                    );
+                }
+            }
+            e.target.reset();
+            document.getElementById('entry-date').valueAsDate = new Date();
+            toggleTransferUI();
+            updateFormCurrency();
+            saveAndSync();
         }
 
-        function createTxObj(id, desc, category, value, dateStr, type, bankName, baseDate, monthOffset) {
-            return { id, desc, category, value, date: dateStr, type, bank: bankName, refMonth: calculateRefMonth(baseDate, bankName, monthOffset), paid: false };
+        // Added `linkId` parameter
+        function createTxObj(id, desc, category, value, dateStr, type, bankName, baseDate, monthOffset, linkId = null) {
+            return { id, desc, category, value, date: dateStr, type, bank: bankName, refMonth: calculateRefMonth(baseDate, bankName, monthOffset), paid: false, linkId: linkId };
         }
 
         function calculateRefMonth(baseDate, bankName, monthOffset) {
@@ -560,7 +623,25 @@
             editingTxId = id;
             document.getElementById('form-title').innerText = "Editando Lançamento"; document.getElementById('submit-btn').innerText = "Atualizar Lançamento"; document.getElementById('cancel-edit-btn').classList.remove('hidden');
             document.getElementById('entry-desc').value = tx.desc; document.getElementById('entry-value').value = tx.value; document.getElementById('entry-date').value = tx.date; document.getElementById('entry-bank').value = tx.bank; document.getElementById('entry-category').value = tx.category; document.getElementById('entry-type').value = tx.type;
-            document.getElementById('entry-installments').value = 1; document.getElementById('entry-installments').disabled = true; document.getElementById('entry-type').disabled = true; updateFormCurrency();
+            
+            document.getElementById('entry-installments').value = 1; 
+            document.getElementById('entry-installments').disabled = true; 
+            document.getElementById('entry-type').disabled = true; 
+            
+            // Handle pre-filling for transfers
+            if (tx.type === 'transfer' || tx.linkId) { // Check for linkId to identify transfers
+                document.getElementById('entry-type').value = 'transfer';
+                toggleTransferUI();
+                // If this is the expense side of a transfer, the target bank is the bank of the linked income transaction
+                const linkedTx = transactions.find(t => t.linkId === tx.linkId && t.id !== tx.id && t.type === 'income');
+                if (linkedTx) {
+                    document.getElementById('entry-target-bank').value = linkedTx.bank;
+                }
+            } else {
+                toggleTransferUI(); // Ensure transfer UI is hidden for regular transactions
+            }
+
+            updateFormCurrency();
         }
 
         function cancelEdit() {
@@ -569,14 +650,66 @@
         }
 
         function togglePaid(id) { const tx = transactions.find(t => t.id === id); if(tx) { tx.paid = !tx.paid; saveAndSync(); } }
-        function deleteTx(id) { if(confirm("Apagar lançamento?")) { transactions = transactions.filter(t => t.id !== id); saveAndSync(); } }
+        function deleteTx(id) { 
+            if(confirm("Apagar lançamento?")) { 
+                const txToDelete = transactions.find(t => t.id === id);
+                if (txToDelete && txToDelete.linkId) {
+                    // If it's a transfer, delete both linked transactions
+                    transactions = transactions.filter(t => t.linkId !== txToDelete.linkId);
+                } else {
+                    transactions = transactions.filter(t => t.id !== id); 
+                }
+                saveAndSync(); 
+            } 
+        }
         
         function duplicateToNextMonth(id) {
             if(confirm("Lançar essa mesma despesa para o próximo mês?")) {
                 const tx = transactions.find(t => t.id === id);
-                let d = new Date(tx.date + "T00:00:00"); d.setMonth(d.getMonth() + 1); 
-                transactions.push({ ...tx, id: Date.now(), date: d.toISOString().split('T')[0], refMonth: calculateRefMonth(d, tx.bank, 0), paid: false });
-                saveAndSync(); alert("Lançamento duplicado!");
+                if (!tx) return; // Add a check if transaction exists
+
+                let d = new Date(tx.date + "T00:00:00");
+                d.setMonth(d.getMonth() + 1); 
+                
+                // If it was a transfer, duplicate both sides
+                if (tx.linkId) {
+                    const linkedTx = transactions.find(t => t.linkId === tx.linkId && t.id !== tx.id);
+                    if (linkedTx) {
+                        const newLinkId = Date.now();
+                        // Duplicate original transaction (expense side of transfer)
+                        transactions.push({ 
+                            ...tx, 
+                            id: newLinkId, // New ID for the duplicated expense
+                            date: d.toISOString().split('T')[0], 
+                            refMonth: calculateRefMonth(d, tx.bank, 0), 
+                            paid: false,
+                            linkId: newLinkId // Assign new linkId
+                        });
+
+                        let dLinked = new Date(linkedTx.date + "T00:00:00");
+                        dLinked.setMonth(dLinked.getMonth() + 1);
+                        // Duplicate linked transaction (income side of transfer)
+                        transactions.push({ 
+                            ...linkedTx, 
+                            id: newLinkId + 1, // New ID for the duplicated income
+                            date: dLinked.toISOString().split('T')[0], 
+                            refMonth: calculateRefMonth(dLinked, linkedTx.bank, 0), 
+                            paid: false,
+                            linkId: newLinkId // Assign new linkId
+                        });
+                    }
+                } else {
+                    // Regular transaction duplication
+                    transactions.push({ 
+                        ...tx, 
+                        id: Date.now(), 
+                        date: d.toISOString().split('T')[0], 
+                        refMonth: calculateRefMonth(d, tx.bank, 0), 
+                        paid: false 
+                    });
+                }
+                saveAndSync(); 
+                alert("Lançamento duplicado!");
             }
         }
 
@@ -640,7 +773,8 @@
         }
 
         function updateYearOptions() {
-            const yearSelect = document.getElementById('filter-year-select'); const uniqueYears = [...new Set(transactions.map(t => t.refMonth.split('-')[0]))].sort().reverse();
+            const yearSelect = document.getElementById('filter-year-select'); 
+            const uniqueYears = [...new Set(transactions.map(t => t.refMonth.split('-')[0]))].sort((a, b) => b - a); // Sort descending
             if (uniqueYears.length === 0) uniqueYears.push(new Date().getFullYear().toString());
             const currentSelection = yearSelect.value;
             yearSelect.innerHTML = `<option value="">Anos</option>` + uniqueYears.map(y => `<option value="${y}">${y}</option>`).join('');
@@ -661,10 +795,68 @@
         }
 
         // UTILITIES E PWA
-        function resetApp() { if(confirm("Apagar tudo?")) { transactions = []; saveAndSync(); } }
-        function exportCSV() { const h = "\uFEFFId;Data;Ref;Tipo;Valor;Banco;Categoria;Pago;Desc\n"; const b = transactions.map(t => `${t.id};${t.date};${t.refMonth};${t.type};${t.value};${t.bank};${t.category};${t.paid};${t.desc}`).join("\n"); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([h + b], { type: 'text/csv;charset=utf-8;' })); a.download = 'backup_finance_v13.csv'; a.click(); }
-        function importCSV(event) { const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const lines = e.target.result.split('\n'); let count = 0; for(let i = 1; i < lines.length; i++) { const cols = lines[i].split(';'); if(cols.length >= 8) { const idStr = cols[0].trim(); if(!transactions.some(t => t.id == idStr)) { transactions.push({ id: parseInt(idStr) || Date.now() + i, date: cols[1], refMonth: cols[2], type: cols[3], value: parseFloat(cols[4]), bank: cols[5], category: cols[6], paid: cols[7] === 'true', desc: cols[8] }); count++; } } } saveAndSync(); alert(`${count} lançamentos importados com sucesso!`); event.target.value = ''; }; reader.readAsText(file); }
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.log('Falha no SW:', err)); }); }
+        function resetApp() { 
+            if(confirm("Deseja apagar todos os dados da aplicação, incluindo transações e bancos? Esta ação é irreversível.")) { 
+                transactions = []; 
+                banks = defaultBanks; // Reset banks to default
+                categoryGoals = { "Alimentação": 20, "Moradia": 35, "Transporte": 10, "Saúde": 10, "Lazer": 15, "Investimento": 10, "Outros": 0 }; // Reset goals
+                baseIncome = 5000; // Reset base income
+                localStorage.clear(); // Clear all localStorage for a clean reset
+                saveAndSync(); 
+                alert("Aplicação resetada com sucesso!");
+                navigate('dashboard'); // Go back to dashboard after reset
+            } 
+        }
+
+        function exportCSV() { 
+            const h = "\uFEFFId;Data;Ref;Tipo;Valor;Banco;Categoria;Pago;Desc;LinkID\n"; // Added LinkID to header
+            const b = transactions.map(t => `${t.id};${t.date};${t.refMonth};${t.type};${t.value};${t.bank};${t.category};${t.paid};${t.desc};${t.linkId || ''}`).join("\n"); // Export LinkID
+            const a = document.createElement('a'); 
+            a.href = URL.createObjectURL(new Blob([h + b], { type: 'text/csv;charset=utf-8;' })); 
+            a.download = 'backup_finance_v13.csv'; 
+            a.click(); 
+        }
+
+        function importCSV(event) { 
+            const file = event.target.files[0]; 
+            if(!file) return; 
+            const reader = new FileReader(); 
+            reader.onload = function(e) { 
+                const lines = e.target.result.split('\n'); 
+                let count = 0; 
+                for(let i = 1; i < lines.length; i++) { 
+                    const cols = lines[i].split(';'); 
+                    if(cols.length >= 9) { // Adjusted to 9 columns for LinkID
+                        const idStr = cols[0].trim(); 
+                        if(!transactions.some(t => t.id == idStr)) { 
+                            transactions.push({ 
+                                id: parseInt(idStr) || Date.now() + i, 
+                                date: cols[1], 
+                                refMonth: cols[2], 
+                                type: cols[3], 
+                                value: parseFloat(cols[4]), 
+                                bank: cols[5], 
+                                category: cols[6], 
+                                paid: cols[7] === 'true', 
+                                desc: cols[8],
+                                linkId: cols[9] ? parseInt(cols[9]) : null // Import LinkID
+                            }); 
+                            count++; 
+                        } 
+                    } 
+                } 
+                saveAndSync(); 
+                alert(`${count} lançamentos importados com sucesso!`); 
+                event.target.value = ''; 
+            }; 
+            reader.readAsText(file); 
+        }
+
+        if ('serviceWorker' in navigator) { 
+            window.addEventListener('load', () => { 
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('Falha no SW:', err)); 
+            }); 
+        }
 
         document.getElementById('entry-date').valueAsDate = new Date();
         updateUI();
