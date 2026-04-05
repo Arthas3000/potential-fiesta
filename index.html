@@ -11,6 +11,8 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Adicionando Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script> 
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -41,24 +43,12 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round"
-                        class="block dark:hidden">
-                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
-                    </svg>
+                        class="block dark:hidden"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round"
-                        class="hidden dark:block">
-                        <circle cx="12" cy="12" r="4"/>
-                        <path d="M12 2v2"/>
-                        <path d="M12 20v2"/>
-                        <path d="m4.93 4.93 1.41 1.41"/>
-                        <path d="m17.66 17.66 1.41 1.41"/>
-                        <path d="M2 12h2"/>
-                        <path d="M20 12h2"/>
-                        <path d="m6.34 17.66-1.41 1.41"/>
-                        <path d="m19.07 4.93-1.41 1.41"/>
-                    </svg>
+                        class="hidden dark:block"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
                 </button>
 
                 <input type="file" id="import-csv" accept=".csv" class="hidden" onchange="importCSV(event)">
@@ -76,13 +66,7 @@
                 <button onclick="resetApp()"
                     class="p-2 text-slate-400 hover:text-expense hover:bg-red-50 dark:hover:bg-red-950/30 rounded transition-colors"
                     title="Resetar Tudo">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 6h18"/>
-                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
                 </button>
 
             </div>
@@ -118,9 +102,13 @@
         
         <!-- NAVEGADOR DE MESES GLOBAL (Fica visível no Dashboard e no Planejamento) -->
         <div id="global-month-nav" class="flex items-center justify-between bg-white dark:bg-darkcard p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mb-6 transition-colors">
-            <button onclick="changeMonth(-1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition text-sm">⬅️ Ant.</button>
+            <button onclick="changeMonth(-1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            </button>
             <h2 class="text-lg md:text-2xl font-bold italic text-center">Fatura: <span id="current-ref-display" class="text-accent">--</span></h2>
-            <button onclick="changeMonth(1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition text-sm">Próx. ➡️</button>
+            <button onclick="changeMonth(1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </button>
         </div>
 
         <!-- ================= 1. DASHBOARD ================= -->
@@ -201,7 +189,9 @@
                             <select id="bank-currency" class="flex-1 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded px-3 py-2 text-sm font-bold">
                                 <option value="BRL">BRL (R$)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option>
                             </select>
-                            <button onclick="addBank()" class="bg-primary dark:bg-slate-700 text-white px-4 py-2 rounded text-sm font-bold hover:bg-slate-800 transition">+</button>
+                            <button onclick="addBank()" class="bg-primary dark:bg-slate-700 text-white px-4 py-2 rounded text-sm font-bold hover:bg-slate-800 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            </button>
                         </div>
                     </div>
                     <div id="bank-tags" class="flex flex-wrap gap-2"></div>
@@ -297,6 +287,21 @@
         </section>
     </main>
 
+    <!-- Modal para Repetição de Lançamento -->
+    <div id="repeat-tx-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white dark:bg-darkcard p-6 rounded-lg shadow-xl w-96">
+            <h3 class="font-bold text-lg mb-4 text-primary dark:text-white">Repetir Lançamento</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">Selecione a frequência de repetição para este lançamento.</p>
+            <div class="flex flex-col gap-3">
+                <button onclick="repeatTransaction('monthly')" class="w-full bg-accent text-white py-3 rounded-md font-bold hover:bg-blue-700 transition">Mensal (1 Mês)</button>
+                <button onclick="repeatTransaction('semiannual')" class="w-full bg-blue-500 text-white py-3 rounded-md font-bold hover:bg-blue-600 transition">Semestral (6 Meses)</button>
+                <button onclick="repeatTransaction('annual')" class="w-full bg-indigo-500 text-white py-3 rounded-md font-bold hover:bg-indigo-600 transition">Anual (12 Meses)</button>
+                <button onclick="closeRepeatTxModal()" class="w-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 py-3 rounded-md font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition mt-2">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- ================= SCRIPT ================= -->
     <script>
         // ESTADOS E BANCOS DE DADOS
@@ -320,6 +325,7 @@
         let viewDate = new Date(); 
         let editingTxId = null;
         let expenseChartInstance = null;
+        let currentRepeatTxId = null; // Para o modal de repetição
 
         const currencyMap = { BRL: 'R$', USD: '$', EUR: '€' };
         function formatMoney(value, currency = 'BRL') { return value.toLocaleString(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency: currency }); }
@@ -347,12 +353,16 @@
             if (view === 'dashboard') renderDashboard();
             if (view === 'planning') renderPlanning();
             if (view === 'transactions') renderTable();
+
+            // Adicionado para renderizar os ícones do Lucide após a navegação
+            lucide.createIcons();
         }
 
         function changeMonth(offset) { 
             viewDate.setMonth(viewDate.getMonth() + offset); 
             if(!document.getElementById('view-dashboard').classList.contains('hidden')) renderDashboard();
             if(!document.getElementById('view-planning').classList.contains('hidden')) renderPlanning();
+            lucide.createIcons(); // Renderiza ícones após mudar o mês
         }
 
         // --- LÓGICA DE PLANEJAMENTO ---
@@ -649,7 +659,21 @@
             document.getElementById('entry-installments').disabled = false; document.getElementById('entry-type').disabled = false; document.querySelector('form').reset(); document.getElementById('entry-date').valueAsDate = new Date(); updateFormCurrency();
         }
 
-        function togglePaid(id) { const tx = transactions.find(t => t.id === id); if(tx) { tx.paid = !tx.paid; saveAndSync(); } }
+        function togglePaid(id) { 
+            const tx = transactions.find(t => t.id === id); 
+            if(tx) { 
+                tx.paid = !tx.paid; 
+                // Se for parte de uma transferência, marque a outra como paga também
+                if (tx.linkId) {
+                    const linkedTx = transactions.find(t => t.linkId === tx.linkId && t.id !== id);
+                    if (linkedTx) {
+                        linkedTx.paid = tx.paid;
+                    }
+                }
+                saveAndSync(); 
+            } 
+        }
+
         function deleteTx(id) { 
             if(confirm("Apagar lançamento?")) { 
                 const txToDelete = transactions.find(t => t.id === id);
@@ -663,54 +687,114 @@
             } 
         }
         
-        function duplicateToNextMonth(id) {
-            if(confirm("Lançar essa mesma despesa para o próximo mês?")) {
-                const tx = transactions.find(t => t.id === id);
-                if (!tx) return; // Add a check if transaction exists
+        // Funções para o modal de repetição
+        function openRepeatTxModal(id) {
+            currentRepeatTxId = id;
+            document.getElementById('repeat-tx-modal').classList.remove('hidden');
+        }
 
-                let d = new Date(tx.date + "T00:00:00");
-                d.setMonth(d.getMonth() + 1); 
+        function closeRepeatTxModal() {
+            currentRepeatTxId = null;
+            document.getElementById('repeat-tx-modal').classList.add('hidden');
+        }
+
+        function repeatTransaction(frequency) {
+            const tx = transactions.find(t => t.id === currentRepeatTxId);
+            if (!tx) {
+                alert("Lançamento não encontrado para duplicar.");
+                closeRepeatTxModal();
+                return;
+            }
+
+            let numMonths = 0;
+            let descriptionPrefix = "";
+            switch (frequency) {
+                case 'monthly':
+                    numMonths = 1;
+                    descriptionPrefix = "Mensal: ";
+                    break;
+                case 'semiannual':
+                    numMonths = 6;
+                    descriptionPrefix = "Semestral: ";
+                    break;
+                case 'annual':
+                    numMonths = 12;
+                    descriptionPrefix = "Anual: ";
+                    break;
+                default:
+                    alert("Frequência de repetição inválida.");
+                    closeRepeatTxModal();
+                    return;
+            }
+
+            if (!confirm(`Confirmar repetição ${frequency} de "${tx.desc}" por ${numMonths} meses?`)) {
+                closeRepeatTxModal();
+                return;
+            }
+
+            let duplicatedCount = 0;
+            const originalDate = new Date(tx.date + "T00:00:00");
+            
+            for (let i = 0; i < numMonths; i++) {
+                let newDate = new Date(originalDate);
+                newDate.setMonth(originalDate.getMonth() + (i + 1)); // Adiciona 1 para ir para o próximo mês
                 
-                // If it was a transfer, duplicate both sides
+                // Se for uma transação parcelada, a descrição original já contém a parcela.
+                // Não queremos adicionar o prefixo de frequência a cada parcela individual.
+                let newDesc = tx.desc;
+                if (!/\(\d+\/\d+\)/.test(tx.desc)) { // Regex para verificar se já é uma parcela (X/Y)
+                    newDesc = descriptionPrefix + tx.desc;
+                }
+
+                // Se for parte de uma transferência, duplicar ambos os lados
                 if (tx.linkId) {
                     const linkedTx = transactions.find(t => t.linkId === tx.linkId && t.id !== tx.id);
                     if (linkedTx) {
-                        const newLinkId = Date.now();
-                        // Duplicate original transaction (expense side of transfer)
+                        const newLinkId = Date.now() + duplicatedCount * 2; // Garante IDs únicos para cada par
+                        
+                        // Duplicar transação original (saída da transferência)
                         transactions.push({ 
                             ...tx, 
-                            id: newLinkId, // New ID for the duplicated expense
-                            date: d.toISOString().split('T')[0], 
-                            refMonth: calculateRefMonth(d, tx.bank, 0), 
+                            id: newLinkId, 
+                            desc: newDesc,
+                            date: newDate.toISOString().split('T')[0], 
+                            refMonth: calculateRefMonth(newDate, tx.bank, 0), 
                             paid: false,
-                            linkId: newLinkId // Assign new linkId
+                            linkId: newLinkId
                         });
 
-                        let dLinked = new Date(linkedTx.date + "T00:00:00");
-                        dLinked.setMonth(dLinked.getMonth() + 1);
-                        // Duplicate linked transaction (income side of transfer)
+                        // Duplicar transação vinculada (entrada da transferência)
+                        let newLinkedDate = new Date(linkedTx.date + "T00:00:00");
+                        newLinkedDate.setMonth(linkedTx.getMonth() + (i + 1));
+
                         transactions.push({ 
                             ...linkedTx, 
-                            id: newLinkId + 1, // New ID for the duplicated income
-                            date: dLinked.toISOString().split('T')[0], 
-                            refMonth: calculateRefMonth(dLinked, linkedTx.bank, 0), 
+                            id: newLinkId + 1, 
+                            desc: `Transf. de ${tx.bank} (${newDesc})`, // Ajusta descrição da entrada
+                            date: newLinkedDate.toISOString().split('T')[0], 
+                            refMonth: calculateRefMonth(newLinkedDate, linkedTx.bank, 0), 
                             paid: false,
-                            linkId: newLinkId // Assign new linkId
+                            linkId: newLinkId
                         });
+                        duplicatedCount += 2; // Contar as duas transações da transferência
                     }
                 } else {
-                    // Regular transaction duplication
+                    // Duplicação de transação regular
                     transactions.push({ 
                         ...tx, 
-                        id: Date.now(), 
-                        date: d.toISOString().split('T')[0], 
-                        refMonth: calculateRefMonth(d, tx.bank, 0), 
+                        id: Date.now() + duplicatedCount, // Novo ID
+                        desc: newDesc,
+                        date: newDate.toISOString().split('T')[0], 
+                        refMonth: calculateRefMonth(newDate, tx.bank, 0), 
                         paid: false 
                     });
+                    duplicatedCount++;
                 }
-                saveAndSync(); 
-                alert("Lançamento duplicado!");
             }
+
+            saveAndSync(); 
+            alert(`${duplicatedCount} lançamento(s) duplicado(s) para os próximos ${numMonths} meses!`);
+            closeRepeatTxModal();
         }
 
         function addBank() { 
@@ -730,8 +814,11 @@
             
             const bankOpts = banks.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
             document.getElementById('entry-bank').innerHTML = bankOpts; document.getElementById('entry-target-bank').innerHTML = bankOpts;
-            document.getElementById('bank-tags').innerHTML = banks.map(b => `<span class="bg-slate-100 dark:bg-slate-800 text-[9px] font-black px-2 py-1 rounded border border-slate-200 dark:border-slate-700 flex items-center gap-1 uppercase">${b.name} (${currencyMap[b.currency]||b.currency}) ${b.closingDay?`- Dia ${b.closingDay}`:''} <button onclick="removeBank('${b.name}')" class="text-slate-400 hover:text-expense font-bold ml-1">×</button></span>`).join('');
+            document.getElementById('bank-tags').innerHTML = banks.map(b => `<span class="bg-slate-100 dark:bg-slate-800 text-[9px] font-black px-2 py-1 rounded border border-slate-200 dark:border-slate-700 flex items-center gap-1 uppercase">${b.name} (${currencyMap[b.currency]||b.currency}) ${b.closingDay?`- Dia ${b.closingDay}`:''} <button onclick="removeBank('${b.name}')" class="text-slate-400 hover:text-expense font-bold ml-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>`).join('');
             if(!editingTxId) updateFormCurrency();
+
+            // Renderiza os ícones do Lucide em toda a UI atualizada
+            lucide.createIcons();
         }
 
         function renderChart(monthTxs) {
@@ -781,17 +868,219 @@
             if (uniqueYears.includes(currentSelection)) yearSelect.value = currentSelection;
         }
 
+        // Função para identificar transações parceladas (com base na descrição)
+        function isInstallment(desc) {
+            return /\(\d+\/\d+\)/.test(desc);
+        }
+
+        // Função para agrupar parcelas
+        function groupInstallments(txs) {
+            const grouped = new Map();
+            txs.forEach(tx => {
+                const match = tx.desc.match(/(.*) \((\d+)\/(\d+)\)/);
+                if (match) {
+                    const baseDesc = match[1].trim();
+                    const currentPart = parseInt(match[2]);
+                    const totalParts = parseInt(match[3]);
+                    const key = `${baseDesc}-${tx.bank}-${tx.value}-${totalParts}`; // Chave para agrupar
+
+                    if (!grouped.has(key)) {
+                        grouped.set(key, { 
+                            baseDesc: baseDesc,
+                            originalTx: tx, // Mantém a primeira transação como referência
+                            installments: [],
+                            totalInstallments: totalParts,
+                            totalValue: tx.value * totalParts,
+                            linkId: tx.linkId // Manter linkId se for uma transferência parcelada
+                        });
+                    }
+                    grouped.get(key).installments.push(tx);
+                } else {
+                    grouped.set(tx.id, { originalTx: tx, installments: [tx] }); // Transações não parceladas
+                }
+            });
+
+            // Ordenar as parcelas dentro de cada grupo
+            grouped.forEach(group => {
+                if (group.installments.length > 1) {
+                    group.installments.sort((a, b) => {
+                        const matchA = a.desc.match(/\((\d+)\/(\d+)\)/);
+                        const matchB = b.desc.match(/\((\d+)\/(\d+)\)/);
+                        if (matchA && matchB) {
+                            return parseInt(matchA[1]) - parseInt(matchB[1]);
+                        }
+                        return 0;
+                    });
+                }
+            });
+
+            return Array.from(grouped.values());
+        }
+
+
         function renderTable() {
-            const fMonth = document.getElementById('filter-month-select').value; const fYear = document.getElementById('filter-year-select').value; const searchQuery = document.getElementById('search-tx').value.toLowerCase();
+            const fMonth = document.getElementById('filter-month-select').value;
+            const fYear = document.getElementById('filter-year-select').value;
+            const searchQuery = document.getElementById('search-tx').value.toLowerCase();
+            
             let filtered = transactions;
             if (fMonth || fYear) { filtered = filtered.filter(tx => { const [txYear, txMonth] = tx.refMonth.split('-'); return (fMonth ? txMonth === fMonth : true) && (fYear ? txYear === fYear : true); }); }
             if (searchQuery) filtered = filtered.filter(tx => tx.desc.toLowerCase().includes(searchQuery) || tx.category.toLowerCase().includes(searchQuery));
             filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
 
-            document.getElementById('table-body').innerHTML = filtered.map(tx => {
-                const txCurr = (banks.find(b => b.name === tx.bank) || {currency:'BRL'}).currency;
-                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50"><td class="px-3 md:px-6 py-3 md:py-4 text-slate-400 font-mono text-[10px] md:text-xs whitespace-nowrap">${tx.date.split('-').reverse().slice(0,2).join('/')}</td><td class="hidden md:table-cell px-6 py-4 text-center"><span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${tx.refMonth}</span></td><td class="px-3 md:px-6 py-3 md:py-4 min-w-[120px]"><p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${tx.paid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${tx.desc}">${tx.desc}</p><span class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase italic block mt-1">${tx.category}</span></td><td class="hidden sm:table-cell px-6 py-4 uppercase font-black text-[10px] text-slate-500 italic">${tx.bank}</td><td class="px-3 md:px-6 py-3 md:py-4 text-right font-mono font-bold text-xs md:text-sm ${tx.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">${formatMoney(tx.value, txCurr)}</td><td class="hidden md:table-cell px-6 py-4 text-center"><input type="checkbox" ${tx.paid ? 'checked' : ''} onchange="togglePaid(${tx.id})" class="accent-accent cursor-pointer w-4 h-4"></td><td class="px-3 md:px-6 py-3 md:py-4 text-right flex justify-end gap-2 md:gap-3 mt-1 md:mt-0"><button onclick="duplicateToNextMonth(${tx.id})" class="text-slate-400 hover:text-accent font-black transition" title="Repetir no próximo mês"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></button><button onclick="editTx(${tx.id})" class="text-accent hover:opacity-70 font-black transition" title="Editar"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22h6"/><path d="M15.2 2.8a2.1 2.1 0 0 1 3 3L7 16l-4 1 1-4Z"/></svg></button><button onclick="deleteTx(${tx.id})" class="text-expense hover:opacity-70 font-black transition" title="Excluir"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button></td></tr>`;
-            }).join('');
+            const groupedTxs = groupInstallments(filtered);
+            let html = '';
+
+            groupedTxs.forEach(group => {
+                const isGroupedInstallment = group.installments.length > 1;
+                const mainTx = group.originalTx || group.installments[0]; // Pega a referência principal da transação
+                const txCurr = (banks.find(b => b.name === mainTx.bank) || {currency:'BRL'}).currency;
+
+                if (isGroupedInstallment) {
+                    // Renderiza a linha principal do agrupamento
+                    const paidInstallments = group.installments.filter(tx => tx.paid).length;
+                    const totalInstallments = group.totalInstallments; // Usa o totalParts do agrupamento
+                    const groupPaid = paidInstallments === totalInstallments;
+                    const groupValue = group.totalValue; // Valor total da compra parcelada
+
+                    html += `
+                        <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50">
+                            <td class="px-3 md:px-6 py-3 md:py-4 text-slate-400 font-mono text-[10px] md:text-xs whitespace-nowrap">
+                                ${mainTx.date.split('-').reverse().slice(0,2).join('/')}
+                            </td>
+                            <td class="hidden md:table-cell px-6 py-4 text-center">
+                                <span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${mainTx.refMonth}</span>
+                            </td>
+                            <td class="px-3 md:px-6 py-3 md:py-4 min-w-[120px] flex items-center gap-2">
+                                <button onclick="toggleInstallmentGroup(this, '${mainTx.id}')" class="text-slate-400 hover:text-accent font-black">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                                </button>
+                                <p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${groupPaid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${group.baseDesc}">
+                                    ${group.baseDesc} <span class="text-slate-500 text-[9px]">(${paidInstallments}/${totalInstallments} pagas)</span>
+                                </p>
+                                <span class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase italic block mt-1">${mainTx.category}</span>
+                            </td>
+                            <td class="hidden sm:table-cell px-6 py-4 uppercase font-black text-[10px] text-slate-500 italic">${mainTx.bank}</td>
+                            <td class="px-3 md:px-6 py-3 md:py-4 text-right font-mono font-bold text-xs md:text-sm ${groupPaid ? 'text-income' : 'text-expense'} whitespace-nowrap">
+                                ${formatMoney(groupValue, txCurr)}
+                            </td>
+                            <td class="hidden md:table-cell px-6 py-4 text-center">
+                                <input type="checkbox" ${groupPaid ? 'checked' : ''} onchange="toggleGroupPaid(${mainTx.id})" class="accent-accent cursor-pointer w-4 h-4">
+                            </td>
+                            <td class="px-3 md:px-6 py-3 md:py-4 text-right flex justify-end gap-2 md:gap-3 mt-1 md:mt-0">
+                                <button onclick="openRepeatTxModal(${mainTx.id})" class="text-slate-400 hover:text-accent font-black transition" title="Repetir este lançamento">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 9 4-4-4-4"/><path d="M12 4H3"/><path d="m7 18-4 4 4 4"/></svg>
+                                </button>
+                                <button onclick="editTx(${mainTx.id})" class="text-accent hover:opacity-70 font-black transition" title="Editar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                                </button>
+                                <button onclick="deleteTx(${mainTx.id})" class="text-expense hover:opacity-70 font-black transition" title="Excluir">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    // Linhas de detalhes das parcelas (inicialmente ocultas)
+                    group.installments.forEach(installmentTx => {
+                        const installmentTxCurr = (banks.find(b => b.name === installmentTx.bank) || {currency:'BRL'}).currency;
+                        html += `
+                            <tr class="installment-detail installment-group-${mainTx.id} hidden hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50">
+                                <td class="px-3 md:px-6 py-2 text-slate-400 font-mono text-[9px] md:text-[10px] whitespace-nowrap pl-8">
+                                    ${installmentTx.date.split('-').reverse().slice(0,2).join('/')}
+                                </td>
+                                <td class="hidden md:table-cell px-6 py-2 text-center">
+                                    <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 px-1 rounded font-black text-[8px]">REF ${installmentTx.refMonth}</span>
+                                </td>
+                                <td class="px-3 md:px-6 py-2 min-w-[120px] pl-8">
+                                    <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300 ${installmentTx.paid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${installmentTx.desc}">
+                                        ${installmentTx.desc}
+                                    </p>
+                                </td>
+                                <td class="hidden sm:table-cell px-6 py-2 uppercase font-black text-[9px] text-slate-400 italic">${installmentTx.bank}</td>
+                                <td class="px-3 md:px-6 py-2 text-right font-mono text-xs md:text-sm ${installmentTx.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">
+                                    ${formatMoney(installmentTx.value, installmentTxCurr)}
+                                </td>
+                                <td class="hidden md:table-cell px-6 py-2 text-center">
+                                    <input type="checkbox" ${installmentTx.paid ? 'checked' : ''} onchange="togglePaid(${installmentTx.id})" class="accent-accent cursor-pointer w-3 h-3">
+                                </td>
+                                <td class="px-3 md:px-6 py-2 text-right flex justify-end gap-1 md:gap-2">
+                                    <button onclick="editTx(${installmentTx.id})" class="text-accent hover:opacity-70 transition" title="Editar Parcela">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                                    </button>
+                                    <button onclick="deleteTx(${installmentTx.id})" class="text-expense hover:opacity-70 transition" title="Excluir Parcela">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+
+                } else {
+                    // Renderiza transações não parceladas normalmente
+                    html += `
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50">
+                            <td class="px-3 md:px-6 py-3 md:py-4 text-slate-400 font-mono text-[10px] md:text-xs whitespace-nowrap">${mainTx.date.split('-').reverse().slice(0,2).join('/')}</td>
+                            <td class="hidden md:table-cell px-6 py-4 text-center"><span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${mainTx.refMonth}</span></td>
+                            <td class="px-3 md:px-6 py-3 md:py-4 min-w-[120px]"><p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${mainTx.paid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${mainTx.desc}">${mainTx.desc}</p><span class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase italic block mt-1">${mainTx.category}</span></td>
+                            <td class="hidden sm:table-cell px-6 py-4 uppercase font-black text-[10px] text-slate-500 italic">${mainTx.bank}</td>
+                            <td class="px-3 md:px-6 py-3 md:py-4 text-right font-mono font-bold text-xs md:text-sm ${mainTx.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">${formatMoney(mainTx.value, txCurr)}</td>
+                            <td class="hidden md:table-cell px-6 py-4 text-center"><input type="checkbox" ${mainTx.paid ? 'checked' : ''} onchange="togglePaid(${mainTx.id})" class="accent-accent cursor-pointer w-4 h-4"></td>
+                            <td class="px-3 md:px-6 py-3 md:py-4 text-right flex justify-end gap-2 md:gap-3 mt-1 md:mt-0">
+                                <button onclick="openRepeatTxModal(${mainTx.id})" class="text-slate-400 hover:text-accent font-black transition" title="Repetir este lançamento">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 9 4-4-4-4"/><path d="M12 4H3"/><path d="m7 18-4 4 4-4"/></svg>
+                                </button>
+                                <button onclick="editTx(${mainTx.id})" class="text-accent hover:opacity-70 font-black transition" title="Editar">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                                </button>
+                                <button onclick="deleteTx(${mainTx.id})" class="text-expense hover:opacity-70 font-black transition" title="Excluir">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+            document.getElementById('table-body').innerHTML = html || `<tr><td colspan="7" class="px-6 py-10 text-center text-slate-400 italic">Nenhum lançamento encontrado.</td></tr>`;
+            lucide.createIcons(); // Renderiza ícones após renderizar a tabela
+        }
+
+        function toggleInstallmentGroup(button, mainTxId) {
+            const detailRows = document.querySelectorAll(`.installment-group-${mainTxId}`);
+            detailRows.forEach(row => row.classList.toggle('hidden'));
+            
+            // Troca o ícone do botão
+            const icon = button.querySelector('svg');
+            if (icon.classList.contains('lucide-plus-circle')) {
+                icon.outerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>';
+            } else {
+                icon.outerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>';
+            }
+            lucide.createIcons(); // Garante que o novo SVG seja renderizado corretamente
+        }
+
+        // Função para marcar/desmarcar todas as parcelas de um grupo
+        function toggleGroupPaid(mainTxId) {
+            // Encontra a transação principal (ou uma de suas parcelas para obter a base)
+            const mainTx = transactions.find(t => t.id === mainTxId || (t.desc.includes(`(${t.id}/`) && t.desc.startsWith(transactions.find(ot => ot.id === mainTxId)?.desc.split(' (')[0])));
+            if (!mainTx) return;
+
+            const baseDescMatch = mainTx.desc.match(/(.*) \(\d+\/\d+\)/);
+            const baseDesc = baseDescMatch ? baseDescMatch[1].trim() : mainTx.desc.split(' (')[0]; // Se não for parcelado, pega a desc. original
+            
+            // Encontrar todas as transações que pertencem a este grupo
+            const groupTxs = transactions.filter(tx => 
+                tx.desc.startsWith(baseDesc) && /\(\d+\/\d+\)/.test(tx.desc) && tx.bank === mainTx.bank
+            );
+
+            // Determinar o novo estado 'paid'
+            const allPaid = groupTxs.every(tx => tx.paid);
+            const newState = !allPaid;
+
+            groupTxs.forEach(tx => {
+                tx.paid = newState;
+            });
+
+            saveAndSync();
         }
 
         // UTILITIES E PWA
@@ -861,6 +1150,8 @@
         document.getElementById('entry-date').valueAsDate = new Date();
         updateUI();
         navigate('dashboard');
+        // Inicializa Lucide Icons na primeira carga da página
+        lucide.createIcons();
     </script>
 </body>
 </html>

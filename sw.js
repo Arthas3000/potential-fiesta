@@ -7,7 +7,8 @@ const urlsToCache = [
   './icons/icon-192x192.png',
   './icons/icon-512x512.png',
   'https://cdn.tailwindcss.com',
-  'https://cdn.jsdelivr.net/npm/chart.js'
+  'https://cdn.jsdelivr.net/npm/chart.js',
+  'https://unpkg.com/lucide@latest' // Adicionado Lucide Icons
 ];
 
 self.addEventListener('install', event => {
