@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyFinance v13 - Metas e Planejamento</title>
+    <title>MyFinance v16 - Metas e Faturas</title>
     
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#0f172a">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Adicionando Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script> 
     <script>
         tailwind.config = {
@@ -19,128 +17,50 @@
             theme: { extend: { colors: { primary: '#0f172a', accent: '#3b82f6', expense: '#ef4444', income: '#10b981', darkbg: '#0f172a', darkcard: '#1e293b' } } }
         }
     </script>
+    <style>
+        /* Suaviza a transição de expansão da tabela */
+        .installment-row { transition: all 0.2s ease-in-out; }
+    </style>
 </head>
-<body class="bg-slate-50 dark:bg-darkbg text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300">
+<body class="bg-slate-50 dark:bg-darkbg text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300 pb-20">
 
-    <!-- ================= BARRA DE NAVEGAÇÃO ================= -->
+    <!-- BARRA DE NAVEGAÇÃO -->
     <nav class="bg-white dark:bg-darkcard border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 transition-colors">
-    
-    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
-
-        <!-- Linha 1: Nome + ações -->
-        <div class="flex items-center justify-between">
-            
-            <h1 class="font-black text-lg md:text-xl tracking-tighter uppercase italic text-primary dark:text-white">
-                MyFinance <span class="text-accent text-xs">v13</span>
-            </h1>
-
-            <div class="flex gap-2 items-center flex-wrap">
-
-                <button onclick="toggleDarkMode()" 
-                    class="p-2 text-slate-500 dark:text-slate-400 hover:text-accent transition-colors rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
-                    title="Alternar Tema">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"
-                        class="block dark:hidden"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round"
-                        class="hidden dark:block"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-                </button>
-
-                <input type="file" id="import-csv" accept=".csv" class="hidden" onchange="importCSV(event)">
-
-                <button onclick="document.getElementById('import-csv').click()"
-                    class="hidden md:block text-[10px] text-slate-500 dark:text-slate-400 hover:text-accent font-black uppercase tracking-widest transition">
-                    Importar
-                </button>
-
-                <button onclick="exportCSV()"
-                    class="bg-primary dark:bg-accent text-white text-[10px] px-3 py-2 rounded font-black uppercase hover:opacity-90 transition">
-                    Backup
-                </button>
-
-                <button onclick="resetApp()"
-                    class="p-2 text-slate-400 hover:text-expense hover:bg-red-50 dark:hover:bg-red-950/30 rounded transition-colors"
-                    title="Resetar Tudo">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                </button>
-
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+                <h1 class="font-black text-lg md:text-xl tracking-tighter uppercase italic text-primary dark:text-white">
+                    MyFinance <span class="text-accent text-xs">v16</span>
+                </h1>
+                <div class="flex gap-2 items-center flex-wrap">
+                    <button onclick="toggleDarkMode()" class="p-2 text-slate-500 hover:text-accent transition-colors rounded-full"><i data-lucide="moon" class="w-4 h-4 dark:hidden"></i><i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i></button>
+                    <input type="file" id="import-csv" accept=".csv" class="hidden" onchange="importCSV(event)">
+                    <button onclick="document.getElementById('import-csv').click()" class="hidden md:block text-[10px] text-slate-500 hover:text-accent font-black uppercase tracking-widest transition">Importar</button>
+                    <button onclick="exportCSV()" class="bg-primary dark:bg-accent text-white text-[10px] px-3 py-2 rounded font-black uppercase hover:opacity-90 transition">Backup</button>
+                    <button onclick="resetApp()" class="p-2 text-slate-400 hover:text-expense hover:bg-red-50 dark:hover:bg-red-950/30 rounded transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+            <div class="flex justify-center gap-6 md:gap-10">
+                <button id="nav-dashboard" onclick="navigate('dashboard')" class="nav-btn text-sm font-bold text-accent transition">Dashboard</button>
+                <button id="nav-planning" onclick="navigate('planning')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition">Planejamento</button>
+                <button id="nav-transactions" onclick="navigate('transactions')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition">Extrato</button>
             </div>
         </div>
-
-        <!-- Linha 2: Botões de navegação -->
-        <div class="flex justify-center gap-6 md:gap-10">
-
-            <button id="nav-dashboard"
-                onclick="navigate('dashboard')"
-                class="nav-btn text-sm font-bold text-accent transition">
-                Dashboard
-            </button>
-
-            <button id="nav-planning"
-                onclick="navigate('planning')"
-                class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition">
-                Planejamento
-            </button>
-
-            <button id="nav-transactions"
-                onclick="navigate('transactions')"
-                class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition">
-                Extrato
-            </button>
-
-        </div>
-
-    </div>
-</nav>
+    </nav>
 
     <main class="max-w-7xl mx-auto px-4 py-6 md:py-8">
         
-        <!-- NAVEGADOR DE MESES GLOBAL (Fica visível no Dashboard e no Planejamento) -->
         <div id="global-month-nav" class="flex items-center justify-between bg-white dark:bg-darkcard p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mb-6 transition-colors">
-            <button onclick="changeMonth(-1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
-            </button>
+            <button onclick="changeMonth(-1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
             <h2 class="text-lg md:text-2xl font-bold italic text-center">Fatura: <span id="current-ref-display" class="text-accent">--</span></h2>
-            <button onclick="changeMonth(1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </button>
+            <button onclick="changeMonth(1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition"><i data-lucide="arrow-right" class="w-4 h-4"></i></button>
         </div>
 
-        <!-- ================= 1. DASHBOARD ================= -->
+        <!-- 1. DASHBOARD -->
         <section id="view-dashboard" class="view-section grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
-            <div class="lg:col-span-8 space-y-6">
-                <div id="bank-cards" class="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4"></div>
-                
-                <div class="bg-white dark:bg-darkcard rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-colors">
-                    <div class="px-4 md:px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
-                        <div class="flex items-center gap-2 md:gap-4">
-                            <h3 id="dash-list-title" class="font-bold text-[9px] md:text-[10px] uppercase text-slate-400 italic tracking-wider">Itens da Fatura</h3>
-                            <button onclick="renderDashboard()" class="text-[8px] md:text-[9px] bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded font-bold hover:bg-slate-300 transition">Ver Todos</button>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase block">Saldo da Fatura</span>
-                            <span id="dash-total-ref" class="font-mono font-bold text-xs md:text-sm"></span> 
-                        </div>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs">
-                            <tbody id="dash-table-body" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- SIDEBAR: FORMULÁRIO -->
-            <aside class="lg:col-span-4 space-y-6">
+		            <aside class="lg:col-span-4 space-y-6">
                 <div class="bg-white dark:bg-darkcard p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm border-t-4 border-t-accent relative">
                     <h3 id="form-title" class="font-bold mb-4 text-xs uppercase tracking-widest text-slate-400">Novo Lançamento</h3>
-                    <button id="cancel-edit-btn" onclick="cancelEdit()" class="hidden absolute top-6 right-6 text-xs font-bold text-expense underline">Cancelar Edição</button>
-                    
+                    <button id="cancel-edit-btn" onclick="cancelEdit()" class="hidden absolute top-6 right-6 text-xs font-bold text-expense underline">Cancelar</button>
                     <form onsubmit="saveEntry(event)" class="space-y-4 text-sm">
                         <input type="text" id="entry-desc" placeholder="Descrição da compra" oninput="autoPredictCategory(event)" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-3 font-medium outline-none focus:ring-2 focus:ring-accent" required>
                         <div class="grid grid-cols-2 gap-2">
@@ -174,92 +94,92 @@
                             <label class="text-[10px] font-bold text-slate-400 uppercase">Para a Conta (Destino)</label>
                             <select id="entry-target-bank" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold mt-1"></select>
                         </div>
-                        <button type="submit" id="submit-btn" class="w-full bg-accent text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-lg">Salvar na Fatura</button>
+                        <button type="submit" id="submit-btn" class="w-full bg-accent text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-lg">Salvar Lançamento</button>
                     </form>
                 </div>
 
                 <div class="bg-white dark:bg-darkcard p-5 md:p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors">
-                    <h3 class="font-bold mb-4 text-[10px] uppercase text-slate-400 tracking-widest italic">Contas Cadastradas</h3>
+                    <h3 class="font-bold mb-4 text-[10px] uppercase text-slate-400 tracking-widest italic">Contas e Cartões</h3>
                     <div class="flex flex-col gap-2 mb-4">
+                        <input type="text" id="bank-input" placeholder="Nome do banco/cartão..." class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded px-3 py-2 text-sm italic">
                         <div class="flex gap-2">
-                            <input type="text" id="bank-input" placeholder="Novo banco..." class="flex-1 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded px-3 py-2 text-sm italic">
-                            <input type="number" id="bank-closing" placeholder="Dia Fech." min="1" max="31" class="w-20 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded px-2 py-2 text-sm" title="Dia de Fechamento">
-                        </div>
-                        <div class="flex gap-2">
-                            <select id="bank-currency" class="flex-1 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded px-3 py-2 text-sm font-bold">
-                                <option value="BRL">BRL (R$)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option>
+                            <select id="bank-currency" class="w-24 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded px-2 py-2 text-sm font-bold">
+                                <option value="BRL">BRL</option><option value="USD">USD</option><option value="EUR">EUR</option>
                             </select>
-                            <button onclick="addBank()" class="bg-primary dark:bg-slate-700 text-white px-4 py-2 rounded text-sm font-bold hover:bg-slate-800 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                            </button>
+                            <input type="number" id="bank-closing" placeholder="Dia Fech." min="1" max="31" class="flex-1 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded px-2 py-2 text-sm" title="Se preenchido, o sistema trata como Cartão de Crédito">
+                            <button onclick="addBank()" class="bg-primary dark:bg-slate-700 text-white px-3 py-2 rounded text-sm font-bold hover:bg-slate-800 transition"><i data-lucide="plus" class="w-4 h-4"></i></button>
                         </div>
                     </div>
                     <div id="bank-tags" class="flex flex-wrap gap-2"></div>
                 </div>
             </aside>
+            <div class="lg:col-span-8 space-y-6">
+                <div id="bank-cards" class="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4"></div>
+
+                <div class="bg-white dark:bg-darkcard rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-colors">
+                    <div class="px-4 md:px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
+                        <div class="flex items-center gap-2 md:gap-4">
+                            <h3 id="dash-list-title" class="font-bold text-[9px] md:text-[10px] uppercase text-slate-400 italic tracking-wider">Itens da Fatura</h3>
+                            <button onclick="renderDashboard()" class="text-[8px] md:text-[9px] bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded font-bold hover:bg-slate-300 transition">Ver Geral</button>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 md:gap-4">
+                            <div class="text-right">
+                                <span id="dash-total-label" class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase block">Total do Mês</span>
+                                <span id="dash-total-ref" class="font-mono font-bold text-xs md:text-sm"></span> 
+                            </div>
+                            <div id="pay-invoice-container" class="hidden border-l border-slate-200 dark:border-slate-700 pl-3 md:pl-4"></div>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <tbody id="dash-table-body" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
         </section>
 
-        <!-- ================= 2. PLANEJAMENTO E METAS (NOVO) ================= -->
+        <!-- 2. PLANEJAMENTO -->
         <section id="view-planning" class="view-section hidden flex flex-col gap-6 w-full">
-            
-            <!-- Resumo e Gráfico -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <!-- Definir Renda Base -->
-                <!-- Renda Base (Dinâmica pelo Mês) -->
-                <!-- Renda Base (Dinâmica pelo Mês) -->
                 <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-center">
                     <h3 class="font-bold text-xs uppercase text-slate-400 tracking-widest italic mb-2">Renda do Mês</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Baseada nas "Entradas" cadastradas nesta fatura.</p>
-                    <div class="mb-4">
-                        <p id="dynamic-income-display" class="font-black text-3xl text-income">R$ 0,00</p>
-                    </div>
-                    
-                    <!-- Resumo Comprometido -->
+                    <p class="text-xs text-slate-500 mb-4">Baseada nas Entradas desta fatura.</p>
+                    <div class="mb-4"><p id="dynamic-income-display" class="font-black text-3xl text-income">R$ 0,00</p></div>
                     <div class="mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
                         <div class="flex justify-between text-xs font-bold text-slate-500 mb-1">
-                            <span>Renda Comprometida (Metas)</span>
-                            <span id="total-percent-planned" class="text-accent">0%</span>
+                            <span>Renda Comprometida</span><span id="total-percent-planned" class="text-accent">0%</span>
                         </div>
-                        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5">
-                            <div id="total-percent-bar" class="bg-accent h-1.5 rounded-full transition-all"></div>
-                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5"><div id="total-percent-bar" class="bg-accent h-1.5 rounded-full transition-all"></div></div>
                     </div>
                 </div>
-
-                <!-- Gráfico de Pizza (Movido para cá) -->
                 <div class="lg:col-span-2 bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-center items-center h-64">
-                    <h3 class="font-bold text-xs uppercase text-slate-400 tracking-widest italic mb-4 self-start">Distribuição de Gastos do Mês</h3>
-                    <div class="w-full h-full relative">
-                        <canvas id="expenseChart"></canvas>
-                    </div>
+                    <h3 class="font-bold text-xs uppercase text-slate-400 tracking-widest italic mb-4 self-start">Distribuição de Gastos</h3>
+                    <div class="w-full h-full relative"><canvas id="expenseChart"></canvas></div>
                 </div>
             </div>
-
             <h3 class="text-xl font-bold italic text-primary dark:text-white mt-4 border-b border-slate-200 dark:border-slate-800 pb-2">Metas por Categoria</h3>
-            
-            <!-- Cards de Categorias Dinâmicos -->
-            <div id="planning-categories" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <!-- Gerado pelo JS -->
-            </div>
-
+            <div id="planning-categories" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </section>
 
-        <!-- ================= 3. EXTRATO GERAL ================= -->
+        <!-- 3. EXTRATO GERAL COM AGRUPAMENTO -->
         <section id="view-transactions" class="view-section hidden flex flex-col gap-6 w-full">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <h2 class="text-xl md:text-2xl font-bold italic text-primary dark:text-white w-full md:w-auto">Histórico Consolidado</h2>
+                <h2 class="text-xl md:text-2xl font-bold italic text-primary dark:text-white w-full md:w-auto">Extrato Detalhado</h2>
                 <div class="flex flex-col md:flex-row gap-2 md:gap-4 w-full md:w-auto">
                     <div class="relative w-full md:w-48 xl:w-64">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-3 text-slate-400"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                        <input type="text" id="search-tx" placeholder="Buscar..." onkeyup="renderTable()" class="w-full border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded pl-9 p-2 text-sm font-semibold shadow-sm outline-none focus:ring-1 focus:ring-accent">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                        <input type="text" id="search-tx" placeholder="Buscar..." onkeyup="renderTable()" class="w-full border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded pl-9 p-2 text-sm font-semibold outline-none focus:ring-1 focus:ring-accent">
                     </div>
                     <div class="flex gap-2 w-full md:w-auto">
-                        <select id="filter-month-select" onchange="renderTable()" class="flex-1 md:w-36 border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded p-2 text-sm font-bold shadow-sm outline-none focus:ring-1 focus:ring-accent">
+                        <select id="filter-month-select" onchange="renderTable()" class="flex-1 md:w-36 border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded p-2 text-sm font-bold outline-none focus:ring-1 focus:ring-accent">
                             <option value="">Todos os Meses</option>
                             <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option><option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option><option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
                         </select>
-                        <select id="filter-year-select" onchange="renderTable()" class="w-24 border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded p-2 text-sm font-bold shadow-sm outline-none focus:ring-1 focus:ring-accent">
+                        <select id="filter-year-select" onchange="renderTable()" class="w-24 border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded p-2 text-sm font-bold outline-none focus:ring-1 focus:ring-accent">
                             <option value="">Anos</option>
                         </select>
                     </div>
@@ -271,13 +191,12 @@
                     <table class="w-full text-left text-sm">
                         <thead class="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 text-[10px] uppercase font-black text-slate-400">
                             <tr>
-                                <th class="px-3 md:px-6 py-3 md:py-4 whitespace-nowrap">Data</th>
-                                <th class="hidden md:table-cell px-6 py-4 text-center">Fatura</th>
-                                <th class="px-3 md:px-6 py-3 md:py-4">Descrição</th>
-                                <th class="hidden sm:table-cell px-6 py-4">Banco</th>
-                                <th class="px-3 md:px-6 py-3 md:py-4 text-right">Valor</th>
-                                <th class="hidden md:table-cell px-6 py-4 text-center">Status</th>
-                                <th class="px-3 md:px-6 py-3 md:py-4 text-right">Ações</th>
+                                <th class="px-3 md:px-6 py-3 whitespace-nowrap">Data</th>
+                                <th class="hidden md:table-cell px-6 py-3 text-center">Fatura</th>
+                                <th class="px-3 md:px-6 py-3">Descrição</th>
+                                <th class="px-3 md:px-6 py-3">Conta/Cartão</th>
+                                <th class="px-3 md:px-6 py-3 text-right">Valor</th>
+                                <th class="px-3 md:px-6 py-3 text-right">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="table-body" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
@@ -287,871 +206,371 @@
         </section>
     </main>
 
-    <!-- Modal para Repetição de Lançamento -->
-    <div id="repeat-tx-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-        <div class="bg-white dark:bg-darkcard p-6 rounded-lg shadow-xl w-96">
-            <h3 class="font-bold text-lg mb-4 text-primary dark:text-white">Repetir Lançamento</h3>
-            <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">Selecione a frequência de repetição para este lançamento.</p>
-            <div class="flex flex-col gap-3">
-                <button onclick="repeatTransaction('monthly')" class="w-full bg-accent text-white py-3 rounded-md font-bold hover:bg-blue-700 transition">Mensal (1 Mês)</button>
-                <button onclick="repeatTransaction('semiannual')" class="w-full bg-blue-500 text-white py-3 rounded-md font-bold hover:bg-blue-600 transition">Semestral (6 Meses)</button>
-                <button onclick="repeatTransaction('annual')" class="w-full bg-indigo-500 text-white py-3 rounded-md font-bold hover:bg-indigo-600 transition">Anual (12 Meses)</button>
-                <button onclick="closeRepeatTxModal()" class="w-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 py-3 rounded-md font-bold hover:bg-slate-300 dark:hover:bg-slate-600 transition mt-2">Cancelar</button>
+    <!-- Modais omitidos no HTML para brevidade, são iguais à v15 (Pagar Fatura e Repetição) -->
+    <div id="pay-invoice-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 px-4">
+        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-xl w-full max-w-sm border-t-4 border-t-accent">
+            <h3 class="font-black text-lg mb-4 text-primary dark:text-white uppercase italic tracking-tight">Pagamento de Fatura</h3>
+            <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl mb-4 border border-slate-100 dark:border-slate-700">
+                <p class="text-xs text-slate-500 uppercase font-bold mb-1" id="pay-invoice-title"></p>
+                <p class="text-2xl font-black text-expense" id="pay-invoice-amount"></p>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Debitar de qual conta?</label>
+                    <select id="pay-invoice-source" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-3 font-bold text-sm outline-none"></select>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button onclick="closePayInvoiceModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 py-3 rounded-lg font-bold">Cancelar</button>
+                    <button onclick="confirmPayInvoice()" class="flex-1 bg-accent text-white py-3 rounded-lg font-black uppercase tracking-wider hover:bg-blue-700">Confirmar</button>
+                </div>
             </div>
         </div>
     </div>
 
+    <div id="repeat-tx-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 px-4">
+        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-xl w-full max-w-sm">
+            <h3 class="font-bold text-lg mb-4 text-primary dark:text-white">Repetir Lançamento Fixos</h3>
+            <div class="flex flex-col gap-3">
+                <button onclick="repeatTransaction('monthly')" class="w-full bg-accent text-white py-3 rounded-lg font-bold">Mensal (+1 Mês)</button>
+                <button onclick="repeatTransaction('semiannual')" class="w-full bg-blue-500 text-white py-3 rounded-lg font-bold">Semestral (+6 Meses)</button>
+                <button onclick="repeatTransaction('annual')" class="w-full bg-indigo-500 text-white py-3 rounded-lg font-bold">Anual (+12 Meses)</button>
+                <button onclick="closeRepeatTxModal()" class="w-full bg-slate-200 dark:bg-slate-700 text-slate-700 py-3 rounded-lg font-bold mt-2">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
-    <!-- ================= SCRIPT ================= -->
     <script>
-        // ESTADOS E BANCOS DE DADOS
         let defaultBanks = [{ name: "Cartão", closingDay: 15, currency: "BRL" }, { name: "Salário", closingDay: null, currency: "BRL" }];
-        let banks = JSON.parse(localStorage.getItem('f_banks_v12')) || defaultBanks;
-        let transactions = JSON.parse(localStorage.getItem('f_txs_v12')) || [];
+        let banks = JSON.parse(localStorage.getItem('f_banks_v16')) || defaultBanks;
+        let transactions = JSON.parse(localStorage.getItem('f_txs_v16')) || [];
         
-		const exchangeRates = {
-			BRL: { BRL: 1, USD: 0.20, EUR: 0.18 },
-			USD: { BRL: 5.0, USD: 1, EUR: 0.92 },
-			EUR: { BRL: 5.4, USD: 1.08, EUR: 1 }
-		};
-		
-        // ESTADOS DO PLANEJAMENTO (NOVO)
-        let baseIncome = parseFloat(localStorage.getItem('f_base_income_v13')) || 5000;
-        let categoryGoals = JSON.parse(localStorage.getItem('f_goals_v13')) || {
-            "Alimentação": 20, "Moradia": 35, "Transporte": 10, "Saúde": 10, "Lazer": 15, "Investimento": 10, "Outros": 0
-        };
+        let baseIncome = parseFloat(localStorage.getItem('f_base_income_v16')) || 5000;
+        let categoryGoals = JSON.parse(localStorage.getItem('f_goals_v16')) || { "Alimentação": 20, "Moradia": 35, "Transporte": 10, "Saúde": 10, "Lazer": 15, "Investimento": 10, "Outros": 0 };
         const planningCategoriesList = ["Alimentação", "Moradia", "Transporte", "Saúde", "Lazer", "Investimento", "Outros"];
 
         let viewDate = new Date(); 
         let editingTxId = null;
         let expenseChartInstance = null;
-        let currentRepeatTxId = null; // Para o modal de repetição
-
+        let currentRepeatTxId = null;
+        
+        let tmpInvoiceBank = null, tmpInvoiceRef = null, tmpInvoiceAmount = 0;
         const currencyMap = { BRL: 'R$', USD: '$', EUR: '€' };
+
         function formatMoney(value, currency = 'BRL') { return value.toLocaleString(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency: currency }); }
+        function parseDateLocal(dateStr) { const [y, m, d] = dateStr.split('-'); return new Date(y, m - 1, d, 12, 0, 0); }
 
         if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
-
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-            if(expenseChartInstance && document.getElementById('view-planning').classList.contains('hidden') === false) renderPlanning();
-        }
+        function toggleDarkMode() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); if(expenseChartInstance) renderPlanning(); }
 
         function navigate(view) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
-            document.getElementById(`view-${view}`).classList.remove('hidden');
-            
-            // Controle visual dos botões da Navbar
+            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById(`view-${view}`).classList.remove('hidden');
             document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('text-accent'); b.classList.add('text-slate-400'); });
-            document.getElementById(`nav-${view}`).classList.add('text-accent');
-            document.getElementById(`nav-${view}`).classList.remove('text-slate-400');
-            
-            // Oculta/Mostra Navegador de Meses
+            document.getElementById(`nav-${view}`).classList.add('text-accent'); document.getElementById(`nav-${view}`).classList.remove('text-slate-400');
             document.getElementById('global-month-nav').classList.toggle('hidden', view === 'transactions');
-
-            if (view === 'dashboard') renderDashboard();
-            if (view === 'planning') renderPlanning();
-            if (view === 'transactions') renderTable();
-
-            // Adicionado para renderizar os ícones do Lucide após a navegação
+            if (view === 'dashboard') renderDashboard(); if (view === 'planning') renderPlanning(); if (view === 'transactions') renderTable();
             lucide.createIcons();
         }
 
-        function changeMonth(offset) { 
-            viewDate.setMonth(viewDate.getMonth() + offset); 
-            if(!document.getElementById('view-dashboard').classList.contains('hidden')) renderDashboard();
-            if(!document.getElementById('view-planning').classList.contains('hidden')) renderPlanning();
-            lucide.createIcons(); // Renderiza ícones após mudar o mês
+        function changeMonth(offset) { viewDate.setMonth(viewDate.getMonth() + offset); if(!document.getElementById('view-dashboard').classList.contains('hidden')) renderDashboard(); if(!document.getElementById('view-planning').classList.contains('hidden')) renderPlanning(); lucide.createIcons(); }
+
+        // --- LÓGICA CORE ---
+        function calculateRefMonth(baseDate, bankName, monthOffset) {
+            let refDate = new Date(baseDate.getTime()); const bankObj = banks.find(b => b.name === bankName);
+            if (bankObj && bankObj.closingDay && baseDate.getDate() >= bankObj.closingDay) refDate.setMonth(refDate.getMonth() + 1);
+            refDate.setMonth(refDate.getMonth() + monthOffset);
+            return `${refDate.getFullYear()}-${(refDate.getMonth() + 1).toString().padStart(2, '0')}`;
         }
+        function createTxObj(id, desc, category, value, dateStr, type, bankName, baseDate, monthOffset, linkId = null) { return { id, desc, category, value, date: dateStr, type, bank: bankName, refMonth: calculateRefMonth(baseDate, bankName, monthOffset), paid: false, linkId: linkId }; }
 
-        // --- LÓGICA DE PLANEJAMENTO ---
-        function updateBaseIncome(val) {
-            baseIncome = parseFloat(val) || 0;
-            localStorage.setItem('f_base_income_v13', baseIncome);
-            renderPlanning();
-        }
-
-        function updateGoal(category, percentageStr) {
-            let pct = parseFloat(percentageStr) || 0;
-            if(pct < 0) pct = 0; if(pct > 100) pct = 100;
-            categoryGoals[category] = pct;
-            localStorage.setItem('f_goals_v13', JSON.stringify(categoryGoals));
-            renderPlanning();
-        }
-
-        function renderPlanning() {
-            const mStr = (viewDate.getMonth() + 1).toString().padStart(2, '0');
-            const yStr = viewDate.getFullYear();
-            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-            document.getElementById('current-ref-display').innerText = `${monthNames[viewDate.getMonth()]} ${yStr}`;
-
-            const currentRef = `${yStr}-${mStr}`;
-            const monthTxs = transactions.filter(t => t.refMonth === currentRef);
-            renderChart(monthTxs);
-
-            // CALCULA A RENDA DINÂMICA DO MÊS (Soma todas as Entradas em BRL ou sem moeda)
-            baseIncome = monthTxs.filter(t => t.type === 'income' && (!banks.find(b=>b.name===t.bank) || banks.find(b=>b.name===t.bank).currency === 'BRL') && !t.desc.includes('Transf.')).reduce((a, t) => a + t.value, 0);
-            
-            // Exibe o valor formatado na tela
-            document.getElementById('dynamic-income-display').innerText = formatMoney(baseIncome, 'BRL');
-
-            let totalPercent = 0;
-            const container = document.getElementById('planning-categories');
-            container.innerHTML = '';
-
-            planningCategoriesList.forEach(cat => {
-                const pct = categoryGoals[cat] || 0;
-                totalPercent += pct;
-                
-                const limitValue = baseIncome * (pct / 100);
-                const spentValue = monthTxs
-				.filter(t =>
-					t.category === cat &&
-					!t.desc.includes('Transf.') &&
-					(t.type === 'expense' || cat === 'Investimento')
-				)
-				.reduce((a, t) => a + t.value, 0);
-				
-                let progress = limitValue === 0 ? 0 : (spentValue / limitValue) * 100;
-                let colorClass = 'bg-income'; 
-                if (progress >= 80 && progress < 100) colorClass = 'bg-yellow-500'; 
-                if (progress >= 100) colorClass = 'bg-expense'; 
-                
-                progress = Math.min(progress, 100); 
-
-                container.innerHTML += `
-                    <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
-                        <div class="flex justify-between items-center mb-3">
-                            <h4 class="font-bold text-slate-700 dark:text-slate-200">${cat}</h4>
-                            <div class="flex items-center gap-1 bg-slate-50 dark:bg-slate-800 rounded px-2 border border-slate-200 dark:border-slate-700">
-                                <input type="number" value="${pct}" onchange="updateGoal('${cat}', this.value)" class="w-10 bg-transparent p-1 text-sm font-bold text-right outline-none text-accent">%
-                            </div>
-                        </div>
-                        <div class="flex justify-between text-xs mb-2">
-                            <span class="text-slate-500">Limite: ${formatMoney(limitValue)}</span>
-                            <span class="font-bold ${spentValue > limitValue ? 'text-expense' : 'text-slate-700 dark:text-slate-300'}">${formatMoney(spentValue)}</span>
-                        </div>
-                        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
-                            <div class="${colorClass} h-2 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('total-percent-planned').innerText = `${totalPercent}%`;
-            document.getElementById('total-percent-planned').className = `text-xs font-black ${totalPercent > 100 ? 'text-expense' : 'text-accent'}`;
-            document.getElementById('total-percent-bar').style.width = `${Math.min(totalPercent, 100)}%`;
-            document.getElementById('total-percent-bar').className = `h-1.5 rounded-full transition-all ${totalPercent > 100 ? 'bg-expense' : 'bg-accent'}`;
-        }
-
-        // --- RESTANTE DO CÓDIGO (DASHBOARD, EXTRATO E FUNÇÕES BASE) ---
         function toggleTransferUI() {
-            const type = document.getElementById('entry-type').value;
-            const div = document.getElementById('transfer-target-div');
-            const target = document.getElementById('entry-target-bank');
-            if(type === 'transfer') {
-                div.classList.remove('hidden'); target.required = true;
-                document.getElementById('entry-installments').value = 1; document.getElementById('entry-installments').disabled = true;
-            } else { div.classList.add('hidden'); target.required = false; document.getElementById('entry-installments').disabled = false; }
+            const isT = document.getElementById('entry-type').value === 'transfer';
+            document.getElementById('transfer-target-div').classList.toggle('hidden', !isT);
+            document.getElementById('entry-target-bank').required = isT;
+            document.getElementById('entry-installments').disabled = isT; if(isT) document.getElementById('entry-installments').value = 1;
         }
 
-        function updateFormCurrency() {
-            const bankName = document.getElementById('entry-bank').value;
-            const bankObj = banks.find(b => b.name === bankName);
-            document.getElementById('form-currency-symbol').innerText = bankObj ? currencyMap[bankObj.currency] || bankObj.currency : 'R$';
-        }
-
-        function autoPredictCategory(event) {
-            const inputText = event.target.value.trim(); if (inputText.length < 3) return;
-            const inputWords = inputText.toLowerCase().replace(/[^\w\sÀ-ÿ]/g, '').split(/\s+/);
-            const categoryScores = {};
-            transactions.forEach(tx => {
-                if (!tx.desc || !tx.category) return;
-                const txWords = tx.desc.toLowerCase().replace(/[^\w\sÀ-ÿ]/g, '').split(/\s+/);
-                inputWords.forEach(inputWord => {
-                    if (inputWord.length >= 2 && txWords.some(txWord => txWord === inputWord || txWord.startsWith(inputWord))) {
-                        categoryScores[tx.category] = (categoryScores[tx.category] || 0) + 1;
-                    }
-                });
-            });
-            let winningCategory = null; let maxScore = 0;
-            for (const category in categoryScores) { if (categoryScores[category] > maxScore) { maxScore = categoryScores[category]; winningCategory = category; } }
-            if (winningCategory) {
-                const select = document.getElementById('entry-category');
-                if (Array.from(select.options).some(opt => opt.value === winningCategory) && select.value !== winningCategory) {
-                    select.value = winningCategory; select.classList.add('ring-2', 'ring-income'); setTimeout(() => select.classList.remove('ring-2', 'ring-income'), 500);
-                }
-            }
-        }
+        function updateFormCurrency() { const bankObj = banks.find(b => b.name === document.getElementById('entry-bank').value); document.getElementById('form-currency-symbol').innerText = bankObj ? currencyMap[bankObj.currency] || bankObj.currency : 'R$'; }
 
         function saveEntry(e) {
             e.preventDefault();
-            const desc = document.getElementById('entry-desc').value;
-            const totalVal = parseFloat(document.getElementById('entry-value').value);
-            const type = document.getElementById('entry-type').value;
-            const bankName = document.getElementById('entry-bank').value;
-            const cat = document.getElementById('entry-category').value;
-            const dateInput = document.getElementById('entry-date').value;
-            const installments = parseInt(document.getElementById('entry-installments').value);
-            
-            const baseDate = new Date(dateInput + "T00:00:00");
+            const desc = document.getElementById('entry-desc').value; const totalVal = parseFloat(document.getElementById('entry-value').value);
+            const type = document.getElementById('entry-type').value; const bankName = document.getElementById('entry-bank').value;
+            const cat = document.getElementById('entry-category').value; const dateInput = document.getElementById('entry-date').value;
+            const installments = parseInt(document.getElementById('entry-installments').value) || 1;
+            const baseDate = parseDateLocal(dateInput);
             
             if (editingTxId) {
-                const txIndex = transactions.findIndex(t => t.id === editingTxId);
-                if (txIndex > -1) {
-                    // Update single transaction or first of a series
-                    transactions[txIndex] = { 
-                        ...transactions[txIndex], 
-                        desc, 
-                        value: totalVal, 
-                        type: type === 'transfer' ? 'expense' : type, // Transfers edited as expense initially
-                        bank: bankName, 
-                        category: cat, 
-                        date: dateInput, 
-                        refMonth: calculateRefMonth(baseDate, bankName, 0) 
-                    };
-
-                    // If it was a transfer, find and update the linked income transaction as well
-                    if (transactions[txIndex].linkId) {
-                        const linkedTx = transactions.find(t => t.linkId === transactions[txIndex].linkId && t.id !== editingTxId);
-                        if (linkedTx) {
-                            const sourceCurrency = banks.find(b => b.name === bankName)?.currency || 'BRL';
-                            const targetBank = linkedTx.bank; // Assuming the linkedTx is the target
-                            const targetCurrency = banks.find(b => b.name === targetBank)?.currency || 'BRL';
-                            let convertedValue = totalVal;
-                            if (sourceCurrency !== targetCurrency) {
-                                const rate = exchangeRates[sourceCurrency]?.[targetCurrency];
-                                if (rate) convertedValue = totalVal * rate;
-                            }
-                            linkedTx.desc = `Transf. de ${bankName} (${desc})`;
-                            linkedTx.value = convertedValue;
-                            linkedTx.date = dateInput;
-                            linkedTx.refMonth = calculateRefMonth(baseDate, targetBank, 0);
-                        }
-                    }
+                const i = transactions.findIndex(t => t.id === editingTxId);
+                if (i > -1) {
+                    transactions[i] = { ...transactions[i], desc, value: totalVal, type: type === 'transfer' ? 'expense' : type, bank: bankName, category: cat, date: dateInput, refMonth: calculateRefMonth(baseDate, bankName, 0) };
+                    if (transactions[i].linkId) { const l = transactions.find(t => t.linkId === transactions[i].linkId && t.id !== editingTxId); if (l) { l.desc = `Transf. de ${bankName} (${desc})`; l.value = totalVal; l.date = dateInput; l.refMonth = calculateRefMonth(baseDate, l.bank, 0); } }
                 }
-                cancelEdit();
-                saveAndSync();
-                return;
+                cancelEdit(); saveAndSync(); return;
             }
 
             if (type === 'transfer') {
-                const targetBank = document.getElementById('entry-target-bank').value;
-
-                if (bankName === targetBank) {
-                    return alert("Bancos devem ser diferentes!");
-                }
-
-                const sourceCurrency = banks.find(b => b.name === bankName)?.currency || 'BRL';
-                const targetCurrency = banks.find(b => b.name === targetBank)?.currency || 'BRL';
-
-                let convertedValue = totalVal;
-
-                if (sourceCurrency !== targetCurrency) {
-                    const rate = exchangeRates[sourceCurrency]?.[targetCurrency];
-                    if (!rate) {
-                        return alert("Conversão de moeda não definida!");
-                    }
-                    convertedValue = totalVal * rate;
-                }
-
-                const linkId = Date.now(); // Unique ID to link transfer transactions
-
-                transactions.push(
-                    createTxObj(
-                        linkId,
-                        `Transf. para ${targetBank} (${desc})`,
-                        cat,
-                        totalVal,
-                        dateInput,
-                        'expense',
-                        bankName,
-                        baseDate,
-                        0,
-                        linkId // Add linkId to the expense transaction
-                    )
-                );
-
-                transactions.push(
-                    createTxObj(
-                        linkId + 1, // Ensure unique ID for the income side
-                        `Transf. de ${bankName} (${desc})`,
-                        cat,
-                        convertedValue,
-                        dateInput,
-                        'income',
-                        targetBank,
-                        baseDate,
-                        0,
-                        linkId // Add linkId to the income transaction
-                    )
-                );
-
-            } else { // Regular expense or income
+                const targetBank = document.getElementById('entry-target-bank').value; if (bankName === targetBank) return alert("Bancos devem ser diferentes!");
+                const linkId = Date.now();
+                transactions.push(createTxObj(linkId, `Transf. para ${targetBank} (${desc})`, cat, totalVal, dateInput, 'expense', bankName, baseDate, 0, linkId));
+                transactions.push(createTxObj(linkId + 1, `Transf. de ${bankName} (${desc})`, cat, totalVal, dateInput, 'income', targetBank, baseDate, 0, linkId));
+            } else { 
+                const txValue = totalVal / installments;
                 for (let i = 0; i < installments; i++) {
-                    const txId = Date.now() + i;
-                    const txDesc = installments > 1 ? `${desc} (${i + 1}/${installments})` : desc;
-                    const txValue = totalVal / installments;
-                    
-                    transactions.push(
-                        createTxObj(
-                            txId,
-                            txDesc,
-                            cat,
-                            txValue,
-                            dateInput,
-                            type,
-                            bankName,
-                            baseDate,
-                            i // Offset for installments
-                        )
-                    );
+                    const txId = Date.now() + i; const txDesc = installments > 1 ? `${desc} (${i + 1}/${installments})` : desc;
+                    transactions.push(createTxObj(txId, txDesc, cat, txValue, dateInput, type, bankName, baseDate, i));
                 }
             }
-            e.target.reset();
-            document.getElementById('entry-date').valueAsDate = new Date();
-            toggleTransferUI();
-            updateFormCurrency();
-            saveAndSync();
+            e.target.reset(); document.getElementById('entry-date').valueAsDate = new Date(); toggleTransferUI(); updateFormCurrency(); saveAndSync();
         }
 
-        // Added `linkId` parameter
-        function createTxObj(id, desc, category, value, dateStr, type, bankName, baseDate, monthOffset, linkId = null) {
-            return { id, desc, category, value, date: dateStr, type, bank: bankName, refMonth: calculateRefMonth(baseDate, bankName, monthOffset), paid: false, linkId: linkId };
-        }
+        function cancelEdit() { editingTxId = null; document.getElementById('form-title').innerText = "Novo Lançamento"; document.getElementById('submit-btn').innerText = "Salvar Lançamento"; document.getElementById('cancel-edit-btn').classList.add('hidden'); document.getElementById('entry-installments').disabled = false; document.getElementById('entry-type').disabled = false; document.querySelector('form').reset(); document.getElementById('entry-date').valueAsDate = new Date(); updateFormCurrency(); }
 
-        function calculateRefMonth(baseDate, bankName, monthOffset) {
-            let refDate = new Date(baseDate); const bankObj = banks.find(b => b.name === bankName);
-            if (bankObj && bankObj.closingDay && baseDate.getDate() >= bankObj.closingDay) refDate.setMonth(baseDate.getMonth() + monthOffset + 1);
-            else refDate.setMonth(baseDate.getMonth() + monthOffset);
-            return `${refDate.getFullYear()}-${(refDate.getMonth() + 1).toString().padStart(2, '0')}`;
-        }
+        function deleteTx(id) { if(confirm("Apagar lançamento? (Se for parcela, apagará apenas esta)")) { const tx = transactions.find(t => t.id === id); if (tx && tx.linkId) transactions = transactions.filter(t => t.linkId !== tx.linkId); else transactions = transactions.filter(t => t.id !== id); saveAndSync(); } }
 
-        function editTx(id) {
-            const tx = transactions.find(t => t.id === id); if (!tx) return;
-            editingTxId = id;
-            document.getElementById('form-title').innerText = "Editando Lançamento"; document.getElementById('submit-btn').innerText = "Atualizar Lançamento"; document.getElementById('cancel-edit-btn').classList.remove('hidden');
-            document.getElementById('entry-desc').value = tx.desc; document.getElementById('entry-value').value = tx.value; document.getElementById('entry-date').value = tx.date; document.getElementById('entry-bank').value = tx.bank; document.getElementById('entry-category').value = tx.category; document.getElementById('entry-type').value = tx.type;
-            
-            document.getElementById('entry-installments').value = 1; 
-            document.getElementById('entry-installments').disabled = true; 
-            document.getElementById('entry-type').disabled = true; 
-            
-            // Handle pre-filling for transfers
-            if (tx.type === 'transfer' || tx.linkId) { // Check for linkId to identify transfers
-                document.getElementById('entry-type').value = 'transfer';
-                toggleTransferUI();
-                // If this is the expense side of a transfer, the target bank is the bank of the linked income transaction
-                const linkedTx = transactions.find(t => t.linkId === tx.linkId && t.id !== tx.id && t.type === 'income');
-                if (linkedTx) {
-                    document.getElementById('entry-target-bank').value = linkedTx.bank;
-                }
-            } else {
-                toggleTransferUI(); // Ensure transfer UI is hidden for regular transactions
-            }
-
-            updateFormCurrency();
-        }
-
-        function cancelEdit() {
-            editingTxId = null; document.getElementById('form-title').innerText = "Novo Lançamento"; document.getElementById('submit-btn').innerText = "Salvar na Fatura"; document.getElementById('cancel-edit-btn').classList.add('hidden');
-            document.getElementById('entry-installments').disabled = false; document.getElementById('entry-type').disabled = false; document.querySelector('form').reset(); document.getElementById('entry-date').valueAsDate = new Date(); updateFormCurrency();
-        }
-
-        function togglePaid(id) { 
-            const tx = transactions.find(t => t.id === id); 
-            if(tx) { 
-                tx.paid = !tx.paid; 
-                // Se for parte de uma transferência, marque a outra como paga também
-                if (tx.linkId) {
-                    const linkedTx = transactions.find(t => t.linkId === tx.linkId && t.id !== id);
-                    if (linkedTx) {
-                        linkedTx.paid = tx.paid;
-                    }
-                }
-                saveAndSync(); 
-            } 
-        }
-
-        function deleteTx(id) { 
-            if(confirm("Apagar lançamento?")) { 
-                const txToDelete = transactions.find(t => t.id === id);
-                if (txToDelete && txToDelete.linkId) {
-                    // If it's a transfer, delete both linked transactions
-                    transactions = transactions.filter(t => t.linkId !== txToDelete.linkId);
-                } else {
-                    transactions = transactions.filter(t => t.id !== id); 
-                }
-                saveAndSync(); 
-            } 
-        }
-        
-        // Funções para o modal de repetição
-        function openRepeatTxModal(id) {
-            currentRepeatTxId = id;
-            document.getElementById('repeat-tx-modal').classList.remove('hidden');
-        }
-
-        function closeRepeatTxModal() {
-            currentRepeatTxId = null;
-            document.getElementById('repeat-tx-modal').classList.add('hidden');
-        }
-
-        function repeatTransaction(frequency) {
-            const tx = transactions.find(t => t.id === currentRepeatTxId);
-            if (!tx) {
-                alert("Lançamento não encontrado para duplicar.");
-                closeRepeatTxModal();
-                return;
-            }
-
-            let numMonths = 0;
-            let descriptionPrefix = "";
-            switch (frequency) {
-                case 'monthly':
-                    numMonths = 1;
-                    descriptionPrefix = "Mensal: ";
-                    break;
-                case 'semiannual':
-                    numMonths = 6;
-                    descriptionPrefix = "Semestral: ";
-                    break;
-                case 'annual':
-                    numMonths = 12;
-                    descriptionPrefix = "Anual: ";
-                    break;
-                default:
-                    alert("Frequência de repetição inválida.");
-                    closeRepeatTxModal();
-                    return;
-            }
-
-            if (!confirm(`Confirmar repetição ${frequency} de "${tx.desc}" por ${numMonths} meses?`)) {
-                closeRepeatTxModal();
-                return;
-            }
-
-            let duplicatedCount = 0;
-            const originalDate = new Date(tx.date + "T00:00:00");
-            
-            for (let i = 0; i < numMonths; i++) {
-                let newDate = new Date(originalDate);
-                newDate.setMonth(originalDate.getMonth() + (i + 1)); // Adiciona 1 para ir para o próximo mês
-                
-                // Se for uma transação parcelada, a descrição original já contém a parcela.
-                // Não queremos adicionar o prefixo de frequência a cada parcela individual.
-                let newDesc = tx.desc;
-                if (!/\(\d+\/\d+\)/.test(tx.desc)) { // Regex para verificar se já é uma parcela (X/Y)
-                    newDesc = descriptionPrefix + tx.desc;
-                }
-
-                // Se for parte de uma transferência, duplicar ambos os lados
-                if (tx.linkId) {
-                    const linkedTx = transactions.find(t => t.linkId === tx.linkId && t.id !== tx.id);
-                    if (linkedTx) {
-                        const newLinkId = Date.now() + duplicatedCount * 2; // Garante IDs únicos para cada par
-                        
-                        // Duplicar transação original (saída da transferência)
-                        transactions.push({ 
-                            ...tx, 
-                            id: newLinkId, 
-                            desc: newDesc,
-                            date: newDate.toISOString().split('T')[0], 
-                            refMonth: calculateRefMonth(newDate, tx.bank, 0), 
-                            paid: false,
-                            linkId: newLinkId
-                        });
-
-                        // Duplicar transação vinculada (entrada da transferência)
-                        let newLinkedDate = new Date(linkedTx.date + "T00:00:00");
-                        newLinkedDate.setMonth(linkedTx.getMonth() + (i + 1));
-
-                        transactions.push({ 
-                            ...linkedTx, 
-                            id: newLinkId + 1, 
-                            desc: `Transf. de ${tx.bank} (${newDesc})`, // Ajusta descrição da entrada
-                            date: newLinkedDate.toISOString().split('T')[0], 
-                            refMonth: calculateRefMonth(newLinkedDate, linkedTx.bank, 0), 
-                            paid: false,
-                            linkId: newLinkId
-                        });
-                        duplicatedCount += 2; // Contar as duas transações da transferência
-                    }
-                } else {
-                    // Duplicação de transação regular
-                    transactions.push({ 
-                        ...tx, 
-                        id: Date.now() + duplicatedCount, // Novo ID
-                        desc: newDesc,
-                        date: newDate.toISOString().split('T')[0], 
-                        refMonth: calculateRefMonth(newDate, tx.bank, 0), 
-                        paid: false 
-                    });
-                    duplicatedCount++;
-                }
-            }
-
-            saveAndSync(); 
-            alert(`${duplicatedCount} lançamento(s) duplicado(s) para os próximos ${numMonths} meses!`);
-            closeRepeatTxModal();
-        }
-
-        function addBank() { 
-            const n = document.getElementById('bank-input').value.trim(); const d = parseInt(document.getElementById('bank-closing').value); const c = document.getElementById('bank-currency').value;
-            if(n && !banks.some(b => b.name === n)) { banks.push({ name: n, closingDay: isNaN(d) ? null : d, currency: c }); saveAndSync(); document.getElementById('bank-input').value = ''; document.getElementById('bank-closing').value = ''; } 
-        }
-        function removeBank(n) { if(!transactions.some(t => t.bank === n)) { banks = banks.filter(b => b.name !== n); saveAndSync(); } else alert("Conta com lançamentos ativos!"); }
-
-        function saveAndSync() { localStorage.setItem('f_banks_v12', JSON.stringify(banks)); localStorage.setItem('f_txs_v12', JSON.stringify(transactions)); updateUI(); }
-
-        function updateUI() {
-            if(!document.getElementById('view-dashboard').classList.contains('hidden')) renderDashboard();
-            if(!document.getElementById('view-planning').classList.contains('hidden')) renderPlanning();
-            
-            updateYearOptions();
-            if(!document.getElementById('view-transactions').classList.contains('hidden')) renderTable();
-            
-            const bankOpts = banks.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
-            document.getElementById('entry-bank').innerHTML = bankOpts; document.getElementById('entry-target-bank').innerHTML = bankOpts;
-            document.getElementById('bank-tags').innerHTML = banks.map(b => `<span class="bg-slate-100 dark:bg-slate-800 text-[9px] font-black px-2 py-1 rounded border border-slate-200 dark:border-slate-700 flex items-center gap-1 uppercase">${b.name} (${currencyMap[b.currency]||b.currency}) ${b.closingDay?`- Dia ${b.closingDay}`:''} <button onclick="removeBank('${b.name}')" class="text-slate-400 hover:text-expense font-bold ml-1"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></span>`).join('');
-            if(!editingTxId) updateFormCurrency();
-
-            // Renderiza os ícones do Lucide em toda a UI atualizada
-            lucide.createIcons();
-        }
-
-        function renderChart(monthTxs) {
-            const ctx = document.getElementById('expenseChart').getContext('2d');
-            const isDark = document.documentElement.classList.contains('dark');
-            const expenses = monthTxs.filter(t => t.type === 'expense' && !t.desc.includes('Transf.'));
-            
-            const catData = {}; expenses.forEach(t => { catData[t.category] = (catData[t.category] || 0) + t.value; });
-            const labels = Object.keys(catData); const data = Object.values(catData);
-
-            if(expenseChartInstance) expenseChartInstance.destroy();
-            if(data.length === 0) {
-                expenseChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Sem Gastos'], datasets: [{ data: [1], backgroundColor: [isDark ? '#334155' : '#e2e8f0'] }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } }); return;
-            }
-            expenseChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#6366f1', '#a855f7'], borderWidth: 2, borderColor: isDark ? '#1e293b' : '#ffffff' }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { color: isDark ? '#cbd5e1' : '#475569', font: { size: 10 } } } } } });
-        }
-
+        // --- SISTEMA DE FATURA ("PAGO" BOTÃO E LÓGICA DE ZERAR) ---
         function renderDashboard(filterBank = null) {
             const currentRef = `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}`;
-            const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+            const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
             document.getElementById('current-ref-display').innerText = `${monthNames[viewDate.getMonth()]} ${viewDate.getFullYear()}`;
             
             document.getElementById('bank-cards').innerHTML = banks.map(b => {
                 const bal = transactions.filter(t => t.bank === b.name).reduce((acc, t) => acc + (t.type === 'income' ? t.value : -t.value), 0);
-                return `<button onclick="renderDashboard('${b.name}')" class="text-left bg-white dark:bg-darkcard p-4 md:p-5 rounded-2xl border ${filterBank === b.name ? 'border-accent ring-2 ring-blue-500/20' : 'border-slate-200 dark:border-slate-700'} shadow-sm hover:border-accent transition"><h4 class="font-black text-[9px] uppercase text-slate-400 italic">${b.name}</h4><p class="text-lg md:text-xl font-bold mt-1 ${bal < 0 ? 'text-expense' : 'text-slate-800 dark:text-white'}">${formatMoney(bal, b.currency)}</p></button>`;
+                return `<button onclick="renderDashboard('${b.name}')" class="text-left bg-white dark:bg-darkcard p-4 rounded-2xl border ${filterBank === b.name ? 'border-accent ring-2 ring-blue-500/20' : 'border-slate-200 dark:border-slate-700'} shadow-sm hover:border-accent transition"><h4 class="font-black text-[9px] uppercase text-slate-400 italic flex justify-between items-center">${b.name} ${b.closingDay ? '<i data-lucide="credit-card" class="w-3 h-3 text-accent"></i>' : ''}</h4><p class="text-lg font-bold mt-1 ${bal < 0 ? 'text-expense' : 'text-slate-800 dark:text-white'} truncate">${formatMoney(bal, b.currency)}</p></button>`;
             }).join('');
 
             let displayTxs = transactions.filter(t => t.refMonth === currentRef);
-            if (filterBank) { displayTxs = displayTxs.filter(t => t.bank === filterBank); document.getElementById('dash-list-title').innerText = `Fatura: ${filterBank}`; } 
-            else document.getElementById('dash-list-title').innerText = `Fatura Geral`;
+            const payContainer = document.getElementById('pay-invoice-container');
 
-            const totalsByCurr = {}; displayTxs.forEach(t => { const bCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency; totalsByCurr[bCurr] = (totalsByCurr[bCurr] || 0) + (t.type === 'income' ? t.value : -t.value); });
-            document.getElementById('dash-total-ref').innerHTML = Object.keys(totalsByCurr).length > 0 ? Object.keys(totalsByCurr).map(curr => `<span class="${totalsByCurr[curr] < 0 ? 'text-expense' : 'text-income'}">${formatMoney(totalsByCurr[curr], curr)}</span>`).join(' <span class="text-slate-300">|</span> ') : '<span class="text-slate-400">R$ 0,00</span>';
+            if (filterBank) { 
+                displayTxs = displayTxs.filter(t => t.bank === filterBank); 
+                document.getElementById('dash-list-title').innerText = `Lançamentos: ${filterBank}`; 
+                
+                const bankObj = banks.find(b => b.name === filterBank);
+                
+                // LÓGICA DO BOTÃO "PAGAR" / "PAGO"
+                if (bankObj && bankObj.closingDay) {
+                    document.getElementById('dash-total-label').innerText = "Fatura Atual";
+                    const monthExpenses = displayTxs.filter(t => t.type === 'expense').reduce((a, t) => a + t.value, 0);
+                    const monthIncomes = displayTxs.filter(t => t.type === 'income').reduce((a, t) => a + t.value, 0);
+                    const netInvoiceAmount = monthExpenses - monthIncomes;
+                    
+                    document.getElementById('dash-total-ref').innerHTML = `<span class="${netInvoiceAmount > 0 ? 'text-expense' : 'text-income'}">${formatMoney(netInvoiceAmount, bankObj.currency)}</span>`;
+
+                    payContainer.classList.remove('hidden');
+                    if (monthExpenses > 0) {
+                        if (netInvoiceAmount > 0) {
+                            payContainer.innerHTML = `<button onclick="openPayInvoiceModal('${filterBank}', '${currentRef}', ${netInvoiceAmount})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[9px] md:text-[10px] font-black uppercase tracking-wider transition shadow-sm flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3 md:w-4 md:h-4"></i> Pagar</button>`;
+                        } else {
+                            // Fatura do mês zerada (paga)
+                            payContainer.innerHTML = `<button disabled class="bg-income text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[9px] md:text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5 opacity-80 cursor-default"><i data-lucide="check-circle-2" class="w-3 h-3 md:w-4 md:h-4"></i> Pago</button>`;
+                        }
+                    } else {
+                        payContainer.classList.add('hidden'); // Sem gastos
+                    }
+                } else { 
+                    document.getElementById('dash-total-label').innerText = "Saldo no Mês";
+                    const bal = displayTxs.reduce((a, t) => a + (t.type === 'income' ? t.value : -t.value), 0);
+                    document.getElementById('dash-total-ref').innerHTML = `<span class="${bal < 0 ? 'text-expense' : 'text-slate-800 dark:text-white'}">${formatMoney(bal, bankObj.currency)}</span>`;
+                    payContainer.classList.add('hidden'); 
+                }
+            } else { 
+                document.getElementById('dash-list-title').innerText = `Lançamentos Gerais`; 
+                document.getElementById('dash-total-label').innerText = "Geral no Mês";
+                const totalsByCurr = {}; displayTxs.forEach(t => { const bCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency; totalsByCurr[bCurr] = (totalsByCurr[bCurr] || 0) + (t.type === 'income' ? t.value : -t.value); });
+                document.getElementById('dash-total-ref').innerHTML = Object.keys(totalsByCurr).length > 0 ? Object.keys(totalsByCurr).map(curr => `<span class="${totalsByCurr[curr] < 0 ? 'text-expense' : 'text-income'}">${formatMoney(totalsByCurr[curr], curr)}</span>`).join(' | ') : '<span class="text-slate-400">R$ 0,00</span>';
+                payContainer.classList.add('hidden');
+            }
 
             document.getElementById('dash-table-body').innerHTML = displayTxs.sort((a,b) => new Date(b.date) - new Date(a.date)).map(t => {
-                const txCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency;
-                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition ${t.paid ? 'opacity-50' : ''}"><td class="px-2 md:px-6 py-3 md:py-4 flex items-center gap-2 md:gap-3 whitespace-nowrap"><input type="checkbox" ${t.paid ? 'checked' : ''} onchange="togglePaid(${t.id})" class="w-4 h-4 cursor-pointer accent-accent"><span class="text-slate-400 font-mono text-[9px] md:text-[10px]">${t.date.split('-').reverse().slice(0,2).join('/')}</span></td><td class="px-2 md:px-6 py-3 md:py-4 min-w-[120px]"><p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${t.paid ? 'line-through' : ''} truncate max-w-[150px] md:max-w-xs" title="${t.desc}">${t.desc}</p>${!filterBank ? `<span class="text-[8px] bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-1 rounded font-black uppercase inline-block mt-1">${t.bank}</span>` : ''}</td><td class="px-2 md:px-6 py-3 md:py-4 text-right font-mono font-bold text-xs md:text-sm ${t.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">${formatMoney(t.value, txCurr)}</td></tr>`;
+                return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50 ${t.paid ? 'opacity-50' : ''}"><td class="px-2 md:px-6 py-3 whitespace-nowrap"><span class="text-slate-400 font-mono text-[9px] md:text-[10px]">${t.date.split('-').reverse().slice(0,2).join('/')}</span></td><td class="px-2 md:px-6 py-3 min-w-[120px]"><p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${t.paid ? 'line-through' : ''} truncate max-w-[150px] md:max-w-xs" title="${t.desc}">${t.desc}</p>${!filterBank ? `<span class="text-[8px] bg-slate-200 dark:bg-slate-700 text-slate-500 px-1 rounded font-black uppercase mt-1 inline-block">${t.bank}</span>` : ''}</td><td class="px-2 md:px-6 py-3 text-right font-mono font-bold text-xs md:text-sm ${t.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">${formatMoney(t.value, (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency)}</td></tr>`;
             }).join('') || `<tr><td colspan="3" class="px-6 py-10 text-center text-slate-400 italic">Nenhum lançamento.</td></tr>`;
+            lucide.createIcons();
         }
 
-        function updateYearOptions() {
-            const yearSelect = document.getElementById('filter-year-select'); 
-            const uniqueYears = [...new Set(transactions.map(t => t.refMonth.split('-')[0]))].sort((a, b) => b - a); // Sort descending
-            if (uniqueYears.length === 0) uniqueYears.push(new Date().getFullYear().toString());
-            const currentSelection = yearSelect.value;
-            yearSelect.innerHTML = `<option value="">Anos</option>` + uniqueYears.map(y => `<option value="${y}">${y}</option>`).join('');
-            if (uniqueYears.includes(currentSelection)) yearSelect.value = currentSelection;
+        // Funções do Modal Pagar
+        function openPayInvoiceModal(bankName, refMonth, amount) {
+            tmpInvoiceBank = bankName; tmpInvoiceRef = refMonth; tmpInvoiceAmount = amount;
+            const sourceBanks = banks.filter(b => !b.closingDay);
+            if (sourceBanks.length === 0) return alert("Você precisa ter uma Conta Corrente (sem Dia de Fechamento)!");
+            document.getElementById('pay-invoice-source').innerHTML = sourceBanks.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+            const [y, m] = refMonth.split('-'); document.getElementById('pay-invoice-title').innerText = `${bankName} • Mês ${m}/${y}`; document.getElementById('pay-invoice-amount').innerText = formatMoney(amount);
+            document.getElementById('pay-invoice-modal').classList.remove('hidden');
         }
-
-        // Função para identificar transações parceladas (com base na descrição)
-        function isInstallment(desc) {
-            return /\(\d+\/\d+\)/.test(desc);
-        }
-
-        // Função para agrupar parcelas
-        function groupInstallments(txs) {
-            const grouped = new Map();
-            txs.forEach(tx => {
-                const match = tx.desc.match(/(.*) \((\d+)\/(\d+)\)/);
-                if (match) {
-                    const baseDesc = match[1].trim();
-                    const currentPart = parseInt(match[2]);
-                    const totalParts = parseInt(match[3]);
-                    const key = `${baseDesc}-${tx.bank}-${tx.value}-${totalParts}`; // Chave para agrupar
-
-                    if (!grouped.has(key)) {
-                        grouped.set(key, { 
-                            baseDesc: baseDesc,
-                            originalTx: tx, // Mantém a primeira transação como referência
-                            installments: [],
-                            totalInstallments: totalParts,
-                            totalValue: tx.value * totalParts,
-                            linkId: tx.linkId // Manter linkId se for uma transferência parcelada
-                        });
-                    }
-                    grouped.get(key).installments.push(tx);
-                } else {
-                    grouped.set(tx.id, { originalTx: tx, installments: [tx] }); // Transações não parceladas
-                }
-            });
-
-            // Ordenar as parcelas dentro de cada grupo
-            grouped.forEach(group => {
-                if (group.installments.length > 1) {
-                    group.installments.sort((a, b) => {
-                        const matchA = a.desc.match(/\((\d+)\/(\d+)\)/);
-                        const matchB = b.desc.match(/\((\d+)\/(\d+)\)/);
-                        if (matchA && matchB) {
-                            return parseInt(matchA[1]) - parseInt(matchB[1]);
-                        }
-                        return 0;
-                    });
-                }
-            });
-
-            return Array.from(grouped.values());
+        function closePayInvoiceModal() { document.getElementById('pay-invoice-modal').classList.add('hidden'); }
+        function confirmPayInvoice() {
+            const sourceBank = document.getElementById('pay-invoice-source').value; const today = new Date(); const baseDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0, 0); const payDateStr = today.toISOString().split('T')[0]; const linkId = Date.now();
+            transactions.forEach(t => { if (t.bank === tmpInvoiceBank && t.refMonth === tmpInvoiceRef && t.type === 'expense') t.paid = true; });
+            transactions.push(createTxObj(linkId, `Pagamento Fatura ${tmpInvoiceBank} (${tmpInvoiceRef})`, 'Transferência', tmpInvoiceAmount, payDateStr, 'expense', sourceBank, baseDate, 0, linkId));
+            let incomeTx = createTxObj(linkId + 1, `Recebimento Fatura (${tmpInvoiceRef})`, 'Transferência', tmpInvoiceAmount, payDateStr, 'income', tmpInvoiceBank, baseDate, 0, linkId); incomeTx.refMonth = tmpInvoiceRef; incomeTx.paid = true; transactions.push(incomeTx);
+            saveAndSync(); closePayInvoiceModal();
         }
 
 
+        // --- TABELA DE EXTRATO COM AGRUPAMENTO INTELIGENTE (+ / -) ---
         function renderTable() {
             const fMonth = document.getElementById('filter-month-select').value;
             const fYear = document.getElementById('filter-year-select').value;
             const searchQuery = document.getElementById('search-tx').value.toLowerCase();
             
             let filtered = transactions;
-            if (fMonth || fYear) { filtered = filtered.filter(tx => { const [txYear, txMonth] = tx.refMonth.split('-'); return (fMonth ? txMonth === fMonth : true) && (fYear ? txYear === fYear : true); }); }
+            if (fMonth || fYear) filtered = filtered.filter(tx => { const [txYear, txMonth] = tx.refMonth.split('-'); return (fMonth ? txMonth === fMonth : true) && (fYear ? txYear === fYear : true); });
             if (searchQuery) filtered = filtered.filter(tx => tx.desc.toLowerCase().includes(searchQuery) || tx.category.toLowerCase().includes(searchQuery));
             filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
 
-            const groupedTxs = groupInstallments(filtered);
+            // Lógica: Se o filtro de Mês estiver VAZIO (vendo todos os meses), nós AGRUPAMOS as parcelas.
+            // Se houver um mês selecionado, exibimos de forma plana (apenas 1 parcela aparece por mês, não precisa de grupo).
+            const isAllMonthsView = !fMonth; 
+            
             let html = '';
 
-            groupedTxs.forEach(group => {
-                const isGroupedInstallment = group.installments.length > 1;
-                const mainTx = group.originalTx || group.installments[0]; // Pega a referência principal da transação
-                const txCurr = (banks.find(b => b.name === mainTx.bank) || {currency:'BRL'}).currency;
+            if (isAllMonthsView && !searchQuery) { // Agrupa
+                const grouped = new Map();
+                filtered.forEach(tx => {
+                    const match = tx.desc.match(/(.*) \((\d+)\/(\d+)\)/);
+                    if (match) {
+                        const baseName = match[1].trim(); const totalParts = match[3];
+                        // A chave única pro grupo é: Nome base + total de parcelas + banco + valor individual da parcela
+                        const key = `${baseName}|${totalParts}|${tx.bank}|${tx.value}`; 
+                        if (!grouped.has(key)) grouped.set(key, { isGroup: true, baseName, totalParts, bank: tx.bank, txs: [], val: tx.value * parseInt(totalParts) }); // Salva o valor total da compra
+                        grouped.get(key).txs.push(tx);
+                    } else {
+                        grouped.set(tx.id, { isGroup: false, tx });
+                    }
+                });
 
-                if (isGroupedInstallment) {
-                    // Renderiza a linha principal do agrupamento
-                    const paidInstallments = group.installments.filter(tx => tx.paid).length;
-                    const totalInstallments = group.totalInstallments; // Usa o totalParts do agrupamento
-                    const groupPaid = paidInstallments === totalInstallments;
-                    const groupValue = group.totalValue; // Valor total da compra parcelada
-
-                    html += `
-                        <tr class="group hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50">
-                            <td class="px-3 md:px-6 py-3 md:py-4 text-slate-400 font-mono text-[10px] md:text-xs whitespace-nowrap">
-                                ${mainTx.date.split('-').reverse().slice(0,2).join('/')}
-                            </td>
-                            <td class="hidden md:table-cell px-6 py-4 text-center">
-                                <span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${mainTx.refMonth}</span>
-                            </td>
-                            <td class="px-3 md:px-6 py-3 md:py-4 min-w-[120px] flex items-center gap-2">
-                                <button onclick="toggleInstallmentGroup(this, '${mainTx.id}')" class="text-slate-400 hover:text-accent font-black">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
-                                </button>
-                                <p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${groupPaid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${group.baseDesc}">
-                                    ${group.baseDesc} <span class="text-slate-500 text-[9px]">(${paidInstallments}/${totalInstallments} pagas)</span>
-                                </p>
-                                <span class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase italic block mt-1">${mainTx.category}</span>
-                            </td>
-                            <td class="hidden sm:table-cell px-6 py-4 uppercase font-black text-[10px] text-slate-500 italic">${mainTx.bank}</td>
-                            <td class="px-3 md:px-6 py-3 md:py-4 text-right font-mono font-bold text-xs md:text-sm ${groupPaid ? 'text-income' : 'text-expense'} whitespace-nowrap">
-                                ${formatMoney(groupValue, txCurr)}
-                            </td>
-                            <td class="hidden md:table-cell px-6 py-4 text-center">
-                                <input type="checkbox" ${groupPaid ? 'checked' : ''} onchange="toggleGroupPaid(${mainTx.id})" class="accent-accent cursor-pointer w-4 h-4">
-                            </td>
-                            <td class="px-3 md:px-6 py-3 md:py-4 text-right flex justify-end gap-2 md:gap-3 mt-1 md:mt-0">
-                                <button onclick="openRepeatTxModal(${mainTx.id})" class="text-slate-400 hover:text-accent font-black transition" title="Repetir este lançamento">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 9 4-4-4-4"/><path d="M12 4H3"/><path d="m7 18-4 4 4 4"/></svg>
-                                </button>
-                                <button onclick="editTx(${mainTx.id})" class="text-accent hover:opacity-70 font-black transition" title="Editar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                                </button>
-                                <button onclick="deleteTx(${mainTx.id})" class="text-expense hover:opacity-70 font-black transition" title="Excluir">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                    // Linhas de detalhes das parcelas (inicialmente ocultas)
-                    group.installments.forEach(installmentTx => {
-                        const installmentTxCurr = (banks.find(b => b.name === installmentTx.bank) || {currency:'BRL'}).currency;
+                let groupCounter = 0;
+                grouped.forEach((item, key) => {
+                    if (item.isGroup && item.txs.length > 1) { // Só agrupa se tiver mais de 1 parcela lançada
+                        groupCounter++;
+                        const gId = `group-${groupCounter}`;
+                        const txCurr = (banks.find(b => b.name === item.bank) || {currency:'BRL'}).currency;
+                        
                         html += `
-                            <tr class="installment-detail installment-group-${mainTx.id} hidden hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50">
-                                <td class="px-3 md:px-6 py-2 text-slate-400 font-mono text-[9px] md:text-[10px] whitespace-nowrap pl-8">
-                                    ${installmentTx.date.split('-').reverse().slice(0,2).join('/')}
-                                </td>
-                                <td class="hidden md:table-cell px-6 py-2 text-center">
-                                    <span class="bg-slate-100 dark:bg-slate-700 text-slate-500 px-1 rounded font-black text-[8px]">REF ${installmentTx.refMonth}</span>
-                                </td>
-                                <td class="px-3 md:px-6 py-2 min-w-[120px] pl-8">
-                                    <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300 ${installmentTx.paid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${installmentTx.desc}">
-                                        ${installmentTx.desc}
-                                    </p>
-                                </td>
-                                <td class="hidden sm:table-cell px-6 py-2 uppercase font-black text-[9px] text-slate-400 italic">${installmentTx.bank}</td>
-                                <td class="px-3 md:px-6 py-2 text-right font-mono text-xs md:text-sm ${installmentTx.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">
-                                    ${formatMoney(installmentTx.value, installmentTxCurr)}
-                                </td>
-                                <td class="hidden md:table-cell px-6 py-2 text-center">
-                                    <input type="checkbox" ${installmentTx.paid ? 'checked' : ''} onchange="togglePaid(${installmentTx.id})" class="accent-accent cursor-pointer w-3 h-3">
-                                </td>
-                                <td class="px-3 md:px-6 py-2 text-right flex justify-end gap-1 md:gap-2">
-                                    <button onclick="editTx(${installmentTx.id})" class="text-accent hover:opacity-70 transition" title="Editar Parcela">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                                    </button>
-                                    <button onclick="deleteTx(${installmentTx.id})" class="text-expense hover:opacity-70 transition" title="Excluir Parcela">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                            <tr class="bg-slate-100/50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700">
+                                <td class="px-3 md:px-6 py-3 text-slate-400 font-mono text-[10px] md:text-xs">--/--/----</td>
+                                <td class="hidden md:table-cell px-6 py-3 text-center"><span class="bg-slate-200 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded font-black text-[10px]">Múltiplos</span></td>
+                                <td class="px-3 md:px-6 py-3">
+                                    <button onclick="toggleGroup('${gId}', this)" class="flex items-center gap-2 font-bold text-xs md:text-sm text-accent hover:text-blue-700 transition">
+                                        <i data-lucide="folder-plus" class="w-4 h-4 icon-plus"></i>
+                                        <i data-lucide="folder-minus" class="w-4 h-4 icon-minus hidden"></i>
+                                        ${item.baseName} (${item.txs.length}/${item.totalParts} lançadas)
                                     </button>
                                 </td>
+                                <td class="px-3 md:px-6 py-3 uppercase font-black text-[10px] text-slate-500 italic">${item.bank}</td>
+                                <td class="px-3 md:px-6 py-3 text-right font-mono font-bold text-xs md:text-sm text-expense">Total: ${formatMoney(item.val, txCurr)}</td>
+                                <td class="px-3 md:px-6 py-3 text-right text-[10px] text-slate-400">Expandir para editar</td>
                             </tr>
                         `;
-                    });
-
-                } else {
-                    // Renderiza transações não parceladas normalmente
-                    html += `
-                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50">
-                            <td class="px-3 md:px-6 py-3 md:py-4 text-slate-400 font-mono text-[10px] md:text-xs whitespace-nowrap">${mainTx.date.split('-').reverse().slice(0,2).join('/')}</td>
-                            <td class="hidden md:table-cell px-6 py-4 text-center"><span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${mainTx.refMonth}</span></td>
-                            <td class="px-3 md:px-6 py-3 md:py-4 min-w-[120px]"><p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${mainTx.paid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${mainTx.desc}">${mainTx.desc}</p><span class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase italic block mt-1">${mainTx.category}</span></td>
-                            <td class="hidden sm:table-cell px-6 py-4 uppercase font-black text-[10px] text-slate-500 italic">${mainTx.bank}</td>
-                            <td class="px-3 md:px-6 py-3 md:py-4 text-right font-mono font-bold text-xs md:text-sm ${mainTx.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">${formatMoney(mainTx.value, txCurr)}</td>
-                            <td class="hidden md:table-cell px-6 py-4 text-center"><input type="checkbox" ${mainTx.paid ? 'checked' : ''} onchange="togglePaid(${mainTx.id})" class="accent-accent cursor-pointer w-4 h-4"></td>
-                            <td class="px-3 md:px-6 py-3 md:py-4 text-right flex justify-end gap-2 md:gap-3 mt-1 md:mt-0">
-                                <button onclick="openRepeatTxModal(${mainTx.id})" class="text-slate-400 hover:text-accent font-black transition" title="Repetir este lançamento">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-repeat"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 9 4-4-4-4"/><path d="M12 4H3"/><path d="m7 18-4 4 4-4"/></svg>
-                                </button>
-                                <button onclick="editTx(${mainTx.id})" class="text-accent hover:opacity-70 font-black transition" title="Editar">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-                                </button>
-                                <button onclick="deleteTx(${mainTx.id})" class="text-expense hover:opacity-70 font-black transition" title="Excluir">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-                }
-            });
-            document.getElementById('table-body').innerHTML = html || `<tr><td colspan="7" class="px-6 py-10 text-center text-slate-400 italic">Nenhum lançamento encontrado.</td></tr>`;
-            lucide.createIcons(); // Renderiza ícones após renderizar a tabela
-        }
-
-        function toggleInstallmentGroup(button, mainTxId) {
-            const detailRows = document.querySelectorAll(`.installment-group-${mainTxId}`);
-            detailRows.forEach(row => row.classList.toggle('hidden'));
-            
-            // Troca o ícone do botão
-            const icon = button.querySelector('svg');
-            if (icon.classList.contains('lucide-plus-circle')) {
-                icon.outerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg>';
+                        // Filhos (escondidos por padrão)
+                        item.txs.forEach(t => {
+                            html += renderRow(t, true, gId); // true = isChild
+                        });
+                    } else {
+                        // É item isolado ou o grupo só tem 1 parcela
+                        const t = item.isGroup ? item.txs[0] : item.tx;
+                        html += renderRow(t, false, null);
+                    }
+                });
             } else {
-                icon.outerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>';
+                // Lista Plana (Sem grupos)
+                html = filtered.map(t => renderRow(t, false, null)).join('');
             }
-            lucide.createIcons(); // Garante que o novo SVG seja renderizado corretamente
+
+            document.getElementById('table-body').innerHTML = html || `<tr><td colspan="6" class="px-6 py-10 text-center text-slate-400 italic">Nenhum lançamento encontrado.</td></tr>`;
+            lucide.createIcons();
         }
 
-        // Função para marcar/desmarcar todas as parcelas de um grupo
-        function toggleGroupPaid(mainTxId) {
-            // Encontra a transação principal (ou uma de suas parcelas para obter a base)
-            const mainTx = transactions.find(t => t.id === mainTxId || (t.desc.includes(`(${t.id}/`) && t.desc.startsWith(transactions.find(ot => ot.id === mainTxId)?.desc.split(' (')[0])));
-            if (!mainTx) return;
+        // Função auxiliar para renderizar a linha individual do extrato
+        function renderRow(t, isChild, parentId) {
+            const txCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency;
+            const isInstallment = /\(\d+\/\d+\)/.test(t.desc);
+            const hiddenClass = isChild ? `hidden installment-row child-of-${parentId} bg-slate-50 dark:bg-slate-800/80` : 'hover:bg-slate-50 dark:hover:bg-slate-800';
+            const padClass = isChild ? 'pl-8 md:pl-12 border-l-2 border-l-accent' : '';
 
-            const baseDescMatch = mainTx.desc.match(/(.*) \(\d+\/\d+\)/);
-            const baseDesc = baseDescMatch ? baseDescMatch[1].trim() : mainTx.desc.split(' (')[0]; // Se não for parcelado, pega a desc. original
+            return `
+                <tr class="transition border-b border-slate-50 dark:border-slate-800/50 ${hiddenClass}">
+                    <td class="px-3 md:px-6 py-3 text-slate-400 font-mono text-[10px] md:text-xs whitespace-nowrap ${padClass}">${t.date.split('-').reverse().join('/')}</td>
+                    <td class="hidden md:table-cell px-6 py-3 text-center"><span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${t.refMonth}</span></td>
+                    <td class="px-3 md:px-6 py-3 min-w-[120px]">
+                        <div class="flex items-center gap-1">
+                            ${isInstallment && !isChild ? '<i data-lucide="layers" class="w-3 h-3 text-slate-400"></i>' : ''}
+                            <p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${t.paid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${t.desc}">${t.desc}</p>
+                        </div>
+                        <span class="text-[8px] font-black text-slate-400 uppercase italic block mt-1">${t.category}</span>
+                    </td>
+                    <td class="px-3 md:px-6 py-3 uppercase font-black text-[10px] text-slate-500 italic">${t.bank}</td>
+                    <td class="px-3 md:px-6 py-3 text-right font-mono font-bold text-xs md:text-sm ${t.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">${formatMoney(t.value, txCurr)}</td>
+                    <td class="px-3 md:px-6 py-3 text-right flex justify-end gap-3 mt-1 md:mt-0">
+                        <button onclick="openRepeatTxModal(${t.id})" class="text-slate-400 hover:text-accent transition" title="Repetir Lançamento"><i data-lucide="repeat" class="w-4 h-4"></i></button>
+                        <button onclick="editTx(${t.id})" class="text-accent hover:opacity-70 transition" title="Editar"><i data-lucide="square-pen" class="w-4 h-4"></i></button>
+                        <button onclick="deleteTx(${t.id})" class="text-expense hover:opacity-70 transition" title="Excluir"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </td>
+                </tr>`;
+        }
+
+        // Alterna a visibilidade dos grupos de parcelas
+        function toggleGroup(groupId, btnElement) {
+            const rows = document.querySelectorAll(`.child-of-${groupId}`);
+            const isHidden = rows[0].classList.contains('hidden');
             
-            // Encontrar todas as transações que pertencem a este grupo
-            const groupTxs = transactions.filter(tx => 
-                tx.desc.startsWith(baseDesc) && /\(\d+\/\d+\)/.test(tx.desc) && tx.bank === mainTx.bank
-            );
+            rows.forEach(row => row.classList.toggle('hidden'));
+            
+            // Troca ícones de + e -
+            btnElement.querySelector('.icon-plus').classList.toggle('hidden', isHidden);
+            btnElement.querySelector('.icon-minus').classList.toggle('hidden', !isHidden);
+        }
 
-            // Determinar o novo estado 'paid'
-            const allPaid = groupTxs.every(tx => tx.paid);
-            const newState = !allPaid;
-
-            groupTxs.forEach(tx => {
-                tx.paid = newState;
+        // --- OUTRAS FUNÇÕES ---
+        function renderPlanning() { /* Inalterado - Cód. Reduzido para caber aqui (mesmo da v15) */ 
+            const currentRef = `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}`;
+            const monthTxs = transactions.filter(t => t.refMonth === currentRef);
+            renderChart(monthTxs);
+            baseIncome = monthTxs.filter(t => t.type === 'income' && (!banks.find(b=>b.name===t.bank) || banks.find(b=>b.name===t.bank).currency === 'BRL') && !t.desc.includes('Transf.') && !t.desc.includes('Recebimento Fatura')).reduce((a, t) => a + t.value, 0);
+            document.getElementById('dynamic-income-display').innerText = formatMoney(baseIncome, 'BRL');
+            let totalPercent = 0; const container = document.getElementById('planning-categories'); container.innerHTML = '';
+            planningCategoriesList.forEach(cat => {
+                const pct = categoryGoals[cat] || 0; totalPercent += pct;
+                const limitValue = baseIncome * (pct / 100);
+                const spentValue = monthTxs.filter(t => t.category === cat && !t.desc.includes('Transf.') && !t.desc.includes('Pagamento Fatura') && (t.type === 'expense' || cat === 'Investimento')).reduce((a, t) => a + t.value, 0);
+                let progress = limitValue === 0 ? 0 : (spentValue / limitValue) * 100;
+                let colorClass = 'bg-income'; if (progress >= 80 && progress < 100) colorClass = 'bg-yellow-500'; if (progress >= 100) colorClass = 'bg-expense'; progress = Math.min(progress, 100); 
+                container.innerHTML += `<div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700"><div class="flex justify-between items-center mb-3"><h4 class="font-bold text-slate-700 dark:text-slate-200">${cat}</h4><div class="flex items-center gap-1 bg-slate-50 dark:bg-slate-800 rounded px-2 border border-slate-200 dark:border-slate-700"><input type="number" value="${pct}" onchange="updateGoal('${cat}', this.value)" class="w-10 bg-transparent p-1 text-sm font-bold text-right outline-none text-accent">%</div></div><div class="flex justify-between text-xs mb-2"><span class="text-slate-500">Limite: ${formatMoney(limitValue)}</span><span class="font-bold ${spentValue > limitValue ? 'text-expense' : 'text-slate-700 dark:text-slate-300'}">${formatMoney(spentValue)}</span></div><div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden"><div class="${colorClass} h-2 rounded-full transition-all duration-500" style="width: ${progress}%"></div></div></div>`;
             });
-
-            saveAndSync();
+            document.getElementById('total-percent-planned').innerText = `${totalPercent}%`; document.getElementById('total-percent-planned').className = `text-xs font-black ${totalPercent > 100 ? 'text-expense' : 'text-accent'}`; document.getElementById('total-percent-bar').style.width = `${Math.min(totalPercent, 100)}%`; document.getElementById('total-percent-bar').className = `h-1.5 rounded-full transition-all ${totalPercent > 100 ? 'bg-expense' : 'bg-accent'}`;
         }
 
-        // UTILITIES E PWA
-        function resetApp() { 
-            if(confirm("Deseja apagar todos os dados da aplicação, incluindo transações e bancos? Esta ação é irreversível.")) { 
-                transactions = []; 
-                banks = defaultBanks; // Reset banks to default
-                categoryGoals = { "Alimentação": 20, "Moradia": 35, "Transporte": 10, "Saúde": 10, "Lazer": 15, "Investimento": 10, "Outros": 0 }; // Reset goals
-                baseIncome = 5000; // Reset base income
-                localStorage.clear(); // Clear all localStorage for a clean reset
-                saveAndSync(); 
-                alert("Aplicação resetada com sucesso!");
-                navigate('dashboard'); // Go back to dashboard after reset
-            } 
+        function updateYearOptions() {
+            const ys = document.getElementById('filter-year-select'); const u = [...new Set(transactions.map(t => t.refMonth.split('-')[0]))].sort((a, b) => b - a); if(u.length===0) u.push(new Date().getFullYear().toString());
+            const cur = ys.value; ys.innerHTML = `<option value="">Anos</option>` + u.map(y => `<option value="${y}">${y}</option>`).join(''); if (u.includes(cur)) ys.value = cur;
         }
 
-        function exportCSV() { 
-            const h = "\uFEFFId;Data;Ref;Tipo;Valor;Banco;Categoria;Pago;Desc;LinkID\n"; // Added LinkID to header
-            const b = transactions.map(t => `${t.id};${t.date};${t.refMonth};${t.type};${t.value};${t.bank};${t.category};${t.paid};${t.desc};${t.linkId || ''}`).join("\n"); // Export LinkID
-            const a = document.createElement('a'); 
-            a.href = URL.createObjectURL(new Blob([h + b], { type: 'text/csv;charset=utf-8;' })); 
-            a.download = 'backup_finance_v13.csv'; 
-            a.click(); 
+        function addBank() { const n = document.getElementById('bank-input').value.trim(); const d = parseInt(document.getElementById('bank-closing').value); const c = document.getElementById('bank-currency').value; if(n && !banks.some(b => b.name === n)) { banks.push({ name: n, closingDay: isNaN(d) ? null : d, currency: c }); saveAndSync(); document.getElementById('bank-input').value = ''; document.getElementById('bank-closing').value = ''; } }
+        function removeBank(n) { if(!transactions.some(t => t.bank === n)) { banks = banks.filter(b => b.name !== n); saveAndSync(); } else alert("Conta possui lançamentos!"); }
+
+        function renderChart(monthTxs) {
+            const ctx = document.getElementById('expenseChart').getContext('2d'); const expenses = monthTxs.filter(t => t.type === 'expense' && !t.desc.includes('Transf.') && !t.desc.includes('Pagamento Fatura')); const catData = {}; expenses.forEach(t => { catData[t.category] = (catData[t.category] || 0) + t.value; }); const labels = Object.keys(catData); const data = Object.values(catData);
+            if(expenseChartInstance) expenseChartInstance.destroy(); if(data.length === 0) { expenseChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Sem Gastos'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] }, options: { plugins: { legend: { display: false } } } }); return; }
+            expenseChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#6366f1', '#a855f7'], borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } } } });
         }
 
-        function importCSV(event) { 
-            const file = event.target.files[0]; 
-            if(!file) return; 
-            const reader = new FileReader(); 
-            reader.onload = function(e) { 
-                const lines = e.target.result.split('\n'); 
-                let count = 0; 
-                for(let i = 1; i < lines.length; i++) { 
-                    const cols = lines[i].split(';'); 
-                    if(cols.length >= 9) { // Adjusted to 9 columns for LinkID
-                        const idStr = cols[0].trim(); 
-                        if(!transactions.some(t => t.id == idStr)) { 
-                            transactions.push({ 
-                                id: parseInt(idStr) || Date.now() + i, 
-                                date: cols[1], 
-                                refMonth: cols[2], 
-                                type: cols[3], 
-                                value: parseFloat(cols[4]), 
-                                bank: cols[5], 
-                                category: cols[6], 
-                                paid: cols[7] === 'true', 
-                                desc: cols[8],
-                                linkId: cols[9] ? parseInt(cols[9]) : null // Import LinkID
-                            }); 
-                            count++; 
-                        } 
-                    } 
-                } 
-                saveAndSync(); 
-                alert(`${count} lançamentos importados com sucesso!`); 
-                event.target.value = ''; 
-            }; 
-            reader.readAsText(file); 
+        function saveAndSync() { localStorage.setItem('f_banks_v16', JSON.stringify(banks)); localStorage.setItem('f_txs_v16', JSON.stringify(transactions)); updateUI(); }
+
+        function updateUI() {
+            if(!document.getElementById('view-dashboard').classList.contains('hidden')) renderDashboard(tmpInvoiceBank); 
+            if(!document.getElementById('view-planning').classList.contains('hidden')) renderPlanning();
+            updateYearOptions(); if(!document.getElementById('view-transactions').classList.contains('hidden')) renderTable();
+            const bankOpts = banks.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+            document.getElementById('entry-bank').innerHTML = bankOpts; document.getElementById('entry-target-bank').innerHTML = bankOpts;
+            document.getElementById('bank-tags').innerHTML = banks.map(b => `<span class="bg-slate-100 dark:bg-slate-800 text-[9px] font-black px-2 py-1 rounded border border-slate-200 flex items-center gap-1 uppercase">${b.name} ${b.closingDay?`(Fech. ${b.closingDay})`:''} <button onclick="removeBank('${b.name}')" class="text-slate-400 hover:text-expense ml-1"><i data-lucide="x" class="w-3 h-3"></i></button></span>`).join('');
+            if(!editingTxId) updateFormCurrency(); lucide.createIcons();
         }
 
-        if ('serviceWorker' in navigator) { 
-            window.addEventListener('load', () => { 
-                navigator.serviceWorker.register('./sw.js').catch(err => console.log('Falha no SW:', err)); 
-            }); 
-        }
+        function resetApp() { if(confirm("Apagar todos os dados? Irreversível.")) { transactions = []; banks = defaultBanks; localStorage.clear(); saveAndSync(); navigate('dashboard'); } }
+        function exportCSV() { const h = "\uFEFFId;Data;Ref;Tipo;Valor;Banco;Categoria;Pago;Desc;LinkID\n"; const b = transactions.map(t => `${t.id};${t.date};${t.refMonth};${t.type};${t.value};${t.bank};${t.category};${t.paid};${t.desc};${t.linkId || ''}`).join("\n"); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([h + b], { type: 'text/csv;charset=utf-8;' })); a.download = 'backup_finance_v16.csv'; a.click(); }
+        function importCSV(event) { const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const lines = e.target.result.split('\n'); let count = 0; for(let i = 1; i < lines.length; i++) { const cols = lines[i].split(';'); if(cols.length >= 9) { const idStr = cols[0].trim(); if(!transactions.some(t => t.id == idStr)) { transactions.push({ id: parseInt(idStr) || Date.now() + i, date: cols[1], refMonth: cols[2], type: cols[3], value: parseFloat(cols[4]), bank: cols[5], category: cols[6], paid: cols[7] === 'true', desc: cols[8], linkId: cols[9] ? parseInt(cols[9]) : null }); count++; } } } saveAndSync(); alert(`${count} importados!`); event.target.value = ''; }; reader.readAsText(file); }
 
-        document.getElementById('entry-date').valueAsDate = new Date();
-        updateUI();
-        navigate('dashboard');
-        // Inicializa Lucide Icons na primeira carga da página
-        lucide.createIcons();
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(e => console.log(e)); }); }
+        document.getElementById('entry-date').valueAsDate = new Date(); updateUI(); navigate('dashboard');
     </script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 {
-  "name": "MyFinance v13",
+  "name": "MyFinance v16",
   "short_name": "MyFinance",
-  "description": "App de Planejamento, Metas e Engenharia de Faturas",
+  "description": "App de Planejamento, Metas e Gestão de Faturas",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0f172a",
