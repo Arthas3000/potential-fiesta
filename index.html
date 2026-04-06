@@ -42,13 +42,33 @@
             </div>
             
             <!-- Menu Responsivo: Ícones aparecem no Mobile (md:hidden) e somem no Desktop -->
-            <div class="flex gap-6 md:gap-8 overflow-x-auto no-scrollbar pb-1">
-                <button id="nav-dashboard" onclick="navigate('dashboard')" class="nav-btn text-sm font-bold text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="layout-dashboard" class="w-4 h-4 md:hidden"></i> <p class="w-4 h-4 md:shown">Dashboard</p></button>
-                <button id="nav-planning" onclick="navigate('planning')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="pie-chart" class="w-4 h-4 md:hidden"></i> Planejamento</button>
-                <button id="nav-transactions" onclick="navigate('transactions')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="list" class="w-4 h-4 md:hidden"></i> Extrato</button>
-                <button id="nav-subscriptions" onclick="navigate('subscriptions')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="repeat-2" class="w-4 h-4 md:hidden"></i> Assinaturas</button>
-                <button id="nav-investments" onclick="navigate('investments')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="trending-up" class="w-4 h-4 md:hidden"></i> Investimentos</button>
-            </div>
+            <!-- Menu Responsivo: Ícones no Mobile, Texto no Desktop -->
+			<div class="flex justify-between md:justify-start gap-4 md:gap-8 overflow-x-auto no-scrollbar pb-1 w-full px-2 md:px-0">
+				<button id="nav-dashboard" onclick="navigate('dashboard')" class="nav-btn text-sm font-bold text-accent transition whitespace-nowrap flex items-center justify-center p-1">
+					<i data-lucide="layout-dashboard" class="w-5 h-5 md:hidden"></i> 
+					<span class="hidden md:block">Dashboard</span>
+				</button>
+				
+				<button id="nav-planning" onclick="navigate('planning')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center justify-center p-1">
+					<i data-lucide="pie-chart" class="w-5 h-5 md:hidden"></i> 
+					<span class="hidden md:block">Planejamento</span>
+				</button>
+				
+				<button id="nav-transactions" onclick="navigate('transactions')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center justify-center p-1">
+					<i data-lucide="list" class="w-5 h-5 md:hidden"></i> 
+					<span class="hidden md:block">Extrato</span>
+				</button>
+				
+				<button id="nav-subscriptions" onclick="navigate('subscriptions')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center justify-center p-1">
+					<i data-lucide="repeat-2" class="w-5 h-5 md:hidden"></i> 
+					<span class="hidden md:block">Assinaturas</span>
+				</button>
+				
+				<button id="nav-investments" onclick="navigate('investments')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center justify-center p-1">
+					<i data-lucide="trending-up" class="w-5 h-5 md:hidden"></i> 
+					<span class="hidden md:block">Investimentos</span>
+				</button>
+			</div>
         </div>
     </nav>
 
@@ -304,38 +324,47 @@
         if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
         function toggleDarkMode() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); if(expenseChartInstance) renderPlanning(); }
 
-        // --- 2. NAVEGAÇÃO E TÍTULOS ---
-        function navigate(view) {
-            // Esconde todas, mostra a selecionada
-            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); 
-            document.getElementById(`view-${view}`).classList.remove('hidden');
-            
-            // Botões do menu
-            document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('text-accent'); b.classList.add('text-slate-400'); });
-            document.getElementById(`nav-${view}`).classList.add('text-accent'); document.getElementById(`nav-${view}`).classList.remove('text-slate-400');
-            
-            // Controle do Título Dinâmico Mobile
-            const titles = {
-                'dashboard': 'Dashboard',
-                'planning': 'Planejamento e Metas',
-                'transactions': 'Extrato de Gastos',
-                'subscriptions': 'Motor Automático',
-                'investments': 'Investimentos'
-            };
-            document.getElementById('mobile-page-title').innerText = titles[view] || 'MyFinance';
+		// --- 2. NAVEGAÇÃO E TÍTULOS ---
+		function navigate(view) {
+			// Esconde todas as sections, mostra a selecionada
+			document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); 
+			document.getElementById(`view-${view}`).classList.remove('hidden');
+			
+			// Atualiza a cor dos botões do menu
+			document.querySelectorAll('.nav-btn').forEach(b => { 
+				b.classList.remove('text-accent'); 
+				b.classList.add('text-slate-400'); 
+			});
+			document.getElementById(`nav-${view}`).classList.add('text-accent'); 
+			document.getElementById(`nav-${view}`).classList.remove('text-slate-400');
+			
+			// Controle do Título Dinâmico Mobile (o que aparece grande em cima)
+			const titles = {
+				'dashboard': 'Dashboard',
+				'planning': 'Planejamento e Metas',
+				'transactions': 'Extrato de Gastos',
+				'subscriptions': 'Motor Automático',
+				'investments': 'Investimentos'
+			};
+			document.getElementById('mobile-page-title').innerText = titles[view] || 'MyFinance';
 
-            // Visibilidade do Navegador de Meses
-            document.getElementById('global-month-nav').classList.toggle('hidden', view === 'transactions' || view === 'investments');
-            
-            if (view === 'dashboard') renderDashboard(); 
-            if (view === 'planning') renderPlanning(); 
-            if (view === 'transactions') renderTable();
-            if (view === 'subscriptions') renderSubscriptions();
-            lucide.createIcons();
-        }
+			// Oculta o navegador de meses em algumas abas
+			document.getElementById('global-month-nav').classList.toggle('hidden', view === 'transactions' || view === 'investments');
+			
+			// Chama a função de renderização correta
+			if (view === 'dashboard') renderDashboard(); 
+			if (view === 'planning') renderPlanning(); 
+			if (view === 'transactions') renderTable();
+			if (view === 'subscriptions') renderSubscriptions();
+			
+			// Atualiza os ícones do Lucide caso algum botão tenha sido modificado
+			lucide.createIcons();
+		}
 
-        function changeMonth(offset) { viewDate.setMonth(viewDate.getMonth() + offset); updateUI(); }
-
+		function changeMonth(offset) { 
+			viewDate.setMonth(viewDate.getMonth() + offset); 
+			updateUI(); 
+		}
         // --- 3. ASSINATURAS ---
         function saveSubscription(e) {
             e.preventDefault();
