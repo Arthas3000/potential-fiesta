@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyFinance v18 - Metas, Assinaturas e Investimentos</title>
+    <title>MyFinance v19 - Mobile UX e Planejamento</title>
     
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -26,11 +26,11 @@
 <body class="bg-slate-50 dark:bg-darkbg text-slate-900 dark:text-slate-100 min-h-screen transition-colors duration-300 pb-20">
 
     <!-- BARRA DE NAVEGAÇÃO -->
-    <nav class="bg-white dark:bg-darkcard border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 transition-colors">
+    <nav class="bg-white dark:bg-darkcard border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 transition-colors shadow-sm md:shadow-none">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
             <div class="flex items-center justify-between">
                 <h1 class="font-black text-lg md:text-xl tracking-tighter uppercase italic text-primary dark:text-white">
-                    MyFinance <span class="text-accent text-xs">v18</span>
+                    MyFinance <span class="text-accent text-xs">v19</span>
                 </h1>
                 <div class="flex gap-2 items-center flex-wrap">
                     <button onclick="toggleDarkMode()" class="p-2 text-slate-500 hover:text-accent transition-colors rounded-full"><i data-lucide="moon" class="w-4 h-4 dark:hidden"></i><i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i></button>
@@ -41,18 +41,22 @@
                 </div>
             </div>
             
+            <!-- Menu Responsivo: Ícones aparecem no Mobile (md:hidden) e somem no Desktop -->
             <div class="flex gap-6 md:gap-8 overflow-x-auto no-scrollbar pb-1">
-                <button id="nav-dashboard" onclick="navigate('dashboard')" class="nav-btn text-sm font-bold text-accent transition whitespace-nowrap">Dashboard</button>
-                <button id="nav-planning" onclick="navigate('planning')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap">Planejamento</button>
-                <button id="nav-transactions" onclick="navigate('transactions')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap">Extrato</button>
-                <button id="nav-subscriptions" onclick="navigate('subscriptions')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1">Assinaturas</button>
-                <button id="nav-investments" onclick="navigate('investments')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1">Investimentos</button>
+                <button id="nav-dashboard" onclick="navigate('dashboard')" class="nav-btn text-sm font-bold text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="layout-dashboard" class="w-4 h-4 md:hidden"></i> <p class="w-4 h-4 md:shown">Dashboard</p></button>
+                <button id="nav-planning" onclick="navigate('planning')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="pie-chart" class="w-4 h-4 md:hidden"></i> Planejamento</button>
+                <button id="nav-transactions" onclick="navigate('transactions')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="list" class="w-4 h-4 md:hidden"></i> Extrato</button>
+                <button id="nav-subscriptions" onclick="navigate('subscriptions')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="repeat-2" class="w-4 h-4 md:hidden"></i> Assinaturas</button>
+                <button id="nav-investments" onclick="navigate('investments')" class="nav-btn text-sm font-bold text-slate-400 hover:text-accent transition whitespace-nowrap flex items-center gap-1.5"><i data-lucide="trending-up" class="w-4 h-4 md:hidden"></i> Investimentos</button>
             </div>
         </div>
     </nav>
 
     <main class="max-w-7xl mx-auto px-4 py-6 md:py-8">
         
+        <!-- TÍTULO DINÂMICO MOBILE (Some no Desktop) -->
+        <h2 id="mobile-page-title" class="text-3xl font-black italic text-primary dark:text-white md:hidden tracking-tighter mb-4">Dashboard</h2>
+
         <div id="global-month-nav" class="flex items-center justify-between bg-white dark:bg-darkcard p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mb-6 transition-colors">
             <button onclick="changeMonth(-1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
             <h2 class="text-lg md:text-2xl font-bold italic text-center">Fatura: <span id="current-ref-display" class="text-accent">--</span></h2>
@@ -116,10 +120,6 @@
 
         <!-- 2. PLANEJAMENTO -->
         <section id="view-planning" class="view-section hidden flex flex-col gap-6 w-full">
-            
-            <!-- NOVO: Formulário de Definição de Metas -->
-            
-
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col justify-center">
                     <h3 class="font-bold text-xs uppercase text-slate-400 tracking-widest italic mb-2">Renda do Mês</h3>
@@ -138,7 +138,9 @@
                     <div class="w-full h-full relative"><canvas id="expenseChart"></canvas></div>
                 </div>
             </div>
-            <div class="bg-white dark:bg-darkcard p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+
+            <!-- Formulário de Definição de Metas (Movido para cá) -->
+            <div class="bg-white dark:bg-darkcard p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mt-2">
                 <h3 class="font-bold text-xs uppercase text-slate-400 tracking-widest italic mb-4">Definir Meta por Categoria</h3>
                 <form onsubmit="saveGoalFromForm(event)" class="flex flex-col md:flex-row gap-4 items-end">
                     <div class="flex-1 w-full">
@@ -152,6 +154,7 @@
                     <button type="submit" class="w-full md:w-auto bg-accent text-white px-6 py-2.5 rounded-lg font-bold hover:bg-blue-600 transition shadow-md">Salvar Meta</button>
                 </form>
             </div>
+            
             <h3 class="text-xl font-bold italic text-primary dark:text-white mt-4 border-b border-slate-200 dark:border-slate-800 pb-2">Desempenho por Categoria</h3>
             <div id="planning-categories" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
         </section>
@@ -159,8 +162,9 @@
         <!-- 3. EXTRATO -->
         <section id="view-transactions" class="view-section hidden flex flex-col gap-6 w-full">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <h2 class="text-xl md:text-2xl font-bold italic text-primary dark:text-white w-full md:w-auto">Extrato Detalhado</h2>
-                <div class="flex flex-col md:flex-row gap-2 md:gap-4 w-full md:w-auto">
+                <!-- Título original omitido no mobile (pois agora temos o dinâmico), mas mantido no desktop -->
+                <h2 class="text-2xl font-bold italic text-primary dark:text-white w-full md:w-auto hidden md:block">Extrato Detalhado</h2>
+                <div class="flex flex-col md:flex-row gap-2 md:gap-4 w-full md:w-auto md:ml-auto">
                     <div class="relative w-full md:w-48 xl:w-64"><i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i><input type="text" id="search-tx" placeholder="Buscar..." onkeyup="renderTable()" class="w-full border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded pl-9 p-2 text-sm font-semibold outline-none focus:ring-1 focus:ring-accent"></div>
                     <div class="flex gap-2 w-full md:w-auto">
                         <select id="filter-month-select" onchange="renderTable()" class="flex-1 md:w-36 border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded p-2 text-sm font-bold outline-none focus:ring-1 focus:ring-accent">
@@ -179,44 +183,27 @@
         <section id="view-subscriptions" class="view-section hidden flex flex-col gap-6 w-full">
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div>
-                    <h2 class="text-xl md:text-2xl font-bold italic text-primary dark:text-white">Motor Automático</h2>
-                    <p class="text-sm text-slate-500">Assinaturas e despesas fixas geradas automaticamente todo mês.</p>
+                    <h2 class="text-xl md:text-2xl font-bold italic text-primary dark:text-white hidden md:block">Motor Automático</h2>
+                    <p class="text-sm text-slate-500 mt-2 md:mt-0">Assinaturas e despesas fixas geradas automaticamente todo mês.</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- ASIDE NA ESQUERDA (MUDADO CONFORME PEDIDO) -->
+                <!-- ASIDE NA ESQUERDA -->
                 <aside class="lg:col-span-4">
                     <div class="bg-indigo-50 dark:bg-indigo-900/20 p-5 md:p-6 rounded-2xl border border-indigo-100 dark:border-indigo-800 shadow-sm border-t-4 border-t-indigo-500">
                         <h3 class="font-bold mb-4 text-xs uppercase tracking-widest text-indigo-500 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4"></i> Nova Assinatura</h3>
                         <form onsubmit="saveSubscription(event)" class="space-y-4 text-sm">
                             <input type="text" id="sub-name" placeholder="Ex: Netflix, Internet" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-3 font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
-                            
                             <div class="grid grid-cols-2 gap-2">
-                                <div>
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase">Valor do Ciclo</label>
-                                    <input type="number" id="sub-value" step="0.01" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold" required>
-                                </div>
-                                <div>
-                                    <label class="text-[10px] font-bold text-slate-400 uppercase">Frequência</label>
-                                    <select id="sub-freq" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold">
-                                        <option value="1">Mensal</option>
-                                        <option value="6">Semestral</option>
-                                        <option value="12">Anual</option>
-                                    </select>
-                                </div>
+                                <div><label class="text-[10px] font-bold text-slate-400 uppercase">Valor do Ciclo</label><input type="number" id="sub-value" step="0.01" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold" required></div>
+                                <div><label class="text-[10px] font-bold text-slate-400 uppercase">Frequência</label><select id="sub-freq" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold"><option value="1">Mensal</option><option value="6">Semestral</option><option value="12">Anual</option></select></div>
                             </div>
-                            
-                            <div>
-                                <label class="text-[10px] font-bold text-slate-400 uppercase">Data Base (1ª cobrança)</label>
-                                <input type="date" id="sub-date" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-semibold" required>
-                            </div>
-
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Data Base (1ª cobrança)</label><input type="date" id="sub-date" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-semibold" required></div>
                             <div class="grid grid-cols-2 gap-2">
                                 <select id="sub-bank" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold"></select>
                                 <select id="sub-category" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-semibold"></select>
                             </div>
-
                             <button type="submit" class="w-full bg-indigo-500 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-indigo-600 transition shadow-lg">Ativar Robô</button>
                         </form>
                     </div>
@@ -295,15 +282,14 @@
         let defaultBanks = [{ name: "Cartão", closingDay: 15, currency: "BRL" }, { name: "Salário", closingDay: null, currency: "BRL" }];
         let defaultCategories = ["Alimentação", "Moradia", "Transporte", "Saúde", "Lazer", "Investimento", "Outros"];
         
-        let banks = JSON.parse(localStorage.getItem('f_banks_v18')) || defaultBanks;
-        let categories = JSON.parse(localStorage.getItem('f_categories_v18')) || defaultCategories;
-        let transactions = JSON.parse(localStorage.getItem('f_txs_v18')) || [];
-        let subscriptions = JSON.parse(localStorage.getItem('f_subs_v18')) || [];
+        let banks = JSON.parse(localStorage.getItem('f_banks_v19')) || defaultBanks;
+        let categories = JSON.parse(localStorage.getItem('f_categories_v19')) || defaultCategories;
+        let transactions = JSON.parse(localStorage.getItem('f_txs_v19')) || [];
+        let subscriptions = JSON.parse(localStorage.getItem('f_subs_v19')) || [];
         
-        let baseIncome = parseFloat(localStorage.getItem('f_base_income_v18')) || 5000;
-        let categoryGoals = JSON.parse(localStorage.getItem('f_goals_v18')) || {}; 
+        let baseIncome = parseFloat(localStorage.getItem('f_base_income_v19')) || 5000;
+        let categoryGoals = JSON.parse(localStorage.getItem('f_goals_v19')) || {}; 
         
-        // Inicializa goals se não existirem
         categories.forEach(c => { if(categoryGoals[c] === undefined) categoryGoals[c] = (c==="Moradia"?30:c==="Alimentação"?20:5); });
 
         let viewDate = new Date(); 
@@ -318,12 +304,29 @@
         if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
         function toggleDarkMode() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); if(expenseChartInstance) renderPlanning(); }
 
-        // --- 2. NAVEGAÇÃO ---
+        // --- 2. NAVEGAÇÃO E TÍTULOS ---
         function navigate(view) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); document.getElementById(`view-${view}`).classList.remove('hidden');
+            // Esconde todas, mostra a selecionada
+            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); 
+            document.getElementById(`view-${view}`).classList.remove('hidden');
+            
+            // Botões do menu
             document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('text-accent'); b.classList.add('text-slate-400'); });
             document.getElementById(`nav-${view}`).classList.add('text-accent'); document.getElementById(`nav-${view}`).classList.remove('text-slate-400');
+            
+            // Controle do Título Dinâmico Mobile
+            const titles = {
+                'dashboard': 'Dashboard',
+                'planning': 'Planejamento e Metas',
+                'transactions': 'Extrato de Gastos',
+                'subscriptions': 'Motor Automático',
+                'investments': 'Investimentos'
+            };
+            document.getElementById('mobile-page-title').innerText = titles[view] || 'MyFinance';
+
+            // Visibilidade do Navegador de Meses
             document.getElementById('global-month-nav').classList.toggle('hidden', view === 'transactions' || view === 'investments');
+            
             if (view === 'dashboard') renderDashboard(); 
             if (view === 'planning') renderPlanning(); 
             if (view === 'transactions') renderTable();
@@ -333,7 +336,7 @@
 
         function changeMonth(offset) { viewDate.setMonth(viewDate.getMonth() + offset); updateUI(); }
 
-        // --- 3. ASSINATURAS E NUVEM ---
+        // --- 3. ASSINATURAS ---
         function saveSubscription(e) {
             e.preventDefault();
             const id = Date.now();
@@ -356,7 +359,7 @@
                     generateDate.setMonth(generateDate.getMonth() + sub.frequency); cycles++;
                 }
             });
-            if(changesMade) localStorage.setItem('f_txs_v18', JSON.stringify(transactions));
+            if(changesMade) localStorage.setItem('f_txs_v19', JSON.stringify(transactions));
         }
 
         function renderSubscriptions() {
@@ -421,7 +424,7 @@
             let pct = parseFloat(document.getElementById('goal-input-pct').value) || 0;
             if(pct < 0) pct = 0; if(pct > 100) pct = 100;
             categoryGoals[cat] = pct;
-            localStorage.setItem('f_goals_v18', JSON.stringify(categoryGoals));
+            localStorage.setItem('f_goals_v19', JSON.stringify(categoryGoals));
             renderPlanning(); alert(`Meta para ${cat} salva com sucesso!`);
         }
 
@@ -446,7 +449,6 @@
             document.getElementById('form-title').innerText = "Editar"; document.getElementById('submit-btn').innerText = "Atualizar"; document.getElementById('cancel-edit-btn').classList.remove('hidden'); document.getElementById('entry-desc').value = tx.desc; document.getElementById('entry-value').value = tx.value; document.getElementById('entry-date').value = tx.date; document.getElementById('entry-bank').value = tx.bank; document.getElementById('entry-category').value = tx.category; document.getElementById('entry-type').value = tx.type; document.getElementById('entry-installments').value = 1; document.getElementById('entry-installments').disabled = true; document.getElementById('entry-type').disabled = true; 
             if (tx.linkId) { document.getElementById('entry-type').value = 'transfer'; toggleTransferUI(); const linkedTx = transactions.find(t => t.linkId === tx.linkId && t.id !== tx.id && t.type === 'income'); if (linkedTx) document.getElementById('entry-target-bank').value = linkedTx.bank; } else { toggleTransferUI(); } 
             updateFormCurrency(); 
-            // Redireciona e Rola pro topo
             navigate('dashboard');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -485,7 +487,6 @@
             document.getElementById('dynamic-income-display').innerText = formatMoney(baseIncome, 'BRL');
             let totalPercent = 0; const container = document.getElementById('planning-categories'); container.innerHTML = '';
             
-            // Popula form de metas
             document.getElementById('goal-select-cat').innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
             categories.forEach(cat => {
@@ -527,11 +528,11 @@
         function renderChart(monthTxs) { const ctx = document.getElementById('expenseChart').getContext('2d'); const expenses = monthTxs.filter(t => t.type === 'expense' && !t.desc.includes('Transf.') && !t.desc.includes('Pagamento Fatura')); const catData = {}; expenses.forEach(t => { catData[t.category] = (catData[t.category] || 0) + t.value; }); const labels = Object.keys(catData); const data = Object.values(catData); if(expenseChartInstance) expenseChartInstance.destroy(); if(data.length === 0) { expenseChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Sem Gastos'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] }, options: { plugins: { legend: { display: false } } } }); return; } expenseChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#6366f1', '#a855f7'], borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } } } }); }
 
         function saveAndSync() { 
-            localStorage.setItem('f_banks_v18', JSON.stringify(banks)); 
-            localStorage.setItem('f_txs_v18', JSON.stringify(transactions)); 
-            localStorage.setItem('f_categories_v18', JSON.stringify(categories));
-            localStorage.setItem('f_goals_v18', JSON.stringify(categoryGoals));
-            localStorage.setItem('f_subs_v18', JSON.stringify(subscriptions));
+            localStorage.setItem('f_banks_v19', JSON.stringify(banks)); 
+            localStorage.setItem('f_txs_v19', JSON.stringify(transactions)); 
+            localStorage.setItem('f_categories_v19', JSON.stringify(categories));
+            localStorage.setItem('f_goals_v19', JSON.stringify(categoryGoals));
+            localStorage.setItem('f_subs_v19', JSON.stringify(subscriptions));
             updateUI(); 
         }
 
@@ -555,7 +556,7 @@
         }
 
         function resetApp() { if(confirm("Apagar todos os dados? Irreversível.")) { transactions = []; banks = defaultBanks; categories = defaultCategories; subscriptions = []; localStorage.clear(); saveAndSync(); navigate('dashboard'); } }
-        function exportCSV() { const h = "\uFEFFId;Data;Ref;Tipo;Valor;Banco;Categoria;Pago;Desc;LinkID\n"; const b = transactions.map(t => `${t.id};${t.date};${t.refMonth};${t.type};${t.value};${t.bank};${t.category};${t.paid};${t.desc};${t.linkId || ''}`).join("\n"); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([h + b], { type: 'text/csv;charset=utf-8;' })); a.download = 'backup_finance_v18.csv'; a.click(); }
+        function exportCSV() { const h = "\uFEFFId;Data;Ref;Tipo;Valor;Banco;Categoria;Pago;Desc;LinkID\n"; const b = transactions.map(t => `${t.id};${t.date};${t.refMonth};${t.type};${t.value};${t.bank};${t.category};${t.paid};${t.desc};${t.linkId || ''}`).join("\n"); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([h + b], { type: 'text/csv;charset=utf-8;' })); a.download = 'backup_finance_v19.csv'; a.click(); }
         function importCSV(event) { const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const lines = e.target.result.split('\n'); let count = 0; for(let i = 1; i < lines.length; i++) { const cols = lines[i].split(';'); if(cols.length >= 9) { const idStr = cols[0].trim(); if(!transactions.some(t => t.id == idStr)) { transactions.push({ id: parseInt(idStr) || Date.now() + i, date: cols[1], refMonth: cols[2], type: cols[3], value: parseFloat(cols[4]), bank: cols[5], category: cols[6], paid: cols[7] === 'true', desc: cols[8], linkId: cols[9] ? parseInt(cols[9]) : null }); count++; } } } saveAndSync(); alert(`${count} importados!`); event.target.value = ''; }; reader.readAsText(file); }
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(e => console.log(e)); }); }
