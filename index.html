@@ -62,7 +62,7 @@
 				
 				<button id="nav-subscriptions" onclick="navigate('subscriptions')" class="nav-btn flex flex-col md:flex-row items-center justify-center gap-1 p-2 w-full md:w-auto rounded-xl text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all">
 					<i data-lucide="repeat-2" class="w-5 h-5 md:w-4 md:h-4"></i> 
-					<span class="text-[10px] md:text-sm font-bold md:block">Robôs</span>
+					<span class="text-[10px] md:text-sm font-bold md:block">Assinaturas</span>
 				</button>
 				
 				<button id="nav-investments" onclick="navigate('investments')" class="nav-btn flex flex-col md:flex-row items-center justify-center gap-1 p-2 w-full md:w-auto rounded-xl text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all">
@@ -204,7 +204,7 @@
         <section id="view-subscriptions" class="view-section hidden flex flex-col gap-6 w-full">
             <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
                 <div>
-                    <h2 class="text-xl md:text-2xl font-bold italic text-primary dark:text-white hidden md:block">Motor Automático</h2>
+                    <h2 class="text-xl md:text-2xl font-bold italic text-primary dark:text-white hidden md:block">Assinaturas</h2>
                     <p class="text-sm text-slate-500 mt-2 md:mt-0">Assinaturas e despesas fixas geradas automaticamente todo mês.</p>
                 </div>
             </div>
@@ -225,7 +225,7 @@
                                 <select id="sub-bank" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold"></select>
                                 <select id="sub-category" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-semibold"></select>
                             </div>
-                            <button type="submit" class="w-full bg-indigo-500 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-indigo-600 transition shadow-lg">Ativar Robô</button>
+                            <button type="submit" class="w-full bg-indigo-500 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-indigo-600 transition shadow-lg">Ativar Assinatura</button>
                         </form>
                     </div>
                 </aside>
@@ -297,7 +297,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT GERAL -->
+<!-- SCRIPT GERAL -->
     <script>
         // --- 1. ESTADOS E DADOS ---
         let defaultBanks = [{ name: "Cartão", closingDay: 15, currency: "BRL" }, { name: "Salário", closingDay: null, currency: "BRL" }];
@@ -311,8 +311,6 @@
         let baseIncome = parseFloat(localStorage.getItem('f_base_income_v19')) || 5000;
         let categoryGoals = JSON.parse(localStorage.getItem('f_goals_v19')) || {}; 
         
-        categories.forEach(c => { if(categoryGoals[c] === undefined) categoryGoals[c] = (c==="Moradia"?30:c==="Alimentação"?20:5); });
-
         let viewDate = new Date(); 
         let editingTxId = null;
         let expenseChartInstance = null;
@@ -333,18 +331,19 @@
 			
 			// Atualiza a cor dos botões do menu
 			document.querySelectorAll('.nav-btn').forEach(b => { 
-				b.classList.remove('text-accent'); 
-				b.classList.add('text-slate-400'); 
+				b.classList.remove('text-accent', 'bg-blue-50', 'dark:bg-blue-900/20'); 
+				b.classList.add('text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-800/50'); 
 			});
-			document.getElementById(`nav-${view}`).classList.add('text-accent'); 
-			document.getElementById(`nav-${view}`).classList.remove('text-slate-400');
+			const activeBtn = document.getElementById(`nav-${view}`);
+			activeBtn.classList.add('text-accent', 'bg-blue-50', 'dark:bg-blue-900/20'); 
+			activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-800/50');
 			
 			// Controle do Título Dinâmico Mobile (o que aparece grande em cima)
 			const titles = {
 				'dashboard': 'Dashboard',
 				'planning': 'Planejamento e Metas',
 				'transactions': 'Extrato de Gastos',
-				'subscriptions': 'Motor Automático',
+				'subscriptions': 'Assinaturas',
 				'investments': 'Investimentos'
 			};
 			document.getElementById('mobile-page-title').innerText = titles[view] || 'MyFinance';
@@ -360,15 +359,6 @@
 			
 			// Atualiza os ícones do Lucide caso algum botão tenha sido modificado
 			lucide.createIcons();
-			
-			// Atualiza a cor dos botões do menu
-			document.querySelectorAll('.nav-btn').forEach(b => { 
-				b.classList.remove('text-accent', 'bg-blue-50', 'dark:bg-blue-900/20'); 
-				b.classList.add('text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-800/50'); 
-			});
-			const activeBtn = document.getElementById(`nav-${view}`);
-			activeBtn.classList.add('text-accent', 'bg-blue-50', 'dark:bg-blue-900/20'); 
-			activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-800/50');
 		}
 
 		function changeMonth(offset) { 
@@ -380,7 +370,7 @@
             e.preventDefault();
             const id = Date.now();
             const sub = { id, name: document.getElementById('sub-name').value, value: parseFloat(document.getElementById('sub-value').value), frequency: parseInt(document.getElementById('sub-freq').value), startDate: document.getElementById('sub-date').value, bank: document.getElementById('sub-bank').value, category: document.getElementById('sub-category').value };
-            subscriptions.push(sub); e.target.reset(); document.getElementById('sub-date').valueAsDate = new Date(); saveAndSync(); alert("Robô ativado!");
+            subscriptions.push(sub); e.target.reset(); document.getElementById('sub-date').valueAsDate = new Date(); saveAndSync(); alert("Assinatura ativada!");
         }
 
         function deleteSubscription(id) { if(confirm("Parar geração automática desta assinatura? (Lançamentos passados serão mantidos)")) { subscriptions = subscriptions.filter(s => s.id !== id); saveAndSync(); } }
@@ -407,7 +397,7 @@
                 const fTxt = s.frequency === 1 ? 'Mensal' : s.frequency === 6 ? 'Semestral' : 'Anual';
                 const txCurr = (banks.find(b => b.name === s.bank) || {currency:'BRL'}).currency;
                 return `<div class="bg-white dark:bg-darkcard border border-slate-200 dark:border-slate-700 p-4 rounded-xl flex items-center justify-between shadow-sm relative overflow-hidden group"><div class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div><div class="pl-2"><h4 class="font-bold text-slate-800 dark:text-slate-100">${s.name}</h4><p class="text-xs text-slate-500">${s.bank} • ${fTxt}</p><p class="text-sm font-black text-expense mt-1">${formatMoney(s.value, txCurr)}</p></div><button onclick="deleteSubscription(${s.id})" class="p-2 text-slate-300 hover:text-expense hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition"><i data-lucide="trash" class="w-4 h-4"></i></button></div>`;
-            }).join('') || '<div class="col-span-2 text-center text-slate-400 py-10 text-sm italic">Nenhum robô ativado.</div>';
+            }).join('') || '<div class="col-span-2 text-center text-slate-400 py-10 text-sm italic">Nenhuma assinatura ativa.</div>';
             lucide.createIcons();
         }
 
@@ -520,20 +510,80 @@
         }
 
         function renderPlanning() {
-            const currentRef = `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}`; const monthTxs = transactions.filter(t => t.refMonth === currentRef);
+            const currentRef = `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}`;
+            const monthTxs = transactions.filter(t => t.refMonth === currentRef);
+            
             renderChart(monthTxs);
+            
             baseIncome = monthTxs.filter(t => t.type === 'income' && (!banks.find(b=>b.name===t.bank) || banks.find(b=>b.name===t.bank).currency === 'BRL') && !t.desc.includes('Transf.') && !t.desc.includes('Recebimento Fatura')).reduce((a, t) => a + t.value, 0);
             document.getElementById('dynamic-income-display').innerText = formatMoney(baseIncome, 'BRL');
-            let totalPercent = 0; const container = document.getElementById('planning-categories'); container.innerHTML = '';
+            
+            let totalPercent = 0; 
+            const container = document.getElementById('planning-categories'); 
+            container.innerHTML = '';
             
             document.getElementById('goal-select-cat').innerHTML = categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
+            let hasGoals = false;
+
             categories.forEach(cat => {
-                const pct = categoryGoals[cat] || 0; totalPercent += pct; const limitValue = baseIncome * (pct / 100); const spentValue = monthTxs.filter(t => t.category === cat && !t.desc.includes('Transf.') && !t.desc.includes('Pagamento Fatura') && (t.type === 'expense' || cat === 'Investimento')).reduce((a, t) => a + t.value, 0);
-                let progress = limitValue === 0 ? 0 : (spentValue / limitValue) * 100; let colorClass = 'bg-income'; if (progress >= 80 && progress < 100) colorClass = 'bg-yellow-500'; if (progress >= 100) colorClass = 'bg-expense'; progress = Math.min(progress, 100); 
-                container.innerHTML += `<div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700"><div class="flex justify-between items-center mb-3"><h4 class="font-bold text-slate-700 dark:text-slate-200">${cat}</h4><span class="text-accent font-black text-sm bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded">${pct}%</span></div><div class="flex justify-between text-xs mb-2"><span class="text-slate-500">Limite: ${formatMoney(limitValue)}</span><span class="font-bold ${spentValue > limitValue ? 'text-expense' : 'text-slate-700 dark:text-slate-300'}">${formatMoney(spentValue)}</span></div><div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden"><div class="${colorClass} h-2 rounded-full transition-all duration-500" style="width: ${progress}%"></div></div></div>`;
+                const pct = categoryGoals[cat] || 0; 
+                if (pct <= 0) return;
+
+                hasGoals = true;
+                totalPercent += pct; 
+                
+                const limitValue = baseIncome * (pct / 100); 
+                const spentValue = monthTxs.filter(t => t.category === cat && !t.desc.includes('Transf.') && !t.desc.includes('Pagamento Fatura') && (t.type === 'expense' || cat === 'Investimento')).reduce((a, t) => a + t.value, 0);
+                
+                let progress = limitValue === 0 ? 0 : (spentValue / limitValue) * 100; 
+                let colorClass = 'bg-income'; 
+                if (progress >= 80 && progress < 100) colorClass = 'bg-yellow-500'; 
+                if (progress >= 100) colorClass = 'bg-expense'; 
+                progress = Math.min(progress, 100); 
+                
+                container.innerHTML += `
+                <div class="bg-white dark:bg-darkcard p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative group">
+                    <button onclick="removeGoal('${cat}')" class="absolute top-3 right-3 text-slate-300 hover:text-expense transition md:opacity-0 group-hover:opacity-100 p-1" title="Excluir Meta">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                    <div class="flex justify-between items-center mb-3 pr-6">
+                        <h4 class="font-bold text-slate-700 dark:text-slate-200">${cat}</h4>
+                        <span class="text-accent font-black text-sm bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded">${pct}%</span>
+                    </div>
+                    <div class="flex justify-between text-xs mb-2">
+                        <span class="text-slate-500">Limite: ${formatMoney(limitValue)}</span>
+                        <span class="font-bold ${spentValue > limitValue ? 'text-expense' : 'text-slate-700 dark:text-slate-300'}">${formatMoney(spentValue)}</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+                        <div class="${colorClass} h-2 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                    </div>
+                </div>`;
             });
-            document.getElementById('total-percent-planned').innerText = `${totalPercent}%`; document.getElementById('total-percent-planned').className = `text-xs font-black ${totalPercent > 100 ? 'text-expense' : 'text-accent'}`; document.getElementById('total-percent-bar').style.width = `${Math.min(totalPercent, 100)}%`; document.getElementById('total-percent-bar').className = `h-1.5 rounded-full transition-all ${totalPercent > 100 ? 'bg-expense' : 'bg-accent'}`;
+
+            if (!hasGoals) {
+                container.innerHTML = `
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12 px-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
+                    <i data-lucide="target" class="w-10 h-10 mx-auto text-slate-300 mb-3"></i>
+                    <h4 class="font-bold text-slate-500 mb-1">Sem planejamento</h4>
+                    <p class="text-sm text-slate-400 max-w-sm mx-auto">Utilize o formulário acima para definir o limite de gastos por categoria baseados na sua renda.</p>
+                </div>`;
+            }
+
+            document.getElementById('total-percent-planned').innerText = `${totalPercent}%`; 
+            document.getElementById('total-percent-planned').className = `text-xs font-black ${totalPercent > 100 ? 'text-expense' : 'text-accent'}`; 
+            document.getElementById('total-percent-bar').style.width = `${Math.min(totalPercent, 100)}%`; 
+            document.getElementById('total-percent-bar').className = `h-1.5 rounded-full transition-all ${totalPercent > 100 ? 'bg-expense' : 'bg-accent'}`;
+            
+            lucide.createIcons();
+        }
+
+        function removeGoal(cat) {
+            if(confirm(`Excluir a meta da categoria "${cat}"? (Os lançamentos do extrato não serão apagados)`)) {
+                categoryGoals[cat] = 0;
+                localStorage.setItem('f_goals_v19', JSON.stringify(categoryGoals));
+                renderPlanning();
+            }
         }
 
         function renderTable() {
@@ -596,7 +646,55 @@
 
         function resetApp() { if(confirm("Apagar todos os dados? Irreversível.")) { transactions = []; banks = defaultBanks; categories = defaultCategories; subscriptions = []; localStorage.clear(); saveAndSync(); navigate('dashboard'); } }
         function exportCSV() { const h = "\uFEFFId;Data;Ref;Tipo;Valor;Banco;Categoria;Pago;Desc;LinkID\n"; const b = transactions.map(t => `${t.id};${t.date};${t.refMonth};${t.type};${t.value};${t.bank};${t.category};${t.paid};${t.desc};${t.linkId || ''}`).join("\n"); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([h + b], { type: 'text/csv;charset=utf-8;' })); a.download = 'backup_finance_v19.csv'; a.click(); }
-        function importCSV(event) { const file = event.target.files[0]; if(!file) return; const reader = new FileReader(); reader.onload = function(e) { const lines = e.target.result.split('\n'); let count = 0; for(let i = 1; i < lines.length; i++) { const cols = lines[i].split(';'); if(cols.length >= 9) { const idStr = cols[0].trim(); if(!transactions.some(t => t.id == idStr)) { transactions.push({ id: parseInt(idStr) || Date.now() + i, date: cols[1], refMonth: cols[2], type: cols[3], value: parseFloat(cols[4]), bank: cols[5], category: cols[6], paid: cols[7] === 'true', desc: cols[8], linkId: cols[9] ? parseInt(cols[9]) : null }); count++; } } } saveAndSync(); alert(`${count} importados!`); event.target.value = ''; }; reader.readAsText(file); }
+        
+        function importCSV(event) { 
+            const file = event.target.files[0]; 
+            if(!file) return; 
+            
+            const reader = new FileReader(); 
+            reader.onload = function(e) { 
+                const lines = e.target.result.split(/\r?\n/).filter(line => line.trim() !== ''); 
+                
+                let count = 0; 
+                let novosBancos = 0;
+
+                for(let i = 1; i < lines.length; i++) { 
+                    const cols = lines[i].split(';'); 
+                    
+                    if(cols.length >= 9) { 
+                        const idStr = cols[0].trim();
+                        const valFormatado = cols[4].replace(',', '.').trim();
+                        const bankStr = cols[5].trim();
+                        
+                        if (bankStr && !banks.some(b => b.name === bankStr)) {
+                            banks.push({ name: bankStr, closingDay: null, currency: 'BRL' });
+                            novosBancos++;
+                        }
+
+                        if(!transactions.some(t => t.id == idStr)) { 
+                            transactions.push({ 
+                                id: parseInt(idStr) || Date.now() + i, 
+                                date: cols[1].trim(), 
+                                refMonth: cols[2].trim(), 
+                                type: cols[3].trim(), 
+                                value: parseFloat(valFormatado) || 0, 
+                                bank: bankStr, 
+                                category: cols[6].trim(), 
+                                paid: cols[7].trim().toLowerCase() === 'true', 
+                                desc: cols[8].trim(), 
+                                linkId: cols[9] ? parseInt(cols[9].trim()) : null 
+                            }); 
+                            count++; 
+                        } 
+                    } 
+                } 
+                
+                saveAndSync(); 
+                alert(`Importação concluída com sucesso!\n\n${count} novos lançamentos importados.\n${novosBancos} contas vinculadas automaticamente.`); 
+                event.target.value = ''; 
+            }; 
+            reader.readAsText(file); 
+        }
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(e => console.log(e)); }); }
         
