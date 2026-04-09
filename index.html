@@ -40,9 +40,15 @@
                     <button onclick="resetApp()" class="p-2 text-slate-400 hover:text-expense hover:bg-red-50 dark:hover:bg-red-950/30 rounded transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                 </div>
             </div>
+
+            <!-- FILTRO GLOBAL DE MÊS (Agora fixo no menu) -->
+            <div id="global-month-nav" class="flex items-center justify-between bg-slate-50 dark:bg-slate-900/50 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 transition-colors">
+                <button onclick="changeMonth(-1)" class="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg font-black transition text-slate-500 dark:text-slate-400"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
+                <h2 class="text-sm md:text-base font-bold italic text-center">Fatura: <span id="current-ref-display" class="text-accent">--</span></h2>
+                <button onclick="changeMonth(1)" class="p-2 hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg font-black transition text-slate-500 dark:text-slate-400"><i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+            </div>
             
             <!-- Menu Responsivo: Ícones no Mobile, Texto no Desktop -->
-			<!-- Menu de Navegação (Bottom Nav no Mobile, Top Nav no Desktop) -->
 			<div class="fixed bottom-0 left-0 w-full bg-white dark:bg-darkcard border-t border-slate-200 dark:border-slate-800 z-50 md:relative md:border-none md:bg-transparent md:flex md:justify-start gap-1 md:gap-8 flex justify-around items-center px-1 py-2 md:py-0 pb-safe md:w-auto shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] md:shadow-none transition-colors">
 				
 				<button id="nav-dashboard" onclick="navigate('dashboard')" class="nav-btn flex flex-col md:flex-row items-center justify-center gap-1 p-2 w-full md:w-auto rounded-xl text-accent bg-blue-50 dark:bg-blue-900/20 transition-all">
@@ -77,12 +83,6 @@
         
         <!-- TÍTULO DINÂMICO MOBILE (Some no Desktop) -->
         <h2 id="mobile-page-title" class="text-3xl font-black italic text-primary dark:text-white md:hidden tracking-tighter mb-4">Dashboard</h2>
-
-        <div id="global-month-nav" class="flex items-center justify-between bg-white dark:bg-darkcard p-4 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mb-6 transition-colors">
-            <button onclick="changeMonth(-1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition"><i data-lucide="arrow-left" class="w-4 h-4"></i></button>
-            <h2 class="text-lg md:text-2xl font-bold italic text-center">Fatura: <span id="current-ref-display" class="text-accent">--</span></h2>
-            <button onclick="changeMonth(1)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg font-black transition"><i data-lucide="arrow-right" class="w-4 h-4"></i></button>
-        </div>
 
         <!-- 1. DASHBOARD -->
         <section id="view-dashboard" class="view-section grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
@@ -160,7 +160,7 @@
                 </div>
             </div>
 
-            <!-- Formulário de Definição de Metas (Movido para cá) -->
+            <!-- Formulário de Definição de Metas -->
             <div class="bg-white dark:bg-darkcard p-5 md:p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 mt-2">
                 <h3 class="font-bold text-xs uppercase text-slate-400 tracking-widest italic mb-4">Definir Meta por Categoria</h3>
                 <form onsubmit="saveGoalFromForm(event)" class="flex flex-col md:flex-row gap-4 items-end">
@@ -183,15 +183,11 @@
         <!-- 3. EXTRATO -->
         <section id="view-transactions" class="view-section hidden flex flex-col gap-6 w-full">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <!-- Título original omitido no mobile (pois agora temos o dinâmico), mas mantido no desktop -->
                 <h2 class="text-2xl font-bold italic text-primary dark:text-white w-full md:w-auto hidden md:block">Extrato Detalhado</h2>
                 <div class="flex flex-col md:flex-row gap-2 md:gap-4 w-full md:w-auto md:ml-auto">
-                    <div class="relative w-full md:w-48 xl:w-64"><i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i><input type="text" id="search-tx" placeholder="Buscar..." onkeyup="renderTable()" class="w-full border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded pl-9 p-2 text-sm font-semibold outline-none focus:ring-1 focus:ring-accent"></div>
-                    <div class="flex gap-2 w-full md:w-auto">
-                        <select id="filter-month-select" onchange="renderTable()" class="flex-1 md:w-36 border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded p-2 text-sm font-bold outline-none focus:ring-1 focus:ring-accent">
-                            <option value="">Todos os Meses</option><option value="01">Jan</option><option value="02">Fev</option><option value="03">Mar</option><option value="04">Abr</option><option value="05">Mai</option><option value="06">Jun</option><option value="07">Jul</option><option value="08">Ago</option><option value="09">Set</option><option value="10">Out</option><option value="11">Nov</option><option value="12">Dez</option>
-                        </select>
-                        <select id="filter-year-select" onchange="renderTable()" class="w-24 border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded p-2 text-sm font-bold outline-none focus:ring-1 focus:ring-accent"><option value="">Anos</option></select>
+                    <div class="relative w-full md:w-64">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                        <input type="text" id="search-tx" placeholder="Buscar lançamentos..." onkeyup="renderTable()" class="w-full border border-slate-200 dark:border-slate-700 dark:bg-darkcard rounded-lg pl-9 p-2 text-sm font-semibold outline-none focus:ring-1 focus:ring-accent">
                     </div>
                 </div>
             </div>
@@ -253,21 +249,18 @@
 
     </main>
 
-    <!-- MODAIS -->
+    <!-- MODAIS (Inalterados) -->
     <!-- Modal Categorias -->
     <div id="category-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 px-4">
         <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-xl w-full max-w-sm">
             <h3 class="font-bold text-lg mb-4 text-primary dark:text-white flex items-center gap-2"><i data-lucide="settings-2" class="w-5 h-5"></i> Categorias</h3>
-            
             <form onsubmit="addNewCategory(event)" class="flex gap-2 mb-4">
                 <input type="text" id="new-cat-input" placeholder="Nova categoria..." class="flex-1 border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg px-3 py-2 text-sm outline-none" required>
                 <button type="submit" class="bg-accent text-white px-3 py-2 rounded-lg font-bold hover:bg-blue-600"><i data-lucide="plus" class="w-4 h-4"></i></button>
             </form>
-
             <div class="max-h-60 overflow-y-auto no-scrollbar border border-slate-100 dark:border-slate-800 rounded-lg">
                 <ul id="category-list" class="divide-y divide-slate-100 dark:divide-slate-800 text-sm"></ul>
             </div>
-
             <button onclick="closeCategoryModal()" class="w-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 py-3 rounded-lg font-bold mt-4">Fechar</button>
         </div>
     </div>
@@ -280,19 +273,6 @@
             <div class="space-y-4">
                 <div><label class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Debitar de qual conta?</label><select id="pay-invoice-source" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-3 font-bold text-sm outline-none"></select></div>
                 <div class="flex gap-2 pt-2"><button onclick="closePayInvoiceModal()" class="flex-1 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 py-3 rounded-lg font-bold">Cancelar</button><button onclick="confirmPayInvoice()" class="flex-1 bg-accent text-white py-3 rounded-lg font-black uppercase tracking-wider hover:bg-blue-700">Confirmar</button></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Repetição -->
-    <div id="repeat-tx-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50 px-4">
-        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-xl w-full max-w-sm">
-            <h3 class="font-bold text-lg mb-4 text-primary dark:text-white">Repetir Lançamento Fixos</h3>
-            <div class="flex flex-col gap-3">
-                <button onclick="repeatTransaction('monthly')" class="w-full bg-accent text-white py-3 rounded-lg font-bold">Mensal (+1 Mês)</button>
-                <button onclick="repeatTransaction('semiannual')" class="w-full bg-blue-500 text-white py-3 rounded-lg font-bold">Semestral (+6 Meses)</button>
-                <button onclick="repeatTransaction('annual')" class="w-full bg-indigo-500 text-white py-3 rounded-lg font-bold">Anual (+12 Meses)</button>
-                <button onclick="closeRepeatTxModal()" class="w-full bg-slate-200 dark:bg-slate-700 text-slate-700 py-3 rounded-lg font-bold mt-2">Cancelar</button>
             </div>
         </div>
     </div>
@@ -325,11 +305,9 @@
 
 		// --- 2. NAVEGAÇÃO E TÍTULOS ---
 		function navigate(view) {
-			// Esconde todas as sections, mostra a selecionada
 			document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); 
 			document.getElementById(`view-${view}`).classList.remove('hidden');
 			
-			// Atualiza a cor dos botões do menu
 			document.querySelectorAll('.nav-btn').forEach(b => { 
 				b.classList.remove('text-accent', 'bg-blue-50', 'dark:bg-blue-900/20'); 
 				b.classList.add('text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-800/50'); 
@@ -338,7 +316,6 @@
 			activeBtn.classList.add('text-accent', 'bg-blue-50', 'dark:bg-blue-900/20'); 
 			activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-50', 'dark:hover:bg-slate-800/50');
 			
-			// Controle do Título Dinâmico Mobile (o que aparece grande em cima)
 			const titles = {
 				'dashboard': 'Dashboard',
 				'planning': 'Planejamento e Metas',
@@ -348,16 +325,11 @@
 			};
 			document.getElementById('mobile-page-title').innerText = titles[view] || 'MyFinance';
 
-			// Oculta o navegador de meses em algumas abas
-			document.getElementById('global-month-nav').classList.toggle('hidden', view === 'transactions' || view === 'investments');
-			
-			// Chama a função de renderização correta
 			if (view === 'dashboard') renderDashboard(); 
 			if (view === 'planning') renderPlanning(); 
 			if (view === 'transactions') renderTable();
 			if (view === 'subscriptions') renderSubscriptions();
 			
-			// Atualiza os ícones do Lucide caso algum botão tenha sido modificado
 			lucide.createIcons();
 		}
 
@@ -365,6 +337,7 @@
 			viewDate.setMonth(viewDate.getMonth() + offset); 
 			updateUI(); 
 		}
+
         // --- 3. ASSINATURAS ---
         function saveSubscription(e) {
             e.preventDefault();
@@ -488,8 +461,6 @@
 
         function renderDashboard(filterBank = null) {
             const currentRef = `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}`;
-            const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
-            document.getElementById('current-ref-display').innerText = `${monthNames[viewDate.getMonth()]} ${viewDate.getFullYear()}`;
             document.getElementById('bank-cards').innerHTML = banks.map(b => { const bal = transactions.filter(t => t.bank === b.name).reduce((acc, t) => acc + (t.type === 'income' ? t.value : -t.value), 0); return `<button onclick="renderDashboard('${b.name}')" class="text-left bg-white dark:bg-darkcard p-4 rounded-2xl border ${filterBank === b.name ? 'border-accent ring-2 ring-blue-500/20' : 'border-slate-200 dark:border-slate-700'} shadow-sm hover:border-accent transition"><h4 class="font-black text-[9px] uppercase text-slate-400 italic flex justify-between items-center">${b.name} ${b.closingDay ? '<i data-lucide="credit-card" class="w-3 h-3 text-accent"></i>' : ''}</h4><p class="text-lg font-bold mt-1 ${bal < 0 ? 'text-expense' : 'text-slate-800 dark:text-white'} truncate">${formatMoney(bal, b.currency)}</p></button>`; }).join('');
             let displayTxs = transactions.filter(t => t.refMonth === currentRef); const payContainer = document.getElementById('pay-invoice-container');
             if (filterBank) { 
@@ -586,34 +557,49 @@
             }
         }
 
+        // --- NOVA LÓGICA DE EXTRATO INTEGRADA AO FILTRO GLOBAL ---
         function renderTable() {
-            const fMonth = document.getElementById('filter-month-select').value; const fYear = document.getElementById('filter-year-select').value; const searchQuery = document.getElementById('search-tx').value.toLowerCase();
-            let filtered = transactions; if (fMonth || fYear) filtered = filtered.filter(tx => { const [txYear, txMonth] = tx.refMonth.split('-'); return (fMonth ? txMonth === fMonth : true) && (fYear ? txYear === fYear : true); }); if (searchQuery) filtered = filtered.filter(tx => tx.desc.toLowerCase().includes(searchQuery) || tx.category.toLowerCase().includes(searchQuery));
-            filtered.sort((a,b) => new Date(b.date) - new Date(a.date)); const isAllMonthsView = !fMonth; let html = '';
-            if (isAllMonthsView && !searchQuery) { 
-                const grouped = new Map();
-                filtered.forEach(tx => { const match = tx.desc.match(/(.*) \((\d+)\/(\d+)\)/); if (match) { const baseName = match[1].trim(); const totalParts = match[3]; const key = `${baseName}|${totalParts}|${tx.bank}|${tx.value}`; if (!grouped.has(key)) grouped.set(key, { isGroup: true, baseName, totalParts, bank: tx.bank, txs: [], val: tx.value * parseInt(totalParts) }); grouped.get(key).txs.push(tx); } else { grouped.set(tx.id, { isGroup: false, tx }); } });
-                let groupCounter = 0;
-                grouped.forEach((item, key) => {
-                    if (item.isGroup && item.txs.length > 1) { 
-                        groupCounter++; const gId = `group-${groupCounter}`; const txCurr = (banks.find(b => b.name === item.bank) || {currency:'BRL'}).currency;
-                        html += `<tr class="bg-slate-100/50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-700"><td class="px-3 md:px-6 py-3 text-slate-400 font-mono text-[10px] md:text-xs">--/--/----</td><td class="hidden md:table-cell px-6 py-3 text-center"><span class="bg-slate-200 dark:bg-slate-700 text-slate-500 px-2 py-1 rounded font-black text-[10px]">Múltiplos</span></td><td class="px-3 md:px-6 py-3"><button onclick="toggleGroup('${gId}', this)" class="flex items-center gap-2 font-bold text-xs md:text-sm text-accent hover:text-blue-700 transition"><i data-lucide="folder-plus" class="w-4 h-4 icon-plus"></i><i data-lucide="folder-minus" class="w-4 h-4 icon-minus hidden"></i>${item.baseName} (${item.txs.length}/${item.totalParts} lançadas)</button></td><td class="px-3 md:px-6 py-3 uppercase font-black text-[10px] text-slate-500 italic">${item.bank}</td><td class="px-3 md:px-6 py-3 text-right font-mono font-bold text-xs md:text-sm text-expense">Total: ${formatMoney(item.val, txCurr)}</td><td class="px-3 md:px-6 py-3 text-right text-[10px] text-slate-400">Expandir p/ editar</td></tr>`;
-                        item.txs.forEach(t => { html += renderRow(t, true, gId); });
-                    } else { const t = item.isGroup ? item.txs[0] : item.tx; html += renderRow(t, false, null); }
-                });
-            } else { html = filtered.map(t => renderRow(t, false, null)).join(''); }
-            document.getElementById('table-body').innerHTML = html || `<tr><td colspan="6" class="px-6 py-10 text-center text-slate-400 italic">Nenhum lançamento encontrado.</td></tr>`; lucide.createIcons();
+            const currentRef = `${viewDate.getFullYear()}-${(viewDate.getMonth() + 1).toString().padStart(2, '0')}`;
+            const searchQuery = document.getElementById('search-tx').value.toLowerCase();
+            
+            let filtered = transactions; 
+            
+            if (searchQuery) {
+                // Se o usuário estiver pesquisando algo, buscamos em TODO O HISTÓRICO 
+                // para que não fique restrito apenas ao mês atual.
+                filtered = filtered.filter(tx => 
+                    tx.desc.toLowerCase().includes(searchQuery) || 
+                    tx.category.toLowerCase().includes(searchQuery) ||
+                    tx.bank.toLowerCase().includes(searchQuery)
+                );
+            } else {
+                // Se não tiver pesquisa, exibe fielmente APENAS O MÊS SELECIONADO GLOBALMENTE
+                filtered = filtered.filter(tx => tx.refMonth === currentRef);
+            }
+            
+            filtered.sort((a,b) => new Date(b.date) - new Date(a.date)); 
+            
+            let html = filtered.map(t => renderRow(t, false, null)).join('');
+            
+            document.getElementById('table-body').innerHTML = html || `<tr><td colspan="6" class="px-6 py-10 text-center text-slate-400 italic">Nenhum lançamento encontrado.</td></tr>`; 
+            lucide.createIcons();
         }
-        function renderRow(t, isChild, parentId) { const txCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency; const isInstallment = /\(\d+\/\d+\)/.test(t.desc); const hiddenClass = isChild ? `hidden installment-row child-of-${parentId} bg-slate-50 dark:bg-slate-800/80` : 'hover:bg-slate-50 dark:hover:bg-slate-800'; const padClass = isChild ? 'pl-8 md:pl-12 border-l-2 border-l-accent' : ''; return `<tr class="transition border-b border-slate-50 dark:border-slate-800/50 ${hiddenClass}"><td class="px-3 md:px-6 py-3 text-slate-400 font-mono text-[10px] md:text-xs whitespace-nowrap ${padClass}">${t.date.split('-').reverse().join('/')}</td><td class="hidden md:table-cell px-6 py-3 text-center"><span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${t.refMonth}</span></td><td class="px-3 md:px-6 py-3 min-w-[120px]"><div class="flex items-center gap-1">${isInstallment && !isChild ? '<i data-lucide="layers" class="w-3 h-3 text-slate-400"></i>' : ''}<p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${t.paid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${t.desc}">${t.desc}</p></div><span class="text-[8px] font-black text-slate-400 uppercase italic block mt-1">${t.category}</span></td><td class="px-3 md:px-6 py-3 uppercase font-black text-[10px] text-slate-500 italic">${t.bank}</td><td class="px-3 md:px-6 py-3 text-right font-mono font-bold text-xs md:text-sm ${t.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">${formatMoney(t.value, txCurr)}</td><td class="px-3 md:px-6 py-3 text-right flex justify-end gap-3 mt-1 md:mt-0"> <button onclick="editTx(${t.id})" class="text-accent hover:opacity-70 transition" title="Editar"><i data-lucide="square-pen" class="w-4 h-4"></i></button> <button onclick="deleteTx(${t.id})" class="text-expense hover:opacity-70 transition" title="Excluir"><i data-lucide="trash-2" class="w-4 h-4"></i></button> </td></tr>`; }
-        function toggleGroup(groupId, btnElement) { const rows = document.querySelectorAll(`.child-of-${groupId}`); const isHidden = rows[0].classList.contains('hidden'); rows.forEach(row => row.classList.toggle('hidden')); btnElement.querySelector('.icon-plus').classList.toggle('hidden', isHidden); btnElement.querySelector('.icon-minus').classList.toggle('hidden', !isHidden); }
+
+        function renderRow(t, isChild, parentId) { 
+            const txCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency; 
+            const isInstallment = /\(\d+\/\d+\)/.test(t.desc); 
+            const hiddenClass = isChild ? `hidden installment-row child-of-${parentId} bg-slate-50 dark:bg-slate-800/80` : 'hover:bg-slate-50 dark:hover:bg-slate-800'; 
+            const padClass = isChild ? 'pl-8 md:pl-12 border-l-2 border-l-accent' : ''; 
+            return `<tr class="transition border-b border-slate-50 dark:border-slate-800/50 ${hiddenClass}"><td class="px-3 md:px-6 py-3 text-slate-400 font-mono text-[10px] md:text-xs whitespace-nowrap ${padClass}">${t.date.split('-').reverse().join('/')}</td><td class="hidden md:table-cell px-6 py-3 text-center"><span class="bg-blue-100 dark:bg-blue-900/50 text-accent px-2 py-1 rounded font-black text-[10px]">REF ${t.refMonth}</span></td><td class="px-3 md:px-6 py-3 min-w-[120px]"><div class="flex items-center gap-1">${isInstallment && !isChild ? '<i data-lucide="layers" class="w-3 h-3 text-slate-400"></i>' : ''}<p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${t.paid ? 'line-through opacity-50' : ''} truncate max-w-[120px] md:max-w-xs" title="${t.desc}">${t.desc}</p></div><span class="text-[8px] font-black text-slate-400 uppercase italic block mt-1">${t.category}</span></td><td class="px-3 md:px-6 py-3 uppercase font-black text-[10px] text-slate-500 italic">${t.bank}</td><td class="px-3 md:px-6 py-3 text-right font-mono font-bold text-xs md:text-sm ${t.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">${formatMoney(t.value, txCurr)}</td><td class="px-3 md:px-6 py-3 text-right flex justify-end gap-3 mt-1 md:mt-0"> <button onclick="editTx(${t.id})" class="text-accent hover:opacity-70 transition" title="Editar"><i data-lucide="square-pen" class="w-4 h-4"></i></button> <button onclick="deleteTx(${t.id})" class="text-expense hover:opacity-70 transition" title="Excluir"><i data-lucide="trash-2" class="w-4 h-4"></i></button> </td></tr>`; 
+        }
 
         function openPayInvoiceModal(bankName, refMonth, amount) { tmpInvoiceBank = bankName; tmpInvoiceRef = refMonth; tmpInvoiceAmount = amount; const sourceBanks = banks.filter(b => !b.closingDay); if (sourceBanks.length === 0) return alert("Você precisa ter uma Conta Corrente (sem Dia de Fechamento)!"); document.getElementById('pay-invoice-source').innerHTML = sourceBanks.map(b => `<option value="${b.name}">${b.name}</option>`).join(''); const [y, m] = refMonth.split('-'); document.getElementById('pay-invoice-title').innerText = `${bankName} • Mês ${m}/${y}`; document.getElementById('pay-invoice-amount').innerText = formatMoney(amount); document.getElementById('pay-invoice-modal').classList.remove('hidden'); }
         function closePayInvoiceModal() { document.getElementById('pay-invoice-modal').classList.add('hidden'); }
         function confirmPayInvoice() { const sourceBank = document.getElementById('pay-invoice-source').value; const today = new Date(); const baseDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 12, 0, 0); const payDateStr = today.toISOString().split('T')[0]; const linkId = Date.now(); transactions.forEach(t => { if (t.bank === tmpInvoiceBank && t.refMonth === tmpInvoiceRef && t.type === 'expense') t.paid = true; }); transactions.push(createTxObj(linkId, `Pagamento Fatura ${tmpInvoiceBank} (${tmpInvoiceRef})`, 'Transferência', tmpInvoiceAmount, payDateStr, 'expense', sourceBank, baseDate, 0, linkId)); let incomeTx = createTxObj(linkId + 1, `Recebimento Fatura (${tmpInvoiceRef})`, 'Transferência', tmpInvoiceAmount, payDateStr, 'income', tmpInvoiceBank, baseDate, 0, linkId); incomeTx.refMonth = tmpInvoiceRef; incomeTx.paid = true; transactions.push(incomeTx); saveAndSync(); closePayInvoiceModal(); }
 
-        function updateYearOptions() { const ys = document.getElementById('filter-year-select'); const u = [...new Set(transactions.map(t => t.refMonth.split('-')[0]))].sort((a, b) => b - a); if(u.length===0) u.push(new Date().getFullYear().toString()); const cur = ys.value; ys.innerHTML = `<option value="">Anos</option>` + u.map(y => `<option value="${y}">${y}</option>`).join(''); if (u.includes(cur)) ys.value = cur; }
         function addBank() { const n = document.getElementById('bank-input').value.trim(); const d = parseInt(document.getElementById('bank-closing').value); const c = document.getElementById('bank-currency').value; if(n && !banks.some(b => b.name === n)) { banks.push({ name: n, closingDay: isNaN(d) ? null : d, currency: c }); saveAndSync(); document.getElementById('bank-input').value = ''; document.getElementById('bank-closing').value = ''; } }
         function removeBank(n) { if(!transactions.some(t => t.bank === n)) { banks = banks.filter(b => b.name !== n); saveAndSync(); } else alert("Conta possui lançamentos!"); }
+        
         function renderChart(monthTxs) { const ctx = document.getElementById('expenseChart').getContext('2d'); const expenses = monthTxs.filter(t => t.type === 'expense' && !t.desc.includes('Transf.') && !t.desc.includes('Pagamento Fatura')); const catData = {}; expenses.forEach(t => { catData[t.category] = (catData[t.category] || 0) + t.value; }); const labels = Object.keys(catData); const data = Object.values(catData); if(expenseChartInstance) expenseChartInstance.destroy(); if(data.length === 0) { expenseChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: ['Sem Gastos'], datasets: [{ data: [1], backgroundColor: ['#e2e8f0'] }] }, options: { plugins: { legend: { display: false } } } }); return; } expenseChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: labels, datasets: [{ data: data, backgroundColor: ['#ef4444', '#f97316', '#eab308', '#22c55e', '#0ea5e9', '#6366f1', '#a855f7'], borderWidth: 2 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 } } } } } }); }
 
         function saveAndSync() { 
@@ -625,11 +611,16 @@
             updateUI(); 
         }
 
+        // --- ATUALIZAÇÕES GERAIS DE UI ---
         function updateUI() {
+            // Atualiza O TEXTO GLOBAL DO MÊS NO CABEÇALHO (Em qualquer página)
+            const monthNames = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+            document.getElementById('current-ref-display').innerText = `${monthNames[viewDate.getMonth()]} ${viewDate.getFullYear()}`;
+
             processSubscriptions();
             if(!document.getElementById('view-dashboard').classList.contains('hidden')) renderDashboard(tmpInvoiceBank); 
             if(!document.getElementById('view-planning').classList.contains('hidden')) renderPlanning();
-            updateYearOptions(); if(!document.getElementById('view-transactions').classList.contains('hidden')) renderTable();
+            if(!document.getElementById('view-transactions').classList.contains('hidden')) renderTable();
             if(!document.getElementById('view-subscriptions').classList.contains('hidden')) renderSubscriptions();
             
             const bankOpts = banks.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
@@ -701,6 +692,7 @@
         document.getElementById('entry-date').valueAsDate = new Date(); 
         updateUI(); 
         navigate('dashboard');
+		
     </script>
 </body>
 </html>
