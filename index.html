@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MyFinance v20.2 - Smart & Modular</title>
+    <title>MyFinance v20.3 - Smart & Modular</title>
     
     <link rel="manifest" href="./manifest.json">
     <meta name="theme-color" content="#0f172a">
@@ -32,11 +32,10 @@
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col gap-3">
             <div class="flex items-center justify-between">
                 <h1 class="font-black text-lg md:text-xl tracking-tighter uppercase italic text-primary dark:text-white">
-                    MyFinance <span class="text-accent text-xs">v20.2</span>
+                    MyFinance <span class="text-accent text-xs">v20.3</span>
                 </h1>
                 <div class="flex gap-2 items-center flex-wrap">
                     <button onclick="toggleDarkMode()" class="p-2 text-slate-500 hover:text-accent transition-colors rounded-full" title="Alternar Tema"><i data-lucide="moon" class="w-5 h-5 dark:hidden"></i><i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i></button>
-                    <!-- NOVO: Botão de Configurações que substitui Backup/Restaurar/Resetar -->
                     <button onclick="openSettingsModal()" class="p-2 text-slate-500 hover:text-accent transition-colors rounded-full" title="Configurações e Dados"><i data-lucide="settings" class="w-5 h-5"></i></button>
                 </div>
             </div>
@@ -65,8 +64,8 @@
         <button id="fab-dashboard" onclick="toggleMobileEntryModal()" class="md:hidden fixed bottom-20 right-4 z-50 bg-accent text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-blue-600 transition-all transform hover:scale-105">
             <i data-lucide="plus" class="w-6 h-6"></i>
         </button>
-        <!-- NOVO: FAB para criar assinatura no mobile -->
-        <button id="fab-subscriptions" onclick="toggleSubModal()" class="md:hidden fixed bottom-20 right-4 z-50 bg-indigo-500 text-white w-14 h-14 rounded-full shadow-lg items-center justify-center hover:bg-indigo-600 hidden transition-all transform hover:scale-105">
+        <!-- FAB Corrigido: Agora usa flex items-center justify-center e cor Teal -->
+        <button id="fab-subscriptions" onclick="toggleSubModal()" class="md:hidden fixed bottom-20 right-4 z-50 bg-teal-500 text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:bg-teal-600 hidden transition-all transform hover:scale-105">
             <i data-lucide="plus" class="w-6 h-6"></i>
         </button>
 
@@ -125,13 +124,13 @@
             
             <div class="lg:col-span-8 space-y-6 relative z-10">
                 <div id="bank-cards" class="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-4"></div>
-                <div id="pending-subs-container" class="hidden bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-200 dark:border-indigo-800 rounded-2xl p-4 shadow-sm">
-                    <h3 class="font-bold text-xs uppercase text-indigo-500 mb-2 flex items-center gap-1"><i data-lucide="bell-ring" class="w-4 h-4"></i> Assinaturas Pendentes do Mês</h3>
+                <div id="pending-subs-container" class="hidden bg-teal-50 dark:bg-slate-800 border border-teal-200 dark:border-slate-700 rounded-2xl p-4 shadow-sm dark:shadow-md">
+                    <h3 class="font-bold text-xs uppercase text-teal-600 dark:text-teal-400 mb-2 flex items-center gap-1"><i data-lucide="bell-ring" class="w-4 h-4"></i> Assinaturas Pendentes do Mês</h3>
                     <div id="pending-subs-list" class="space-y-2"></div>
                 </div>
                 <div class="bg-white dark:bg-darkcard rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-colors">
                     <div class="px-4 md:px-6 py-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/50 flex justify-between items-center">
-                        <div class="flex items-center gap-2 md:gap-4"><h3 id="dash-list-title" class="font-bold text-[9px] md:text-[10px] uppercase text-slate-400 italic tracking-wider">Itens da Fatura</h3><button onclick="renderDashboard()" class="text-[8px] md:text-[9px] bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded font-bold hover:bg-slate-300 transition">Ver Geral</button></div>
+                        <div class="flex items-center gap-2 md:gap-4"><h3 id="dash-list-title" class="font-bold text-[9px] md:text-[10px] uppercase text-slate-400 italic tracking-wider">Itens da Fatura</h3><button id="btn-ver-geral" onclick="renderDashboard()" class="hidden text-[8px] md:text-[9px] bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded font-bold hover:bg-slate-300 transition">Ver Geral</button></div>
                         <div class="flex items-center gap-3 md:gap-4">
                             <div class="text-right"><span id="dash-total-label" class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase block">Total do Mês</span><span id="dash-total-ref" class="font-mono font-bold text-xs md:text-sm"></span></div>
                             <div id="pay-invoice-container" class="hidden border-l border-slate-200 dark:border-slate-700 pl-3 md:pl-4"></div>
@@ -230,34 +229,39 @@
                     <h2 class="text-xl md:text-2xl font-bold italic text-primary dark:text-white hidden md:block">Assinaturas</h2>
                     <p class="text-sm text-slate-500 mt-2 md:mt-0">Cadastre despesas fixas para aprovação rápida mensal.</p>
                 </div>
-                <!-- NOVO: Botão Desktop para adicionar assinatura -->
-                <button onclick="toggleSubModal()" class="hidden md:flex bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-bold transition items-center gap-1 shadow-sm"><i data-lucide="plus" class="w-4 h-4"></i> Nova Assinatura</button>
+                <!-- Escondido em Desktop pois o Form já estará visível -->
+                <button onclick="toggleSubModal()" class="hidden bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded-lg text-xs font-bold transition items-center gap-1 shadow-sm"><i data-lucide="plus" class="w-4 h-4"></i> Nova Assinatura</button>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <!-- Formulário de Nova Assinatura (Agora inicia oculto) -->
-                <aside id="sub-form-aside" class="hidden lg:col-span-4 fixed inset-0 z-50 md:z-auto bg-black/50 md:bg-transparent md:relative flex items-end md:items-start justify-center">
-                    <div class="bg-indigo-50 dark:bg-indigo-900/20 p-5 md:p-6 rounded-t-3xl md:rounded-2xl border border-indigo-100 dark:border-indigo-800 shadow-xl md:shadow-sm border-t-4 border-t-indigo-500 relative w-full max-h-[90vh] overflow-y-auto">
+            <!-- Grelha fixa 12 colunas -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 relative">
+                
+                <!-- Formulário de Nova Assinatura (Fixo no Desktop, Modal no Mobile) -->
+                <!-- No Mobile (hidden, z-50), no Desktop (block, z-auto, relative, ocupa 4 col) -->
+                <aside id="sub-form-aside" class="hidden md:block lg:col-span-4 space-y-6 fixed inset-0 z-50 md:z-auto bg-black/50 md:bg-transparent md:relative flex items-end md:items-start justify-center">
+                    <div class="bg-teal-50 dark:bg-slate-800 p-5 md:p-6 rounded-t-3xl md:rounded-2xl border border-teal-100 dark:border-slate-700 shadow-xl dark:shadow-2xl md:shadow-sm border-t-4 border-t-teal-500 relative w-full max-h-[90vh] overflow-y-auto">
                         <button onclick="toggleSubModal()" class="md:hidden absolute top-4 right-4 text-slate-400 hover:text-expense"><i data-lucide="x" class="w-5 h-5"></i></button>
-                        <h3 class="font-bold mb-4 text-xs uppercase tracking-widest text-indigo-500 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4"></i> Nova Assinatura</h3>
+                        <h3 class="font-bold mb-4 text-xs uppercase tracking-widest text-teal-600 dark:text-teal-400 flex items-center gap-2"><i data-lucide="zap" class="w-4 h-4"></i> Nova Assinatura</h3>
+                        
                         <form onsubmit="saveSubscription(event)" class="space-y-4 text-sm">
-                            <input type="text" id="sub-name" placeholder="Ex: Netflix, Internet" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-3 font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                            <input type="text" id="sub-name" placeholder="Ex: Netflix, Internet" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-3 font-medium outline-none focus:ring-2 focus:ring-teal-500" required>
                             <div class="grid grid-cols-2 gap-2">
-                                <div><label class="text-[10px] font-bold text-slate-400 uppercase">Valor</label><input type="number" id="sub-value" step="0.01" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold" required></div>
-                                <div><label class="text-[10px] font-bold text-slate-400 uppercase">Frequência</label><select id="sub-freq" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold"><option value="1">Mensal</option><option value="6">Semestral</option><option value="12">Anual</option></select></div>
+                                <div><label class="text-[10px] font-bold text-slate-400 uppercase">Valor</label><input type="number" id="sub-value" step="0.01" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-bold" required></div>
+                                <div><label class="text-[10px] font-bold text-slate-400 uppercase">Frequência</label><select id="sub-freq" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-bold"><option value="1">Mensal</option><option value="6">Semestral</option><option value="12">Anual</option></select></div>
                             </div>
-                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Data Base (1ª cobrança)</label><input type="date" id="sub-date" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-semibold" required></div>
+                            <div><label class="text-[10px] font-bold text-slate-400 uppercase">Data Base (1ª cobrança)</label><input type="date" id="sub-date" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-semibold" required></div>
                             <div class="grid grid-cols-2 gap-2">
-                                <select id="sub-bank" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold text-xs"></select>
-                                <select id="sub-category" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-semibold text-xs"></select>
+                                <select id="sub-bank" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-bold text-xs"></select>
+                                <select id="sub-category" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-semibold text-xs"></select>
                             </div>
-                            <button type="submit" class="w-full bg-indigo-500 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-indigo-600 transition shadow-lg">Ativar Assinatura</button>
+                            <button type="submit" class="w-full bg-teal-500 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-teal-600 transition shadow-lg">Ativar Assinatura</button>
                         </form>
                     </div>
                 </aside>
 
-                <div id="sub-list-col" class="lg:col-span-12 transition-all duration-300">
-                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" id="subs-list-container"></div>
+                <!-- Área da Lista ocupa as restantes 8 colunas permanentemente no Desktop -->
+                <div id="sub-list-col" class="lg:col-span-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="subs-list-container"></div>
                 </div>
             </div>
         </section>
@@ -270,9 +274,9 @@
         </section>
     </main>
 
-    <!-- NOVO: MODAL CONFIGURAÇÕES E BACKUP -->
+    <!-- MODAL CONFIGURAÇÕES E BACKUP -->
     <div id="modal-settings" class="fixed inset-0 z-50 hidden bg-black/50 flex items-center justify-center px-4">
-        <div class="bg-white dark:bg-darkcard w-full max-w-md p-6 rounded-2xl shadow-xl transform transition-transform scale-95" id="modal-settings-content">
+        <div class="bg-white dark:bg-darkcard w-full max-w-md p-6 rounded-2xl shadow-xl dark:shadow-2xl transform transition-transform scale-95" id="modal-settings-content">
             <div class="flex justify-between items-center mb-6 border-b border-slate-100 dark:border-slate-700 pb-3">
                 <h3 class="font-black text-lg uppercase text-slate-800 dark:text-white tracking-tight flex items-center gap-2"><i data-lucide="settings" class="w-5 h-5 text-accent"></i> Configurações</h3>
                 <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-expense"><i data-lucide="x" class="w-6 h-6"></i></button>
@@ -307,7 +311,7 @@
 
     <!-- MODAL: Editar/Nova Conta -->
     <div id="modal-bank" class="fixed inset-0 z-50 hidden bg-black/50 flex items-end md:items-center justify-center">
-        <div class="bg-white dark:bg-darkcard w-full md:w-96 p-6 rounded-t-3xl md:rounded-2xl shadow-xl transform transition-transform translate-y-full md:translate-y-0" id="modal-bank-content">
+        <div class="bg-white dark:bg-darkcard w-full md:w-96 p-6 rounded-t-3xl md:rounded-2xl shadow-xl dark:shadow-2xl transform transition-transform translate-y-full md:translate-y-0" id="modal-bank-content">
             <div class="flex justify-between items-center mb-4">
                 <h3 id="modal-bank-title" class="font-bold text-sm uppercase text-slate-600 dark:text-slate-200 tracking-widest italic flex items-center gap-2"><i data-lucide="wallet" class="w-4 h-4 text-accent"></i> Nova Conta</h3>
                 <button onclick="closeBankModal()" class="text-slate-400 hover:text-expense"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -315,7 +319,6 @@
             <form onsubmit="saveBankForm(event)" class="flex flex-col gap-3">
                 <input type="text" id="bank-input" placeholder="Nome da conta/cartão" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg px-3 py-3 text-sm outline-none focus:ring-1 focus:ring-accent" required>
                 
-                <!-- NOVO: Color Picker Elegante -->
                 <div>
                     <label class="text-[10px] font-bold text-slate-400 uppercase block mb-2">Cor de Destaque</label>
                     <div class="grid grid-cols-6 gap-2 mb-2" id="color-picker-grid"></div>
@@ -333,7 +336,7 @@
 
     <!-- MODAL: Nova Categoria -->
     <div id="modal-category" class="fixed inset-0 z-50 hidden bg-black/50 flex items-end md:items-center justify-center">
-        <div class="bg-white dark:bg-darkcard w-full md:w-96 p-6 rounded-t-3xl md:rounded-2xl shadow-xl transform transition-transform translate-y-full md:translate-y-0" id="modal-category-content">
+        <div class="bg-white dark:bg-darkcard w-full md:w-96 p-6 rounded-t-3xl md:rounded-2xl shadow-xl dark:shadow-2xl transform transition-transform translate-y-full md:translate-y-0" id="modal-category-content">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-sm uppercase text-slate-600 dark:text-slate-200 tracking-widest italic flex items-center gap-2"><i data-lucide="tags" class="w-4 h-4 text-accent"></i> Nova Categoria</h3>
                 <button onclick="closeCategoryModal()" class="text-slate-400 hover:text-expense"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -346,9 +349,9 @@
         </div>
     </div>
 
-    <!-- MODAL: Edição de Lançamento (Avançado com Parcelas) -->
+    <!-- MODAL: Edição de Lançamento -->
     <div id="modal-edit-tx" class="fixed inset-0 z-50 hidden bg-black/50 flex items-end md:items-center justify-center px-0 md:px-4">
-        <div class="bg-white dark:bg-darkcard w-full md:w-[28rem] p-5 md:p-6 rounded-t-3xl md:rounded-2xl shadow-xl border-t-4 border-t-accent transform transition-transform translate-y-full md:translate-y-0 max-h-[90vh] overflow-y-auto" id="modal-edit-tx-content">
+        <div class="bg-white dark:bg-darkcard w-full md:w-[28rem] p-5 md:p-6 rounded-t-3xl md:rounded-2xl shadow-xl dark:shadow-2xl border-t-4 border-t-accent transform transition-transform translate-y-full md:translate-y-0 max-h-[90vh] overflow-y-auto" id="modal-edit-tx-content">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-xs uppercase tracking-widest text-slate-400"><i data-lucide="square-pen" class="w-4 h-4 inline-block mr-1 text-accent"></i>Editar Lançamento</h3>
                 <button type="button" onclick="closeEditModal()" class="text-slate-400 hover:text-expense"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -368,7 +371,6 @@
                     <input type="text" id="edit-tag" placeholder="tag_opcional" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 pl-8 font-medium text-xs text-slate-500 outline-none focus:ring-1 focus:ring-accent">
                 </div>
 
-                <!-- NOVO: Controle Avançado de Parcelas -->
                 <div class="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border border-slate-100 dark:border-slate-700">
                     <div id="edit-installment-controls" class="hidden mb-3 pb-3 border-b border-slate-200 dark:border-slate-700">
                         <p class="text-[10px] font-bold text-slate-400 uppercase mb-2"><i data-lucide="layers" class="w-3 h-3 inline"></i> Compra Parcelada Detectada</p>
@@ -405,32 +407,32 @@
         </div>
     </div>
 
-    <!-- NOVO: MODAL: Edição de Assinatura -->
+    <!-- MODAL: Edição de Assinatura -->
     <div id="modal-edit-sub" class="fixed inset-0 z-50 hidden bg-black/50 flex items-end md:items-center justify-center px-0 md:px-4">
-        <div class="bg-indigo-50 dark:bg-indigo-900/20 w-full md:w-[28rem] p-5 md:p-6 rounded-t-3xl md:rounded-2xl shadow-xl border-t-4 border-t-indigo-500 transform transition-transform translate-y-full md:translate-y-0 max-h-[90vh] overflow-y-auto" id="modal-edit-sub-content">
+        <div class="bg-teal-50 dark:bg-slate-800 w-full md:w-[28rem] p-5 md:p-6 rounded-t-3xl md:rounded-2xl shadow-xl dark:shadow-2xl border-t-4 border-t-teal-500 transform transition-transform translate-y-full md:translate-y-0 max-h-[90vh] overflow-y-auto" id="modal-edit-sub-content">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="font-bold text-xs uppercase tracking-widest text-indigo-500"><i data-lucide="repeat-2" class="w-4 h-4 inline-block mr-1"></i>Editar Assinatura</h3>
+                <h3 class="font-bold text-xs uppercase tracking-widest text-teal-600 dark:text-teal-400"><i data-lucide="repeat-2" class="w-4 h-4 inline-block mr-1"></i>Editar Assinatura</h3>
                 <button type="button" onclick="closeEditSubModal()" class="text-slate-400 hover:text-expense"><i data-lucide="x" class="w-5 h-5"></i></button>
             </div>
             <form onsubmit="saveEditSubscription(event)" class="space-y-4 text-sm">
-                <input type="text" id="edit-sub-name" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-3 font-medium outline-none focus:ring-2 focus:ring-indigo-500" required>
+                <input type="text" id="edit-sub-name" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-3 font-medium outline-none focus:ring-2 focus:ring-teal-500" required>
                 <div class="grid grid-cols-2 gap-2">
-                    <div><label class="text-[10px] font-bold text-slate-400 uppercase">Valor</label><input type="number" id="edit-sub-value" step="0.01" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold text-indigo-500" required></div>
-                    <div><label class="text-[10px] font-bold text-slate-400 uppercase">Frequência</label><select id="edit-sub-freq" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold"><option value="1">Mensal</option><option value="6">Semestral</option><option value="12">Anual</option></select></div>
+                    <div><label class="text-[10px] font-bold text-slate-400 uppercase">Valor</label><input type="number" id="edit-sub-value" step="0.01" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-bold text-teal-500" required></div>
+                    <div><label class="text-[10px] font-bold text-slate-400 uppercase">Frequência</label><select id="edit-sub-freq" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-bold"><option value="1">Mensal</option><option value="6">Semestral</option><option value="12">Anual</option></select></div>
                 </div>
-                <div><label class="text-[10px] font-bold text-slate-400 uppercase">Data Base (Cobrança)</label><input type="date" id="edit-sub-date" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-semibold" required></div>
+                <div><label class="text-[10px] font-bold text-slate-400 uppercase">Data Base (Cobrança)</label><input type="date" id="edit-sub-date" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-semibold" required></div>
                 <div class="grid grid-cols-2 gap-2">
-                    <select id="edit-sub-bank" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-bold text-xs"></select>
-                    <select id="edit-sub-category" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-lg p-2 font-semibold text-xs"></select>
+                    <select id="edit-sub-bank" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-bold text-xs"></select>
+                    <select id="edit-sub-category" class="w-full border border-slate-200 dark:border-slate-600 dark:bg-slate-900 rounded-lg p-2 font-semibold text-xs"></select>
                 </div>
-                <button type="submit" class="w-full bg-indigo-500 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-indigo-600 transition shadow-lg mt-4">Salvar Assinatura</button>
+                <button type="submit" class="w-full bg-teal-500 text-white py-4 rounded-xl font-black uppercase tracking-widest hover:bg-teal-600 transition shadow-lg mt-4">Salvar Assinatura</button>
             </form>
         </div>
     </div>
 
     <!-- MODAL: Pagamento de Fatura -->
     <div id="pay-invoice-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50 px-4">
-        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-xl w-full max-w-sm border-t-4 border-t-accent">
+        <div class="bg-white dark:bg-darkcard p-6 rounded-2xl shadow-xl dark:shadow-2xl w-full max-w-sm border-t-4 border-t-accent">
             <h3 class="font-black text-lg mb-4 text-primary dark:text-white uppercase italic tracking-tight">Pagamento de Fatura</h3>
             <div class="bg-slate-50 dark:bg-slate-800 p-4 rounded-xl mb-4 border border-slate-100 dark:border-slate-700"><p class="text-xs text-slate-500 uppercase font-bold mb-1" id="pay-invoice-title"></p><p class="text-2xl font-black text-expense" id="pay-invoice-amount"></p></div>
             <div class="space-y-4">
@@ -452,12 +454,12 @@
         // [FUNC] toggleDarkMode() / openSettingsModal() / closeSettingsModal() / safeResetApp()
         // [FUNC] navigate() / changeMonth()
         // [FUNC] toggleMobileEntryModal() / togglePlanningFab() / toggleSubModal()
-        // [FUNC] renderColorPicker() / selectColor() - Paleta customizada Tarefa 1
+        // [FUNC] renderColorPicker() / selectColor()
         // [FUNC] openBankModal() / editBank() / saveBankForm() / removeBank() / renderBankManager()
         // [FUNC] openCategoryModal() / saveCategoryForm() / editCategory() / deleteCategory()
         // [FUNC] calculateRefMonth() / createTxObj() / toggleTransferUI()
-        // [FUNC] saveEntry() - Cria lançamento/parcelas com installmentId
-        // [FUNC] editTx() / toggleEditModeUI() / saveEditTx() - CRUD Transações (Tarefa 4 Avançada)
+        // [FUNC] saveEntry()
+        // [FUNC] editTx() / toggleEditModeUI() / saveEditTx() 
         // [FUNC] renderDashboard()
         // [FUNC] editSubscription() / saveEditSubscription() / saveSubscription() / renderSubscriptions()
         // [FUNC] renderPlanning() / saveGoalFromForm()
@@ -484,20 +486,17 @@
         let viewDate = new Date(); 
         let editingTxId = null;
         let editingBankName = null;
-        let editingSubId = null; // NOVO: Estado da assinatura
+        let editingSubId = null;
         let expenseChartInstance = null;
         let tmpInvoiceBank = null, tmpInvoiceRef = null, tmpInvoiceAmount = 0;
         const currencyMap = { BRL: 'R$', USD: '$', EUR: '€' };
 
-        // [VAR] paletteColors - Paleta elegante de 12 cores (Tarefa 1)
         const paletteColors = ['#f87171', '#fb923c', '#fbbf24', '#a3e635', '#4ade80', '#34d399', '#22d3ee', '#38bdf8', '#818cf8', '#a78bfa', '#e879f9', '#94a3b8'];
 
-        // Funções Base
         function formatMoney(value, currency = 'BRL') { return value.toLocaleString(currency === 'BRL' ? 'pt-BR' : 'en-US', { style: 'currency', currency: currency }); }
         function parseDateLocal(dateStr) { const [y, m, d] = dateStr.split('-'); return new Date(y, m - 1, d, 12, 0, 0); }
         function sanitizeTag(tag) { return tag ? tag.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '') : ''; }
 
-        // [FUNC] toggleDarkMode / openSettingsModal / safeResetApp (Tarefa 2)
         if(localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
         function toggleDarkMode() { document.documentElement.classList.toggle('dark'); localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light'); if(expenseChartInstance) renderPlanning(); }
 
@@ -515,7 +514,6 @@
             }
         }
 
-		// [FUNC] navigate - Muda Telas
 		function navigate(view) {
 			document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden')); 
 			document.getElementById(`view-${view}`).classList.remove('hidden');
@@ -537,19 +535,15 @@
 		}
 		function changeMonth(offset) { viewDate.setMonth(viewDate.getMonth() + offset); updateUI(); }
 
-        // [FUNC] Toggles Visuais de Formulários
         function toggleMobileEntryModal() { const f = document.getElementById('form-aside'); if(window.innerWidth < 768) { f.classList.toggle('hidden'); } }
         function togglePlanningFab() { document.getElementById('fab-planning').classList.toggle('fab-menu-expanded'); }
         function toggleSubModal() { 
-            const f = document.getElementById('sub-form-aside'); const c = document.getElementById('sub-list-col');
+            const f = document.getElementById('sub-form-aside');
             f.classList.toggle('hidden');
-            if (f.classList.contains('hidden')) { c.classList.remove('lg:col-span-8'); c.classList.add('lg:col-span-12'); } 
-            else { c.classList.remove('lg:col-span-12'); c.classList.add('lg:col-span-8'); }
         }
         function toggleInstallmentView() { const isI = document.querySelector('input[name="payment-mode"]:checked').value === 'installment'; document.getElementById('installment-wrapper').classList.toggle('hidden', !isI); if(!isI) document.getElementById('entry-installments').value = 1; updatePreviewMath(); }
         function updatePreviewMath() { const val = parseFloat(document.getElementById('entry-value').value) || 0; const inst = parseInt(document.getElementById('entry-installments').value) || 1; const p = document.getElementById('math-preview'); if (inst > 1 && val > 0) { p.innerText = `↳ ${inst}x de ${formatMoney(val / inst)} / mês`; } else { p.innerText = ''; } }
 
-        // [FUNC] renderColorPicker / selectColor (Tarefa 1)
         function renderColorPicker(activeColor) {
             const grid = document.getElementById('color-picker-grid');
             grid.innerHTML = paletteColors.map(color => `
@@ -559,10 +553,9 @@
         }
         function selectColor(color) { renderColorPicker(color); }
 
-        // [FUNC] Modal Bancos
         function openBankModal() { 
             const m = document.getElementById('modal-bank'); const c = document.getElementById('modal-bank-content');
-            renderColorPicker('#38bdf8'); // Cor padrão ao abrir
+            renderColorPicker('#38bdf8'); 
             m.classList.remove('hidden'); setTimeout(() => c.classList.remove('translate-y-full'), 10);
         }
         function closeBankModal() { 
@@ -570,7 +563,6 @@
             c.classList.add('translate-y-full'); setTimeout(() => { m.classList.add('hidden'); document.getElementById('modal-bank-submit').innerText = "Salvar"; document.getElementById('modal-bank-title').innerHTML = `<i data-lucide="wallet" class="w-4 h-4 text-accent"></i> Nova Conta`; document.querySelector('#modal-bank form').reset(); editingBankName = null; lucide.createIcons(); }, 300);
         }
 
-        // [FUNC] Modal Categorias
         function openCategoryModal() { 
             const m = document.getElementById('modal-category'); const c = document.getElementById('modal-category-content');
             m.classList.remove('hidden'); setTimeout(() => c.classList.remove('translate-y-full'), 10);
@@ -580,7 +572,6 @@
             c.classList.add('translate-y-full'); setTimeout(() => { m.classList.add('hidden'); document.querySelector('#modal-category form').reset(); }, 300);
         }
 
-        // [FUNC] Modal Transações (Edição)
         function openEditModal() {
             const m = document.getElementById('modal-edit-tx'); const c = document.getElementById('modal-edit-tx-content');
             m.classList.remove('hidden'); setTimeout(() => c.classList.remove('translate-y-full'), 10);
@@ -590,12 +581,11 @@
             c.classList.add('translate-y-full'); setTimeout(() => { m.classList.add('hidden'); document.querySelector('#modal-edit-tx form').reset(); }, 300);
         }
 
-        // [FUNC] Banco e Form (Edit retroativo)
         function editBank(name) {
             const b = banks.find(x => x.name === name); if(!b) return;
             editingBankName = name;
             document.getElementById('bank-input').value = b.name;
-            renderColorPicker(b.color); // Carrega cor existente
+            renderColorPicker(b.color); 
             document.getElementById('bank-currency').value = b.currency;
             document.getElementById('bank-closing').value = b.closingDay || '';
             document.getElementById('modal-bank-submit').innerText = "Atualizar";
@@ -629,7 +619,6 @@
             `).join('');
         }
 
-        // [FUNC] Categorias
         function saveCategoryForm(e) { e.preventDefault(); const t = document.getElementById('cat-type-select').value; const n = document.getElementById('new-cat-input').value.trim(); if(n && !categories[t].includes(n)) { categories[t].push(n); if (t === 'expense') categoryGoals[n] = 0; saveAndSync(); closeCategoryModal(); } }
         function editCategory(type, oldName) { const newName = prompt(`Novo nome para "${oldName}":`, oldName); if (!newName || newName.trim() === "" || newName === oldName) return; const n = newName.trim(); if (categories[type].includes(n)) return alert("Uma categoria com esse nome já existe!"); const idx = categories[type].indexOf(oldName); categories[type][idx] = n; if (type === 'expense') { categoryGoals[n] = categoryGoals[oldName] || 0; delete categoryGoals[oldName]; } transactions.forEach(t => { if(t.category === oldName) t.category = n; }); subscriptions.forEach(s => { if(s.category === oldName) s.category = n; }); saveAndSync(); }
         function deleteCategory(type, catName) { if(categories[type].length <= 1) return alert("Você precisa ter pelo menos uma categoria!"); if(confirm(`Excluir '${catName}'? Lançamentos antigos irão para categoria padrão.`)) { categories[type] = categories[type].filter(c => c !== catName); if (type === 'expense') delete categoryGoals[catName]; const defCat = type === 'expense' ? 'Outros' : 'Receitas diversas'; if(!categories[type].includes(defCat)) categories[type].push(defCat); transactions.forEach(t => { if(t.category === catName) t.category = defCat; }); subscriptions.forEach(s => { if(s.category === catName) s.category = defCat; }); saveAndSync(); } }
@@ -654,14 +643,12 @@
             document.getElementById('edit-sub-category').innerHTML = categories.expense.map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
-        // [FUNC] Criação Base Transações
         function calculateRefMonth(baseDate, bankName, monthOffset) { let refDate = new Date(baseDate.getTime()); const bankObj = banks.find(b => b.name === bankName); if (bankObj && bankObj.closingDay && baseDate.getDate() >= bankObj.closingDay) refDate.setMonth(refDate.getMonth() + 1); refDate.setMonth(refDate.getMonth() + monthOffset); return `${refDate.getFullYear()}-${(refDate.getMonth() + 1).toString().padStart(2, '0')}`; }
         function createTxObj(id, desc, category, value, dateStr, type, bankName, baseDate, monthOffset, linkId = null, tag = '', installmentId = null) { return { id, desc, category, value, date: dateStr, type, bank: bankName, refMonth: calculateRefMonth(baseDate, bankName, monthOffset), paid: false, linkId: linkId, tag: tag, installmentId: installmentId }; }
         function toggleTransferUI() { const isT = document.getElementById('entry-type').value === 'transfer'; document.getElementById('transfer-target-div').classList.toggle('hidden', !isT); document.getElementById('entry-target-bank').required = isT; document.getElementById('entry-installments').disabled = isT; if(isT) { document.querySelector('input[value="cash"]').click(); document.getElementById('entry-installments').value = 1; } }
         function updateFormCurrency() { const bankObj = banks.find(b => b.name === document.getElementById('entry-bank').value); document.getElementById('form-currency-symbol').innerText = bankObj ? currencyMap[bankObj.currency] || bankObj.currency : 'R$'; }
         function autoPredictData(event) { const inputText = event.target.value.trim().toLowerCase(); if (inputText.length < 3) return; const match = transactions.find(tx => tx.desc.toLowerCase().includes(inputText) && tx.category); if (match) { const curType = document.getElementById('entry-type').value; if((curType === 'expense' && categories.expense.includes(match.category)) || (curType === 'income' && categories.income.includes(match.category))) { document.getElementById('entry-category').value = match.category; } if (match.tag && !document.getElementById('entry-tag').value) { document.getElementById('entry-tag').value = match.tag; } } }
 
-        // [FUNC] saveEntry - Insere a compra e gera IDs de parcelamento (Tarefa 4)
         function saveEntry(e) {
             e.preventDefault(); 
             const desc = document.getElementById('entry-desc').value; const totalVal = parseFloat(document.getElementById('entry-value').value); const type = document.getElementById('entry-type').value; const bankName = document.getElementById('entry-bank').value; const cat = document.getElementById('entry-category').value; const dateInput = document.getElementById('entry-date').value; const isInstallment = document.querySelector('input[name="payment-mode"]:checked').value === 'installment'; const installments = isInstallment ? (parseInt(document.getElementById('entry-installments').value) || 1) : 1; const baseDate = parseDateLocal(dateInput); const tagFinal = sanitizeTag(document.getElementById('entry-tag').value);
@@ -671,7 +658,6 @@
                 transactions.push(createTxObj(linkId, `Transf. para ${targetBank} (${desc})`, cat, totalVal, dateInput, 'expense', bankName, baseDate, 0, linkId, tagFinal)); transactions.push(createTxObj(linkId + 1, `Transf. de ${bankName} (${desc})`, cat, totalVal, dateInput, 'income', targetBank, baseDate, 0, linkId, tagFinal)); 
             } else { 
                 const baseVal = Math.floor((totalVal / installments) * 100) / 100; let remainder = Math.round((totalVal - (baseVal * installments)) * 100) / 100;
-                // NOVO: Gerar um ID de parcelamento para amarrar todas (Tarefa 4)
                 const instId = installments > 1 ? 'inst_' + Date.now() : null;
                 for (let i = 0; i < installments; i++) { 
                     const txId = Date.now() + i; 
@@ -683,7 +669,6 @@
             e.target.reset(); document.getElementById('entry-date').valueAsDate = new Date(); document.querySelector('input[value="cash"]').click(); toggleTransferUI(); updateFormCurrency(); updateCategoryOptions(); document.getElementById('math-preview').innerText = ''; saveAndSync(); if(window.innerWidth < 768) toggleMobileEntryModal(); 
         }
 
-        // [FUNC] toggleEditModeUI - Exibe campos extras de Recálculo de Parcela (Tarefa 4)
         function toggleEditModeUI() {
             const isGroup = document.querySelector('input[name="edit-mode"]:checked').value === 'group';
             document.getElementById('edit-group-inputs').classList.toggle('hidden', !isGroup);
@@ -692,13 +677,11 @@
             document.getElementById('edit-total-installments').required = isGroup;
             document.getElementById('edit-total-value').required = isGroup;
             if (isGroup) {
-                // Ao mudar para modo Grupo, bloqueia a descrição para ser apenas o nome base
                 const rawDesc = document.getElementById('edit-desc').value;
                 document.getElementById('edit-desc').value = rawDesc.replace(/\s+\(\d+\/\d+\)$/, '');
             }
         }
 
-        // [FUNC] editTx - Prepara dados da Edição e lida com Retroatividade (Tarefa 4)
         function editTx(id) { 
             const tx = transactions.find(t => t.id === id); 
             if (!tx) return; 
@@ -722,21 +705,17 @@
             document.getElementById('edit-category').innerHTML = catOptions.map(c => `<option value="${c}">${c}</option>`).join('');
             document.getElementById('edit-category').value = tx.category; 
 
-            // NOVO: Detecção de Parcela (Com e sem ID Legacy)
             const match = tx.desc.match(/(.*)\s+\((\d+)\/(\d+)\)$/);
             const isInstallmentByName = match !== null;
             
             if (tx.installmentId || isInstallmentByName) {
-                // Se é legado sem ID, agrupa e cria ID retroativamente
                 if (!tx.installmentId && isInstallmentByName) {
                     const baseDesc = match[1]; const totalCount = match[3]; const instId = 'retro_' + Date.now();
                     transactions.forEach(t => { if (t.desc.startsWith(baseDesc + ' (') && t.desc.endsWith(`/${totalCount})`)) t.installmentId = instId; });
                 }
-                // Habilita controles avançados
                 document.getElementById('edit-installment-controls').classList.remove('hidden');
-                document.querySelector('input[value="single"]').click(); // Padrão é editar só essa
+                document.querySelector('input[value="single"]').click(); 
                 
-                // Pré-calcula valores se o usuário quiser editar tudo
                 if (tx.installmentId) {
                     const siblings = transactions.filter(t => t.installmentId === tx.installmentId);
                     const totalVal = siblings.reduce((a, b) => a + b.value, 0);
@@ -753,7 +732,6 @@
             openEditModal();
         }
 
-        // [FUNC] saveEditTx - Acionado no Modal, Lida com Recálculo Dinâmico (Tarefa 4)
         function saveEditTx(e) {
             e.preventDefault();
             if (!editingTxId) return;
@@ -768,13 +746,12 @@
 
             const isGroupEdit = document.querySelector('input[name="edit-mode"]:checked') && document.querySelector('input[name="edit-mode"]:checked').value === 'group';
 
-            // CENO 1: Edição em Lote (Super Recálculo)
             if (isGroupEdit && tx.installmentId) {
                 let siblings = transactions.filter(t => t.installmentId === tx.installmentId).sort((a,b) => new Date(a.date) - new Date(b.date));
                 const newTotal = parseFloat(document.getElementById('edit-total-value').value);
                 const newCount = parseInt(document.getElementById('edit-total-installments').value);
                 const baseName = desc; 
-                const rootDate = parseDateLocal(siblings[0].date); // Usa a data original da compra como base para não perder referência
+                const rootDate = parseDateLocal(siblings[0].date); 
                 const baseVal = Math.floor((newTotal / newCount) * 100) / 100;
                 let remainder = Math.round((newTotal - (baseVal * newCount)) * 100) / 100;
 
@@ -788,16 +765,13 @@
                         if (i < siblings.length) {
                             siblings[i].value = val; siblings[i].desc = txDesc; siblings[i].bank = bankName; siblings[i].category = cat; siblings[i].tag = tagFinal; siblings[i].date = dateStr; siblings[i].refMonth = calculateRefMonth(curDate, bankName, 0);
                         } else {
-                            // Criar meses faltantes (ex: aumentou de 5 para 12)
                             transactions.push(createTxObj(Date.now()+i, txDesc, cat, val, dateStr, tx.type, bankName, curDate, 0, null, tagFinal, tx.installmentId));
                         }
                     } else {
-                        // Deletar excessos (ex: baixou de 12 para 5)
                         transactions = transactions.filter(t => t.id !== siblings[i].id);
                     }
                 }
             } 
-            // CENO 2: Edição Simples / Unitária
             else {
                 const totalVal = parseFloat(document.getElementById('edit-value').value); 
                 const i = transactions.findIndex(t => t.id === editingTxId); 
@@ -821,7 +795,7 @@
             
             let displayTxs = transactions.filter(t => t.refMonth === currentRef); const payContainer = document.getElementById('pay-invoice-container');
             if (filterBank) { 
-                displayTxs = displayTxs.filter(t => t.bank === filterBank); document.getElementById('dash-list-title').innerText = `Lançamentos: ${filterBank}`; const bankObj = banks.find(b => b.name === filterBank);
+                displayTxs = displayTxs.filter(t => t.bank === filterBank); document.getElementById('dash-list-title').innerText = `Lançamentos: ${filterBank}`; document.getElementById('btn-ver-geral').classList.remove('hidden'); const bankObj = banks.find(b => b.name === filterBank);
                 if (bankObj && bankObj.closingDay) {
                     document.getElementById('dash-total-label').innerText = "Fatura Atual"; const monthExpenses = displayTxs.filter(t => t.type === 'expense').reduce((a, t) => a + t.value, 0); const monthIncomes = displayTxs.filter(t => t.type === 'income').reduce((a, t) => a + t.value, 0); const netInvoiceAmount = monthExpenses - monthIncomes;
                     document.getElementById('dash-total-ref').innerHTML = `<span class="${netInvoiceAmount > 0 ? 'text-expense' : 'text-income'}">${formatMoney(netInvoiceAmount, bankObj.currency)}</span>`;
@@ -829,7 +803,7 @@
                     if (monthExpenses > 0) { if (netInvoiceAmount > 0) { payContainer.innerHTML = `<button onclick="openPayInvoiceModal('${filterBank}', '${currentRef}', ${netInvoiceAmount})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[9px] md:text-[10px] font-black uppercase tracking-wider transition shadow-sm flex items-center gap-1.5"><i data-lucide="check-circle" class="w-3 h-3"></i> Pagar</button>`; } else { payContainer.innerHTML = `<button disabled class="bg-income text-white px-3 md:px-4 py-1.5 md:py-2 rounded-lg text-[9px] md:text-[10px] font-black uppercase tracking-wider shadow-sm flex items-center gap-1.5 opacity-80 cursor-default"><i data-lucide="check-circle-2" class="w-3 h-3"></i> Pago</button>`; } } else { payContainer.classList.add('hidden'); }
                 } else { document.getElementById('dash-total-label').innerText = "Saldo no Mês"; const bal = displayTxs.reduce((a, t) => a + (t.type === 'income' ? t.value : -t.value), 0); document.getElementById('dash-total-ref').innerHTML = `<span class="${bal < 0 ? 'text-expense' : 'text-slate-800 dark:text-white'}">${formatMoney(bal, bankObj.currency)}</span>`; payContainer.classList.add('hidden'); }
             } else { 
-                document.getElementById('dash-list-title').innerText = `Lançamentos Gerais`; document.getElementById('dash-total-label').innerText = "Geral no Mês"; const totalsByCurr = {}; displayTxs.forEach(t => { const bCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency; totalsByCurr[bCurr] = (totalsByCurr[bCurr] || 0) + (t.type === 'income' ? t.value : -t.value); });
+    document.getElementById('dash-list-title').innerText = `Lançamentos Gerais`; document.getElementById('btn-ver-geral').classList.add('hidden'); document.getElementById('dash-total-label').innerText = "Geral no Mês"; const totalsByCurr = {}; displayTxs.forEach(t => { const bCurr = (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency; totalsByCurr[bCurr] = (totalsByCurr[bCurr] || 0) + (t.type === 'income' ? t.value : -t.value); });
                 document.getElementById('dash-total-ref').innerHTML = Object.keys(totalsByCurr).length > 0 ? Object.keys(totalsByCurr).map(curr => `<span class="${totalsByCurr[curr] < 0 ? 'text-expense' : 'text-income'}">${formatMoney(totalsByCurr[curr], curr)}</span>`).join(' | ') : '<span class="text-slate-400">R$ 0,00</span>'; payContainer.classList.add('hidden');
             }
             document.getElementById('dash-table-body').innerHTML = displayTxs.sort((a,b) => new Date(b.date) - new Date(a.date)).map(t => { const bColor = (banks.find(b => b.name === t.bank) || {color:'#e2e8f0'}).color; return `<tr class="hover:bg-slate-50 dark:hover:bg-slate-800 transition border-b border-slate-50 dark:border-slate-800/50 ${t.paid ? 'opacity-50' : ''}"><td class="px-2 md:px-6 py-3 whitespace-nowrap"><span class="text-slate-400 font-mono text-[9px] md:text-[10px]">${t.date.split('-').reverse().slice(0,2).join('/')}</span></td><td class="px-2 md:px-6 py-3 min-w-[120px]"><p class="font-bold text-xs md:text-sm text-slate-700 dark:text-slate-200 ${t.paid ? 'line-through' : ''} truncate max-w-[150px] md:max-w-xs" title="${t.desc}">${t.desc}</p><div class="flex items-center gap-1 mt-1">${t.tag ? `<span class="text-[8px] text-accent lowercase">#${t.tag}</span>` : ''} ${!filterBank ? `<span class="text-[8px] text-white px-1 rounded font-black uppercase inline-block" style="background-color: ${bColor}">${t.bank}</span>` : ''}</div></td><td class="px-2 md:px-6 py-3 text-right font-mono font-bold text-xs md:text-sm ${t.type === 'income' ? 'text-income' : 'text-expense'} whitespace-nowrap">${formatMoney(t.value, (banks.find(b => b.name === t.bank) || {currency:'BRL'}).currency)}</td></tr>`; }).join('') || `<tr><td colspan="3" class="px-6 py-10 text-center text-slate-400 italic">Nenhum lançamento.</td></tr>`;
@@ -837,8 +811,7 @@
             renderPendingSubscriptions(currentRef); lucide.createIcons();
         }
 
-        // [FUNC] ASSINATURAS E PENDÊNCIAS (Tarefa 3)
-        function saveSubscription(e) { e.preventDefault(); const id = Date.now(); subscriptions.push({ id, name: document.getElementById('sub-name').value, value: parseFloat(document.getElementById('sub-value').value), frequency: parseInt(document.getElementById('sub-freq').value), startDate: document.getElementById('sub-date').value, bank: document.getElementById('sub-bank').value, category: document.getElementById('sub-category').value, generatedMonths: [] }); e.target.reset(); document.getElementById('sub-date').valueAsDate = new Date(); saveAndSync(); toggleSubModal(); }
+        function saveSubscription(e) { e.preventDefault(); const id = Date.now(); subscriptions.push({ id, name: document.getElementById('sub-name').value, value: parseFloat(document.getElementById('sub-value').value), frequency: parseInt(document.getElementById('sub-freq').value), startDate: document.getElementById('sub-date').value, bank: document.getElementById('sub-bank').value, category: document.getElementById('sub-category').value, generatedMonths: [] }); e.target.reset(); document.getElementById('sub-date').valueAsDate = new Date(); saveAndSync(); if(window.innerWidth < 1024) toggleSubModal(); }
         function deleteSubscription(id) { if(confirm("Parar geração automática desta assinatura? (Lançamentos passados serão mantidos)")) { subscriptions = subscriptions.filter(s => s.id !== id); saveAndSync(); } }
 
         function openEditSubModal() {
@@ -886,14 +859,14 @@
         }
 
         function renderSubscriptions() {
-            document.getElementById('subs-list-container').innerHTML = subscriptions.map(s => { const fTxt = s.frequency === 1 ? 'Mensal' : s.frequency === 6 ? 'Semestral' : 'Anual'; const txCurr = (banks.find(b => b.name === s.bank) || {currency:'BRL'}).currency; return `<div class="bg-white dark:bg-darkcard border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm relative overflow-hidden group flex flex-col justify-between"><div class="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500"></div><div class="pl-2 mb-3"><div class="flex justify-between items-start"><h4 class="font-bold text-slate-800 dark:text-slate-100 mb-1">${s.name}</h4><div class="flex gap-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-1 border border-slate-100 dark:border-slate-700"><button onclick="editSubscription(${s.id})" class="p-1.5 text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded transition" title="Editar"><i data-lucide="pencil" class="w-3 h-3"></i></button><button onclick="deleteSubscription(${s.id})" class="p-1.5 text-slate-400 hover:text-expense hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition" title="Excluir"><i data-lucide="trash" class="w-3 h-3"></i></button></div></div><p class="text-xs text-slate-500">${s.bank} • <span class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 px-1.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider">${fTxt}</span></p></div><div class="pl-2 mt-auto"><p class="text-sm font-black text-expense">${formatMoney(s.value, txCurr)}</p><p class="text-[9px] text-slate-400 uppercase tracking-widest mt-1">Data Base: ${s.startDate.split('-').reverse().join('/')}</p></div></div>`; }).join('') || '<div class="col-span-3 text-center text-slate-400 py-16 px-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700"><i data-lucide="zap-off" class="w-10 h-10 mx-auto mb-3 opacity-50"></i><p class="text-sm italic">Nenhuma assinatura ativa.<br>Cadastre para gerenciar gastos fixos automáticos.</p></div>';
+            document.getElementById('subs-list-container').innerHTML = subscriptions.map(s => { const fTxt = s.frequency === 1 ? 'Mensal' : s.frequency === 6 ? 'Semestral' : 'Anual'; const txCurr = (banks.find(b => b.name === s.bank) || {currency:'BRL'}).currency; return `<div class="bg-white dark:bg-darkcard border border-slate-200 dark:border-slate-700 p-4 rounded-xl shadow-sm relative overflow-hidden group flex flex-col justify-between"><div class="absolute left-0 top-0 bottom-0 w-1 bg-teal-500"></div><div class="pl-2 mb-3"><div class="flex justify-between items-start"><h4 class="font-bold text-slate-800 dark:text-slate-100 mb-1">${s.name}</h4><div class="flex gap-1 bg-slate-50 dark:bg-slate-800 rounded-lg p-1 border border-slate-100 dark:border-slate-700"><button onclick="editSubscription(${s.id})" class="p-1.5 text-slate-400 hover:text-teal-500 hover:bg-teal-50 dark:hover:bg-slate-700 rounded transition" title="Editar"><i data-lucide="pencil" class="w-3 h-3"></i></button><button onclick="deleteSubscription(${s.id})" class="p-1.5 text-slate-400 hover:text-expense hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition" title="Excluir"><i data-lucide="trash" class="w-3 h-3"></i></button></div></div><p class="text-xs text-slate-500">${s.bank} • <span class="bg-teal-50 dark:bg-slate-800 border border-teal-100 dark:border-slate-700 text-teal-600 dark:text-teal-400 px-1.5 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider">${fTxt}</span></p></div><div class="pl-2 mt-auto"><p class="text-sm font-black text-expense">${formatMoney(s.value, txCurr)}</p><p class="text-[9px] text-slate-400 uppercase tracking-widest mt-1">Data Base: ${s.startDate.split('-').reverse().join('/')}</p></div></div>`; }).join('') || '<div class="col-span-1 md:col-span-2 text-center text-slate-400 py-16 px-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700"><i data-lucide="zap-off" class="w-10 h-10 mx-auto mb-3 opacity-50"></i><p class="text-sm italic">Nenhuma assinatura ativa.<br>Cadastre para gerenciar gastos fixos automáticos.</p></div>';
             lucide.createIcons();
         }
 
         function renderPendingSubscriptions(currentRef) {
             const container = document.getElementById('pending-subs-container'); const list = document.getElementById('pending-subs-list'); let pendingList = []; const [vYear, vMonth] = currentRef.split('-').map(Number); 
             subscriptions.forEach(sub => { const sDate = parseDateLocal(sub.startDate); const monthDiff = (vYear - sDate.getFullYear()) * 12 + ((vMonth - 1) - sDate.getMonth()); if (monthDiff >= 0 && monthDiff % sub.frequency === 0) { if (!sub.generatedMonths || !sub.generatedMonths.includes(currentRef)) { pendingList.push(sub); } } });
-            if (pendingList.length > 0) { container.classList.remove('hidden'); list.innerHTML = pendingList.map(sub => `<div class="flex items-center justify-between bg-white dark:bg-darkcard p-3 rounded-xl border border-indigo-100 dark:border-indigo-800"><div><p class="font-bold text-sm">${sub.name}</p><p class="text-[10px] text-slate-500">${sub.bank} • ${sub.category}</p></div><div class="flex items-center gap-3"><span class="font-black text-expense text-sm">${formatMoney(sub.value)}</span><button onclick="approvePendingSub(${sub.id}, '${currentRef}')" class="bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-indigo-600 shadow-sm">Lançar</button></div></div>`).join(''); } else { container.classList.add('hidden'); }
+            if (pendingList.length > 0) { container.classList.remove('hidden'); list.innerHTML = pendingList.map(sub => `<div class="flex items-center justify-between bg-white dark:bg-darkcard p-3 rounded-xl border border-teal-100 dark:border-slate-700"><div><p class="font-bold text-sm">${sub.name}</p><p class="text-[10px] text-slate-500">${sub.bank} • ${sub.category}</p></div><div class="flex items-center gap-3"><span class="font-black text-expense text-sm">${formatMoney(sub.value)}</span><button onclick="approvePendingSub(${sub.id}, '${currentRef}')" class="bg-teal-500 text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-teal-600 shadow-sm">Lançar</button></div></div>`).join(''); } else { container.classList.add('hidden'); }
         }
 
         function approvePendingSub(subId, currentRef) { const sub = subscriptions.find(s => s.id === subId); if(sub) { const sDate = parseDateLocal(sub.startDate); const [y, m] = currentRef.split('-'); const genDate = new Date(y, m-1, sDate.getDate(), 12, 0, 0); const txId = Date.now(); transactions.push(createTxObj(txId, sub.name, sub.category, sub.value, genDate.toISOString().split('T')[0], 'expense', sub.bank, genDate, 0, null, 'assinatura')); if(!sub.generatedMonths) sub.generatedMonths = []; sub.generatedMonths.push(currentRef); saveAndSync(); } }
@@ -942,9 +915,8 @@
             if(!editingTxId && !editingBankName && !editingSubId) updateCategoryOptions(); if(!editingTxId) updateFormCurrency(); lucide.createIcons();
         }
 
-        // Config e Backup
         function exportJSON() { 
-            const backupData = { appVersion: "v20.2", exportDate: new Date().toISOString(), banks, categories, transactions, subscriptions, categoryGoals };
+            const backupData = { appVersion: "v20.3", exportDate: new Date().toISOString(), banks, categories, transactions, subscriptions, categoryGoals };
             const blob = new Blob([JSON.stringify(backupData)], { type: "application/json" });
             const a = document.createElement('a'); a.href = URL.createObjectURL(blob); 
             a.download = `MyFinance_Backup_${new Date().toISOString().split('T')[0]}.json`; a.click(); 
